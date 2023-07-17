@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="submit"] {
+    margin-top: 20px;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="login-style.css">
+    
+    <title>Sign Up</title>
+    </head>
+<body>
+  
+  <div class="container">
+    <h2>Sign Up</h2>
+    <p>Please fill this form to create an account.</p>
+    <div class = "form-message"></div>
+    <form autocomplete="off" method="POST" id="signup-form">
+    
+      <label for = "username">Username</label>
+      <input type="text" id="username">
+      
+      <label for = "password">Password</label>
+      <input type="password" id="password">
+
+      <label for="cpassword">Confirm Password</label>
+      <input type="password" id="cpassword">
+      
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email">
+
+      <button type="button" id="btn_signup">Sign Up</button>
+    
+      <p>Already have an account? <a href="login.html">Login here</a>.</p>
+    </form>
+    
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="register.js"></script>
+
+</body>
+</html>
