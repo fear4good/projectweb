@@ -6,8 +6,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 L.control.locate().addTo(map);
 
-
-
 $.ajax({
     url: 'fetch_markers.php',
     dataType: 'json',
@@ -26,7 +24,8 @@ $.ajax({
 
             // Filter the marker data based on the search name
             var filteredMarkers = markerDataList.filter(function (markerData) {
-                return markerData.name.toLowerCase().includes(name.toLowerCase());
+                return markerData.name && name && markerData.name.toLowerCase().includes(name.toLowerCase());
+
             });
 
             // Add filtered markers to the map
