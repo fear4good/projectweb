@@ -2,7 +2,7 @@
 
 include "../connect.php";
 
-if(isset($_SESSION['loggedin'])){
+if(isset($_SESSION['role'])){
     header("../after-login/main.php");
 }
 
@@ -72,8 +72,8 @@ if(isset($_POST['btn_login'])){
     if(empty($l_username)){
         $l_response['message'] .= "Username is missing. ";
     }else{
-        $select = $db->query("SELECT id FROM users WHERE username = '$l_username'");
-        if($select->num_rows == 0){
+        $select_user = $db->query("SELECT id FROM users WHERE username = '$l_username'");
+        if($select_user->num_rows == 0){
             $l_response['message'] .= "Username doesn't exists. ";
         }
     }
@@ -83,11 +83,21 @@ if(isset($_POST['btn_login'])){
     }
 
     if(empty($l_response['message'])){
-        $select = $db->query("SELECT id FROM users WHERE username = '$l_username' AND password = '$l_password'");
-        if($select->num_rows > 0){
-            $l_response['status'] = 1;
-            $_SESSION['loggedin'] = '1';
-            $_SESSION['username'] = $l_username;
+        $select_user = $db->query("SELECT * FROM users WHERE username = '$l_username' AND password = '$l_password'");
+        if($select_user->num_rows > 0){
+            $user = $select_user->fetch_assoc();
+            if($user['is_admin'] == false){
+                $l_response['status'] = 1;
+                $_SESSION['loggedin'] = true;
+                $_SESSION['role'] = 'user';
+                $_SESSION['username'] = $user['username'];
+            }
+            else{
+                $l_response['status'] = 1;
+                $_SESSION['loggedin'] = true;
+                $_SESSION['role'] = 'admin';
+                $_SESSION['username'] = $user['username'];
+            }
         }
     }
     echo json_encode($l_response);
