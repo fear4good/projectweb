@@ -33,7 +33,7 @@ if (isset($_SESSION['loggedin'])) {
             <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
             <button type="button" id="btn_search">Search</button>
             </form>
-        <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
+            <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
         </li>
     </ul>
 
