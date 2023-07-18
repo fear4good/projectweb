@@ -24,8 +24,7 @@ $.ajax({
 
             // Filter the marker data based on the search name
             var filteredMarkers = markerDataList.filter(function (markerData) {
-                return markerData.name && name && markerData.name.toLowerCase().includes(name.toLowerCase());
-
+                return markerData.name  && markerData.name.toLowerCase().includes(name.toLowerCase());
             });
 
             // Add filtered markers to the map
