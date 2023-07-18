@@ -48,7 +48,8 @@ if(isset($_POST['btn_signup'])){
   }
   
   if(empty($r_response['message'])){
-      if($db->query("INSERT INTO users (username, password, email) VALUES ('$r_username', '$r_password', '$r_email')") === true){
+      $hashed_pass = password_hash($r_password, PASSWORD_DEFAULT);      
+      if($db->query("INSERT INTO users (username, password, email) VALUES ('$r_username', '$hashed_pass', '$r_email')") === true){
           $r_response['status'] = 1;
           $r_response['message'] = "Successful Sign Up!";
       }else{
@@ -71,34 +72,39 @@ if(isset($_POST['btn_login'])){
     
     if(empty($l_username)){
         $l_response['message'] .= "Username is missing. ";
-    }else{
-        $select_user = $db->query("SELECT id FROM users WHERE username = '$l_username'");
-        if($select_user->num_rows == 0){
-            $l_response['message'] .= "Username doesn't exists. ";
-        }
     }
 
     if(empty($l_password)){
         $l_response['message'] .= "Password is missing. ";
     }
 
-    if(empty($l_response['message'])){
-        $select_user = $db->query("SELECT * FROM users WHERE username = '$l_username' AND password = '$l_password'");
-        if($select_user->num_rows > 0){
-            $user = $select_user->fetch_assoc();
-            if($user['is_admin'] == false){
-                $l_response['status'] = 1;
-                $_SESSION['loggedin'] = true;
-                $_SESSION['role'] = 'user';
-                $_SESSION['username'] = $user['username'];
-            }
-            else{
-                $l_response['status'] = 1;
-                $_SESSION['loggedin'] = true;
-                $_SESSION['role'] = 'admin';
-                $_SESSION['username'] = $user['username'];
-            }
+    $lquery = $db->query("SELECT * FROM users WHERE username = '$l_username'");
+    $lquery_ret = $lquery->fetch_assoc();
+
+    if($lquery->num_rows == 0){
+        $l_response['message'] .= "User doesn't exists. ";
+    }
+    else{
+        $verify = password_verify($l_password, $lquery_ret['password']);
+        if(!$verify){
+            $l_response['message'] .= "Wrong Credentials. ";
         }
+        else{
+            if(empty($l_response['message'])){
+                if($lquery_ret['is_admin'] == false){
+                    $l_response['status'] = 1;
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['role'] = 'user';
+                    $_SESSION['username'] = $lquery_ret['username'];
+                }
+                else{
+                    $l_response['status'] = 1;
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['role'] = 'admin';
+                    $_SESSION['username'] = $lquery_ret['username'];
+                }
+            }
+        }   
     }
     echo json_encode($l_response);
     $db->close();
