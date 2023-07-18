@@ -1,10 +1,28 @@
-var map = L.map('map').setView([38.2466, 21.7346], 13);
+var map = L.map('map').setView([0, 0], 13);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+map.locate({ setView: true, watch: true, maxZoom: 16 });
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+  
+    L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+    L.circle(e.latlng, radius).addTo(map);
+  }
+  
+  // Handle location error event
+  function onLocationError(e) {
+    alert(e.message);
+  }
+  
+  // Listen for location found and error events
+  map.on('locationfound', onLocationFound);
+  map.on('locationerror', onLocationError);
+
 L.control.locate().addTo(map);
+
 
 $.ajax({
     url: 'fetch_markers.php',
