@@ -8,7 +8,7 @@ $(document).ready(function(){
 
       $.ajax(
         {
-          url: 'connect.php',
+          url: 'fetch_credentials.php',
           method: 'POST',
           data: {
                   btn_signup: 1,
