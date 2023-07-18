@@ -1,7 +1,13 @@
-<?php 
+<?php
 session_start();
 
-if(!isset($_SESSION['loggedin'])){
+$is_admin = false;
+
+if (isset($_SESSION['loggedin'])) {
+    if ($_SESSION['role'] == 'admin') {
+        $is_admin = true;
+    }
+} else {
     header('Location: ../index');
     exit();
 }
@@ -27,6 +33,7 @@ if(!isset($_SESSION['loggedin'])){
             <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
             <button type="button" id="btn_search">Search</button>
             </form>
+        <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
         </li>
     </ul>
 
@@ -38,9 +45,3 @@ if(!isset($_SESSION['loggedin'])){
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
 <script src="leaflet/map-leaflet.js"></script>
-
-
-
-
-
-
