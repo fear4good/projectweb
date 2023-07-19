@@ -172,8 +172,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`) VALUES
-(1, 'test', 'Testing1!', 'test@gmail.com', 0),
-(2, 'admin1', 'admin1', '', 1);
+(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1),
+(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
