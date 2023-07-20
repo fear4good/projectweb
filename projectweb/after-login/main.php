@@ -20,6 +20,7 @@ if (isset($_SESSION['loggedin'])) {
     <link rel="stylesheet" href="website-style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="leaflet/dist/css/leaflet.extra-markers.min.css">
     
     
 </head>
@@ -45,3 +46,4 @@ if (isset($_SESSION['loggedin'])) {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
 <script src="leaflet/map-leaflet.js"></script>
+<script src="leaflet/dist/js/leaflet.extra-markers.min.js"></script>
