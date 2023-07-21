@@ -101,7 +101,7 @@ function filterMarkers(name, category) {
             markers.push(L.marker([marker.lat, marker.lng], {icon: markerIcon}).addTo(map));
         }
     }
-} */
+}
 
 
 
