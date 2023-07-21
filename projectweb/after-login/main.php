@@ -6,6 +6,8 @@ $is_admin = false;
 if (isset($_SESSION['loggedin'])) {
     if ($_SESSION['role'] == 'admin') {
         $is_admin = true;
+    }else{
+        header('Location: main.php');
     }
 } else {
     header('Location: ../index');
