@@ -48,18 +48,7 @@ $categories = $result->fetchAll(PDO::FETCH_ASSOC);
         <option value="Clothing">Clothing</option>
         <option value="Books">Books</option> -->
 
-        <!-- li>
-            <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
-            <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
-            Add the new dropdown select for the product categories here 
-            <select id="category_select">
-              <option value="">All Categories</option>
-              <?php foreach ($categories as $category): ?>
-                <option value="<?php echo htmlspecialchars($category['category_name']); ?>">
-                  <?php echo htmlspecialchars($category['category_name']); ?>
-                </option>
-              <?php endforeach; ?>
-            </select> -->
+      
 
     </select>
         <li>

@@ -66,6 +66,7 @@ $('#btn_search').on("click", function () {
 });
 
 //Na do gia na antikatastiso ta pano 
+/*
 $('#btn_search').on("click", function () {
     var searchName = $('#search').val();
     var selectedCategory = $('#category_select').val();
