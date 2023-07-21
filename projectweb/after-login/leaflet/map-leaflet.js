@@ -103,7 +103,7 @@ function filterMarkers(name, category) {
         }
     }
 }
-
+*/
 
 
 
