@@ -83,24 +83,6 @@ function fetchAllMarkers() {
 $(document).ready(function() {
   let data; // Declare the data variable in a higher scope to make it accessible to other functions
 
-  function populateSubcategories(selectedCategory) {
-    const subcategoryDropdown = $("#subcategory-dropdown");
-    subcategoryDropdown.empty().prop("disabled", true);
-
-    // Find the selected category and populate its subcategories
-    const selectedCategoryData = data.find(category => category.category_id === selectedCategory);
-    if (selectedCategoryData && selectedCategoryData.subcategories.length > 0) {
-      selectedCategoryData.subcategories.forEach(function(subcategory) {
-        const subOption = $("<option>").text(subcategory.subcategory_name).val(subcategory.subcategory_id);
-        subcategoryDropdown.append(subOption);
-      });
-      subcategoryDropdown.prop("disabled", false);
-    }
-
-    // Enable the submit button when both category and subcategory are selected
-    enableSubmitButton();
-  }
-  
   // Function to populate categories and subcategories
   $.ajax({
     url: "fetch_categories.php",
@@ -110,6 +92,9 @@ $(document).ready(function() {
       data = response; // Assign the retrieved data to the variable in the higher scope
       const categoryDropdown = $("#category-dropdown");
       const subcategoryDropdown = $("#subcategory-dropdown");
+
+      // Sort the data array alphabetically based on category_name
+      data.sort((a, b) => a.category_name.localeCompare(b.category_name));
 
       data.forEach(function(category) {
         const option = $("<option>").text(category.category_name).val(category.category_id);
@@ -125,7 +110,26 @@ $(document).ready(function() {
   });
 
   // Function to populate subcategories based on the selected category
+  function populateSubcategories(selectedCategory) {
+    const subcategoryDropdown = $("#subcategory-dropdown");
+    subcategoryDropdown.empty().prop("disabled", true);
 
+    // Find the selected category and populate its subcategories
+    const selectedCategoryData = data.find(category => category.category_id === selectedCategory);
+    if (selectedCategoryData && selectedCategoryData.subcategories.length > 0) {
+      // Sort the subcategories array alphabetically based on subcategory_name
+      selectedCategoryData.subcategories.sort((a, b) => a.subcategory_name.localeCompare(b.subcategory_name));
+
+      selectedCategoryData.subcategories.forEach(function(subcategory) {
+        const subOption = $("<option>").text(subcategory.subcategory_name).val(subcategory.subcategory_id);
+        subcategoryDropdown.append(subOption);
+      });
+      subcategoryDropdown.prop("disabled", false);
+    }
+
+    // Enable the submit button when both category and subcategory are selected
+    enableSubmitButton();
+  }
 
   function enableSubmitButton() {
     const selectedCategory = $("#category-dropdown").val();
@@ -194,4 +198,7 @@ $(document).ready(function() {
     // Fetch all markers again after clearing to display all supermarkets
     fetchAllMarkers();
   });
+
+  // Fetch all markers on initial page load
+  fetchAllMarkers();
 });
