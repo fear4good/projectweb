@@ -12,17 +12,6 @@ if (isset($_SESSION['loggedin'])) {
     exit();
 }
 
-/* Connect to your database
-$db = new PDO('mysql:host=localhost;dbname=projectweb;charset=utf8', 'root', ' ');
-
-// Query the database for the categories
-$result = $db->query('SELECT name FROM categories');
-
-// Fetch the categories as an associative array
-$categories = $result->fetchAll(PDO::FETCH_ASSOC);
-*/
-
-
 ?>
 
 <!DOCTYPE html>
@@ -41,22 +30,26 @@ $categories = $result->fetchAll(PDO::FETCH_ASSOC);
         <li><a href="logout.php">Logout</a></li>
         <li><a href="profile.html">Profile</a></li>
         <li class = "left"><a >Hi, <?php echo htmlspecialchars($_SESSION["username"]); ?></a></li>
-        <select id="category_select">
-        <option value="">All Categories</option>
-        <!--<option value="Groceries">Groceries</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Clothing">Clothing</option>
-        <option value="Books">Books</option> -->
-
-      
-
-    </select>
         <li>
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
-            <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
-            <button type="button" id="btn_search">Search</button>
+                <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
+                <button type="button" id="btn_search">Search</button>
             </form>
-            <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
+        </li>
+        <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
+        <li>
+            <div class="dropdown-container">
+                <select id="category-dropdown">
+                <option value="">Select Category</option>
+                </select>
+                
+                <select id="subcategory-dropdown" disabled>
+                    <option value="">Select Subcategory</option>
+                </select>
+
+                <button id="submit-button" disabled>Submit</button>
+                <button id="clear-button">Clear</button>
+            </div>
         </li>
     </ul>
 
