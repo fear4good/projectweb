@@ -18,12 +18,11 @@ if (isset($_SESSION['loggedin'])) {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>  
     <title>Welcome</title>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="website-style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="leaflet/dist/css/leaflet.extra-markers.min.css">
-    
-
 </head>
 <body>
     <ul>
