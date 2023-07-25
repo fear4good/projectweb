@@ -1,10 +1,10 @@
-var map = L.map('map').setView([38.2466, 21.7346], 13);
+var map = L.map('map');
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-map.locate({ setView: true,/* watch: true,*/ maxZoom: 16 });
+map.locate({ setView: true, maxZoom: 2 });
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
   
@@ -12,14 +12,14 @@ function onLocationFound(e) {
     L.circle(e.latlng, radius).addTo(map);
   }
   
-  // Handle location error event
-  function onLocationError(e) {
-    alert(e.message);
-  }
+// Handle location error event
+function onLocationError(e) {
+  alert(e.message);
+}
   
-  // Listen for location found and error events
-  map.on('locationfound', onLocationFound);
-  map.on('locationerror', onLocationError);
+// Listen for location found and error events
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError);
 
 L.control.locate().addTo(map);
 
@@ -27,9 +27,17 @@ var markerDataList = [];
 
 // Define the filterMarkers function outside the AJAX success function
 function filterMarkers(name) {
-  // Remove all markers from the map
+  // Get the user location marker if it exists
+  var userLocationMarker = null;
   map.eachLayer(function (layer) {
-    if (layer instanceof L.Marker) {
+    if (layer instanceof L.Marker && layer.getPopup() && layer.getPopup().getContent() === "You are here") {
+      userLocationMarker = layer;
+    }
+  });
+
+  // Remove only the supermarket markers from the map
+  map.eachLayer(function (layer) {
+    if (layer instanceof L.Marker && layer !== userLocationMarker) {
       map.removeLayer(layer);
     }
   });
@@ -44,17 +52,40 @@ function filterMarkers(name) {
     }
   });
 
+
+
   // Add the filtered markers to the map
   filteredMarkers.forEach(function (markerData) {
     var markerColor = markerData.discount ? 'green' : 'red';
     var markerIcon = L.ExtraMarkers.icon({
       markerColor: markerColor,
     });
+
+    var offerLatLng = L.latLng(markerData.lat, markerData.lng);
+    var distanceToOffer = userLocationMarker.getLatLng().distanceTo(offerLatLng);
+
+    var popupContent = markerData.poi_name;
+    if (markerData.discount) {
+      popupContent += '<br>Product: ' + markerData.prod_name;
+      popupContent += '<br>Discount: ' + markerData.discount;
+      var stockStatus = markerData.stock > 0 ? 'Yes' : 'No';
+      popupContent += '<br>Stock: ' + stockStatus;
+      // Use Font Awesome icons for likes and dislikes
+      popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
+      popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
+      if(distanceToOffer <= 50){
+        var externalSiteLink = '<a href="review.php" target="_blank">Αξιολόγηση</a>';
+        popupContent += '<br>' + externalSiteLink;
+      }
+      
+    }
+
     L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
-      .bindPopup(markerData.poi_name + '<br>' + markerData.name + (markerData.discount ? ('<br>Discount: ' + markerData.discount) : ''))
+      .bindPopup(popupContent)
       .addTo(map);
   });
 }
+
 
 // Define the click event handler for the #btn_search button outside the filterMarkers function
 $('#btn_search').on("click", function () {
@@ -201,4 +232,51 @@ $(document).ready(function() {
 
   // Fetch all markers on initial page load
   fetchAllMarkers();
+});
+
+// Add click event listeners to like and dislike icons
+$(document).on('click', '.fa-thumbs-up', function () {
+  var offerId = $(this).data('offer-id');
+  var likesCountElement = $(this).siblings('.likes');
+
+  // Send AJAX request to update the likes count on the server
+  $.ajax({
+    url: 'upd_likes.php', // Replace 'update_likes.php' with the actual server-side script that handles updating likes
+    method: 'POST', // You can use POST or GET depending on your server-side script requirements
+    data: {
+      offer_id: offerId,
+      action: 'like', // Indicate the action to perform (like or dislike)
+    },
+    dataType: 'json',
+    success: function (response) {
+      // Update the likes count on the frontend with the response from the server
+      likesCountElement.text(response.likes);
+    },
+    error: function (error) {
+      console.error('Error updating likes:', error);
+    }
+  });
+});
+
+$(document).on('click', '.fa-thumbs-down', function () {
+  var offerId = $(this).data('offer-id');
+  var dislikesCountElement = $(this).siblings('.dislikes');
+
+  // Send AJAX request to update the dislikes count on the server
+  $.ajax({
+    url: 'upd_likes.php', // Replace 'update_dislikes.php' with the actual server-side script that handles updating dislikes
+    method: 'POST', // You can use POST or GET depending on your server-side script requirements
+    data: {
+      offer_id: offerId,
+      action: 'dislike', // Indicate the action to perform (like or dislike)
+    },
+    dataType: 'json',
+    success: function (response) {
+      // Update the dislikes count on the frontend with the response from the server
+      dislikesCountElement.text(response.dislikes);
+    },
+    error: function (error) {
+      console.error('Error updating dislikes:', error);
+    }
+  });
 });
