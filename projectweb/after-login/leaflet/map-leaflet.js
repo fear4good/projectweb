@@ -52,8 +52,6 @@ function filterMarkers(name) {
     }
   });
 
-
-
   // Add the filtered markers to the map
   filteredMarkers.forEach(function (markerData) {
     var markerColor = markerData.discount ? 'green' : 'red';
@@ -73,11 +71,10 @@ function filterMarkers(name) {
       // Use Font Awesome icons for likes and dislikes
       popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
       popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
-      if(distanceToOffer <= 50){
-        var externalSiteLink = '<a href="review.php" target="_blank">Αξιολόγηση</a>';
+      if(distanceToOffer <= 1000){
+        var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
         popupContent += '<br>' + externalSiteLink;
       }
-      
     }
 
     L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
@@ -85,6 +82,22 @@ function filterMarkers(name) {
       .addTo(map);
   });
 }
+
+
+
+
+// Event listener for the "Αξιολόγηση" link
+$(document).on('click', '.review-link', function (e) {
+  e.preventDefault();
+  var markerData = JSON.parse(decodeURIComponent($(this).data('marker-data')));
+
+  // Open a new window (or tab) with the review.html page and pass the markerData as a custom object
+  var reviewUrl = 'review.html';
+  var newWindow = window.open(reviewUrl, '_blank');
+  // Pass the markerData to the review.html page through the newly opened window
+  newWindow.markerData = markerData;
+});
+
 
 
 // Define the click event handler for the #btn_search button outside the filterMarkers function
@@ -280,3 +293,4 @@ $(document).on('click', '.fa-thumbs-down', function () {
     }
   });
 });
+

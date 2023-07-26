@@ -1,0 +1,11 @@
+.offer-entry {
+    overflow: hidden; /* Clear floats */
+  }
+  
+  .offer-id {
+    float: left; /* Float the offer_id to the left */
+  }
+  
+  .offer-details {
+    display: none; /* Hide offer details by default */
+  }
