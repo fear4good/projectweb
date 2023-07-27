@@ -96,12 +96,14 @@ if(isset($_POST['btn_login'])){
                     $_SESSION['loggedin'] = true;
                     $_SESSION['role'] = 'user';
                     $_SESSION['username'] = $lquery_ret['username'];
+                    $_SESSION['id'] = $lquery_ret['id'];
                 }
                 else{
                     $l_response['status'] = 1;
                     $_SESSION['loggedin'] = true;
                     $_SESSION['role'] = 'admin';
                     $_SESSION['username'] = $lquery_ret['username'];
+                    $_SESSION['id'] = $lquery_ret['id'];
                 }
             }
         }   

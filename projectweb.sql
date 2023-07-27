@@ -77,6 +77,23 @@ INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, 
 
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `tokens`;
+CREATE TABLE `tokens` (
+    `id` INT NOT NULL ,
+    `date_` DATE COLLATE utf8mb4_general_ci NOT NULL,
+    `tokens` INT DEFAULT 0 COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (`id`)
+  
+)ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `tokens`
+--
+INSERT INTO `tokens` (`id`, `date_`, `tokens`) VALUES
+(4, '2023-07-24', '10');
+
+
+-- --------------------------------------------------------
 --
 -- Table structure for table `pois`
 --

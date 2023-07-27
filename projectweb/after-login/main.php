@@ -12,7 +12,9 @@ if (isset($_SESSION['loggedin'])) {
     exit();
 }
 
+
 ?>
+
 
 <!DOCTYPE html>
 <head>
@@ -28,7 +30,7 @@ if (isset($_SESSION['loggedin'])) {
     <ul>
         <li><a href="logout.php">Logout</a></li>
         <li><a href="profile.html">Profile</a></li>
-        <li class = "left"><a >Hi, <?php echo htmlspecialchars($_SESSION["username"]); ?></a></li>
+        <li class = "left"><a >Hi, <?php echo htmlspecialchars($_SESSION["username"]);?>, Tokens: <span class="tokens"></span></a></li>
         <li>
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
                 <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>

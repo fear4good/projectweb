@@ -71,7 +71,7 @@ function filterMarkers(name) {
       // Use Font Awesome icons for likes and dislikes
       popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
       popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
-      if(distanceToOffer <= 1000){
+      if(distanceToOffer <= 10000000){
         var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
         popupContent += '<br>' + externalSiteLink;
       }
@@ -125,6 +125,16 @@ function fetchAllMarkers() {
 }
 
 $(document).ready(function() {
+  //gia ta tokens
+  $.ajax({
+    url: 'fetch_tokens.php',
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+        $('.tokens').text(data.tokens);
+    }
+});
+
   let data; // Declare the data variable in a higher scope to make it accessible to other functions
 
   // Function to populate categories and subcategories
