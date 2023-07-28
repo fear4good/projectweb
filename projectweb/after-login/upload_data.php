@@ -124,6 +124,10 @@ if (isset($_POST['buttonImportProd'])) {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Import JSON File</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
 </head>
 <body>
     <form method="POST" enctype="multipart/form-data">
@@ -136,8 +140,28 @@ if (isset($_POST['buttonImportProd'])) {
         <br>
         <input type="submit" value="Import" name="buttonImportProd">
     </form>
+    <!-- Dropdown for selecting the chart -->
+    <select id="chart-select">
+        <option value="">Select chart</option>
+        <option value="3a">Chart 3a</option>
+        <option value="3b">Chart 3b</option>
+    </select>
+
+    <!-- Inputs for selecting the year and the month -->
+    <div id="date-inputs" style="display: none;">
+        <label for="year">Year:</label>
+        <input type="number" id="year" min="2000" max="2099" step="1" value="2023" />
+        <label for="month">Month:</label>
+        <input type="number" id="month" min="1" max="12" step="1" value="1" />
+        <button id="show-button">Show</button>
+    </div>
+
+    <!-- Placeholder for the chart -->
+   
+    <canvas id="chart"></canvas>
     <li><a href="main.php">Main</a></li>
     <?php echo $errorMsg1, $errorMsg2 ; ?>
+    <script src="graphs.js"></script>
 </body>
 
 </html>
