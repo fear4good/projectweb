@@ -72,13 +72,6 @@ CREATE TABLE IF NOT EXISTS `offers` (
 -- Dumping data for table `offers`
 --
 
-INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, `likes`, `dislikes`, `stock`) VALUES
-(1, 'node/354449389', '0', '5', '2023-07-24', 6, 2, 10),
-(2, 'node/237917140', '0', '5', '2023-07-24', 6, 2, 10),
-(3, 'node/354449389', '0', '5', '2023-07-05', 6, 2, 10),
-(4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10),
-(5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10),
-(6, 'node/354449389', '0', '5', '2024-02-24', 6, 2, 10);
 INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, `likes`, `dislikes`, `stock`, `user_id`) VALUES
 (1, 'node/354449389', '0', '5', '2023-07-24', 6, 2, 10, 4),
 (2, 'node/237917140', '0', '5', '2023-07-24', 13, 2, 10, 4),
