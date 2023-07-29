@@ -1,11 +1,25 @@
 .offer-entry {
-    overflow: hidden; /* Clear floats */
-  }
+  overflow: hidden; /* Clear floats */
+}
   
-  .offer-id {
-    float: left; /* Float the offer_id to the left */
-  }
-  
-  .offer-details {
-    display: none; /* Hide offer details by default */
-  }
+.offer-id {
+  float: left; /* Float the offer_id to the left */
+}
+
+
+.offer-details {
+  display: none; /* Hide offer details by default */
+}
+
+/* Styles for disabled likes and dislikes icons */
+.likes-dislikes i.fa.fa-thumbs-up,
+.likes-dislikes i.fa.fa-thumbs-down {
+  cursor: pointer; /* Change the cursor to indicate the icons are not clickable */
+}
+
+/* Styles for disabled likes and dislikes icons */
+.likes-dislikes.disabled i.fa.fa-thumbs-up,
+.likes-dislikes.disabled i.fa.fa-thumbs-down {
+  opacity: 0.5; /* Use your desired gray color here */
+  cursor: not-allowed; /* Change the cursor to indicate the icons are not clickable */
+}

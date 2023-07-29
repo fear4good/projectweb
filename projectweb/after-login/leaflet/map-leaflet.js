@@ -54,6 +54,7 @@ function filterMarkers(name) {
 
   // Add the filtered markers to the map
   filteredMarkers.forEach(function (markerData) {
+    $('.tokens').text(markerData.tokens);
     var markerColor = markerData.discount ? 'green' : 'red';
     var markerIcon = L.ExtraMarkers.icon({
       markerColor: markerColor,
@@ -75,6 +76,7 @@ function filterMarkers(name) {
         var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
         popupContent += '<br>' + externalSiteLink;
       }
+      popupContent += '<br>Provided by: ' + markerData.user_prov;
     }
 
     L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
@@ -82,9 +84,6 @@ function filterMarkers(name) {
       .addTo(map);
   });
 }
-
-
-
 
 // Event listener for the "Αξιολόγηση" link
 $(document).on('click', '.review-link', function (e) {
@@ -125,15 +124,6 @@ function fetchAllMarkers() {
 }
 
 $(document).ready(function() {
-  //gia ta tokens
-  $.ajax({
-    url: 'fetch_tokens.php',
-    type: 'GET',
-    dataType: 'json',
-    success: function(data) {
-        $('.tokens').text(data.tokens);
-    }
-});
 
   let data; // Declare the data variable in a higher scope to make it accessible to other functions
 
