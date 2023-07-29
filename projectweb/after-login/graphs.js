@@ -1,3 +1,4 @@
+
 $(document).ready(function() 
 {
     // Handle the change event of the chart select dropdown
@@ -45,22 +46,59 @@ $(document).ready(function()
                 });
         
                 // Create the chart
-                new Chart(document.getElementById('chart'), {
+                const ctx = document.getElementById('chart');
+
+                new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
                         datasets: [{
                             label: 'Offers',
                             data: dataset,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: '#3CC5F8',
+                            borderColor: '4668F0',
                             borderWidth: 1
                         }]
                     },
                     options: {
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            title: {
+                                display: true,
+                                text: 'Offers'
+                                
+                            }
+                        },
                         scales: {
+                            x: {
+                                border:{
+                                    color:'black'
+                                },
+                                title: {
+                                    color:'black',
+                                    display: true,
+                                    text: 'Days'   
+                                },
+                                ticks: {
+                                    color:'black',
+                                },
+                            },
                             y: {
-                                beginAtZero: true
+                                border:{
+                                    color:'black'
+                                },
+                                title: {
+                                    color:'black',
+                                    display: true,
+                                    text: 'Quantity'
+                                },
+                                ticks: {
+                                    color:'black',
+                                    stepSize: 1,
+                                    beginAtZero: true
+                                }
                             }
                         }
                     }

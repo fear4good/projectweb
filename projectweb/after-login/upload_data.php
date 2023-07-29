@@ -120,7 +120,7 @@ if (isset($_POST['buttonImportProd'])) {
 }
 ?>
 
-<html>
+<html>    
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Import JSON File</title>
@@ -143,8 +143,8 @@ if (isset($_POST['buttonImportProd'])) {
     <!-- Dropdown for selecting the chart -->
     <select id="chart-select">
         <option value="">Select chart</option>
-        <option value="3a">Chart 3a</option>
-        <option value="3b">Chart 3b</option>
+        <option value="3a">Offers</option>
+        <option value="3b">Discound</option>
     </select>
 
     <!-- Inputs for selecting the year and the month -->
@@ -157,8 +157,9 @@ if (isset($_POST['buttonImportProd'])) {
     </div>
 
     <!-- Placeholder for the chart -->
-   
-    <canvas id="chart"></canvas>
+   <div class="chart-container" style="position: relative; height:40vh; width:100vw">
+        <canvas id="chart"></canvas>
+    </div>
     <li><a href="main.php">Main</a></li>
     <?php echo $errorMsg1, $errorMsg2 ; ?>
     <script src="graphs.js"></script>
