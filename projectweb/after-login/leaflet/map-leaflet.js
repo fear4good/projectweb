@@ -79,6 +79,12 @@ function filterMarkers(name) {
       popupContent += '<br>Provided by: ' + markerData.user_prov;
     }
 
+    if (distanceToOffer <= 10000000){
+        var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
+        popupContent += '<br>' + externalSiteLink2;
+    }
+
+
     L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
       .bindPopup(popupContent)
       .addTo(map);
@@ -97,6 +103,18 @@ $(document).on('click', '.review-link', function (e) {
   newWindow.markerData = markerData;
 });
 
+
+//event listener for the «Προσθήκη Προσφοράς» link
+$(document).on('click', '.add-offer-link', function (e) {
+  e.preventDefault();
+  var markerData = JSON.parse(decodeURIComponent($(this).data('marker-data')));
+
+  // Open a new window (or tab) with the review.html page and pass the markerData as a custom object
+  var addOfferUrl = 'add_offer.html';
+  var newWindow1 = window.open(addOfferUrl, '_blank');
+  // Pass the markerData to the review.html page through the newly opened window
+  newWindow1.markerData = markerData;
+});
 
 
 // Define the click event handler for the #btn_search button outside the filterMarkers function
