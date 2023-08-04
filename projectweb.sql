@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 29, 2023 at 01:31 AM
+-- Generation Time: Aug 04, 2023 at 11:29 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.2.0
 
@@ -61,12 +61,12 @@ CREATE TABLE IF NOT EXISTS `offers` (
   `product_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
   `discount` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
   `date` date NOT NULL,
-  `likes` int NOT NULL,
-  `dislikes` int NOT NULL,
-  `stock` int NOT NULL,
+  `likes` int NOT NULL DEFAULT '0',
+  `dislikes` int NOT NULL DEFAULT '0',
+  `stock` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `offers`
@@ -209,8 +209,31 @@ INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`,
 ('node/9785182275', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6232207', '38.1494223'),
 ('node/9785182280', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6206284', '38.1477412'),
 ('node/9785335420', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6454791', '38.1563067'),
-('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566'),
 ('node/4318329390', 'Λευκωσία', NULL, NULL, NULL, NULL, NULL, NULL, 'Σάββας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '33.4215786', '35.0273087');
+('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `price_history`
+--
+
+DROP TABLE IF EXISTS `price_history`;
+CREATE TABLE IF NOT EXISTS `price_history` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` int DEFAULT NULL,
+  `date` date NOT NULL,
+  `price` float NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `price_history`
+--
+
+INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
+(1, 0, '2023-08-05', 2);
 
 -- --------------------------------------------------------
 
