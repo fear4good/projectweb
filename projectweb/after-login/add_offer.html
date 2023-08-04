@@ -3,34 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="add_offer.css">
   <title>Add Offer</title>
 </head>
 <body>
-  <li>
-    <div class="dropdown-container">
-      <select id="category-dropdown">
-        <option value="">Select Category</option>
-      </select>
-      
-      <select id="subcategory-dropdown" disabled>
-        <option value="">Select Subcategory</option>
-      </select>
-      <select id="product-dropdown" disabled>
-        <option value="">Select Product</option>
-      </select>
+  <div class="dropdown-container">
+    <select id="category-dropdown">
+      <option value="">Select Category</option>
+    </select>
+    
+    <select id="subcategory-dropdown" disabled>
+      <option value="">Select Subcategory</option>
+    </select>
+    <select id="product-dropdown" disabled>
+      <option value="">Select Product</option>
+    </select>
 
-
-      <button id="clear-button">Clear</button>
-    </div>
-  </li>
+    <button id="clear-button">Clear</button>
+  </div>
   <p>Αρχική Τιμή</p>
-  <input type="text" class="initial-price" placeholder="Αρχική Τιμή">
+  <input type="number" class="initial-price" placeholder="Αρχική Τιμή" readonly>
   <p>Τιμή Προσφοράς</p>
   <input type="text" class="offer-price" placeholder="Τιμή Προσφοράς">
-  <p>Ημερομινία Προσφοράς</p>
-  <input type="date">
   <p></p>
   <button id="submit-button" disabled>Submit</button>
+  <div id="response-container"></div>
+
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="add_offer.js"></script>
 </body>

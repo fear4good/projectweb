@@ -6,7 +6,7 @@
     $subcategory = $_GET['subcategory'] ?? null;
 
     // Build the SQL query based on whether category and subcategory are provided
-    $sql = "SELECT p.id, p.name AS poi_name, p.latitude AS lat, p.longitude AS lng, 
+    $sql = "SELECT p.id AS poi_id, p.name AS poi_name, p.latitude AS lat, p.longitude AS lng, 
                 o.id AS offer_id, o.discount, o.date, o.likes, o.dislikes, o.stock,
                 pr.name AS prod_name, pr.image_path AS image_path, 
                 c.name AS category, 
@@ -38,6 +38,7 @@
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $marker = array(
+                'poi_id' => $row['poi_id'],
                 'poi_name' => $row['poi_name'],
                 'prod_name' => $row['prod_name'],
                 'user_prov' => $row['username'],
