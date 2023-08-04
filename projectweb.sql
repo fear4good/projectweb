@@ -78,7 +78,8 @@ INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, 
 (3, 'node/354449389', '0', '5', '2023-07-05', 6, 2, 10, 4),
 (4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10, 4),
 (5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10, 4),
-(6, 'node/354449389', '0', '5', '2024-02-24', 6, 2, 10, 4);
+(6, 'node/354449389', '0', '5', '2024-02-24', 6, 2, 10, 4),
+(6, 'node/4318329390', '0', '5', '2023-07-24', 6, 2, 10, 4);
 
 -- --------------------------------------------------------
 
@@ -208,7 +209,8 @@ INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`,
 ('node/9785182275', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6232207', '38.1494223'),
 ('node/9785182280', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6206284', '38.1477412'),
 ('node/9785335420', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6454791', '38.1563067'),
-('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566');
+('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566'),
+('node/4318329390', 'Λευκωσία', NULL, NULL, NULL, NULL, NULL, NULL, 'Σάββας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '33.4215786', '35.0273087');
 
 -- --------------------------------------------------------
 
