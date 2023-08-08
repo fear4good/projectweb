@@ -27,10 +27,13 @@ if (isset($_SESSION['loggedin'])) {
     <link rel="stylesheet" href="leaflet/dist/css/leaflet.extra-markers.min.css">
 </head>
 <body>
+    <div id="usertype" style="display:none;" data-usertype="<?php echo (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') ? 'admin' : 'user'; ?>"></div>
     <ul>
         <li><a href="logout.php">Logout</a></li>
         <li><a href="profile.html">Profile</a></li>
-        <li class = "left"><a >Hi, <?php echo htmlspecialchars($_SESSION["username"]);?>, Tokens: <span class="tokens"></span></a></li>
+        <li class="left"><a>Hi, <?php echo htmlspecialchars($_SESSION["username"]);?>, Tokens: <span class="tokens"></span>
+        <span class="user-score"></span></a></li>
+
         <li>
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
                 <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
@@ -59,7 +62,10 @@ if (isset($_SESSION['loggedin'])) {
 </html>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
 <script src="leaflet/map-leaflet.js"></script>
 <script src="leaflet/dist/js/leaflet.extra-markers.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="fetch_score.js"></script>

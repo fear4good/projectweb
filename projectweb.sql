@@ -209,7 +209,7 @@ INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`,
 ('node/9785182275', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6232207', '38.1494223'),
 ('node/9785182280', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6206284', '38.1477412'),
 ('node/9785335420', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6454791', '38.1563067'),
-('node/4318329390', 'Λευκωσία', NULL, NULL, NULL, NULL, NULL, NULL, 'Σάββας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '33.4215786', '35.0273087');
+('node/4318329390', 'Λευκωσία', NULL, NULL, NULL, NULL, NULL, NULL, 'Σάββας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '33.4215786', '35.0273087'),
 ('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566');
 
 -- --------------------------------------------------------
@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `price_history` (
 --
 
 INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
-(1, 0, '2023-08-05', 2);
+(1, 0, '2023-08-07', 2);
 
 -- --------------------------------------------------------
 
@@ -1692,6 +1692,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `email` varchar(40) NOT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `score` INT DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
@@ -1700,9 +1701,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`) VALUES
-(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1),
-(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com', 0);
+INSERT INTO `users` (`id`, `username`, `password`, `email`,`score`,  `is_admin`) VALUES
+(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', NULL, 1),
+(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com',  '100', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
