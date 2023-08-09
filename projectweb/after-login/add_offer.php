@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Check if the user has already submitted an offer for the same product
     $previousOffer = null;
-    $sql = "SELECT discount FROM offers WHERE supermarket_id = '$supermarketId' AND product_id = '$productId' AND user_id = '$userId' ORDER BY date DESC LIMIT 1";
+    $sql = "SELECT discount FROM offers WHERE supermarket_id = '$supermarketId' AND product_id = '$productId' AND user_id = '$userId' ORDER BY date ASC LIMIT 1";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -24,25 +24,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Check if the new offer is smaller by at least 20% compared to the previous offer
     if ($previousOffer === null || $discount <= ($previousOffer * 0.8)) {
 
-        $product_id = $_POST['product_id'];  // Get this from your form input
-        $provided_price = $_POST['discount'];   // Get the price provided by the user
-
         // 1. Fetch the average price from the day before
-        $avg_price_sql = "SELECT AVG(price) as avgPrice FROM price_history WHERE product_id = ? AND date = CURDATE() - INTERVAL 1 DAY";
-        $avg_price_stmt = $db->prepare($avg_price_sql);
-        $avg_price_stmt->bind_param("i", $product_id);
-        $avg_price_stmt->execute();
-        $avg_price_result = $avg_price_stmt->get_result();
-        $avg_price_row = $avg_price_result->fetch_assoc();
-        if ($avg_price_row) {
-                $previous_day_avg = $avg_price_row['avgPrice'];
+        $avg_price_sql = "SELECT AVG(price) AS avgprice FROM price_history WHERE product_id = $productId AND date = CURDATE() - INTERVAL 1 DAY";
+        $avg_price_result = $db->query($avg_price_sql);
+
+        if ($avg_price_result->num_rows > 0) {
+
+            $avg_price_row = $avg_price_result->fetch_assoc();
+                $previous_day_avg = $avg_price_row['avgprice'];
                 // Check if the offer price is 20% or more lower than the average
-                if ($discount <= 0.8 * $previous_day_avg) {
+                if ($previous_day_avg === null || $discount <= ( 0.8 * $previous_day_avg)) {
                     // The offer price is 20% or more lower than the average
-                    $user_id = $_SESSION['id'];  // Example: fetching user id from session
-                    $stmt = $db->prepare("UPDATE users SET score = score + 50 WHERE id = ?");
-                    $stmt->bind_param("i", $user_id);
-                    $stmt->execute();
+                    $stmt = $db->query("UPDATE users SET score = score + 50 WHERE id = $userId");
                 }
             }
         
