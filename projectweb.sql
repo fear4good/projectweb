@@ -1733,15 +1733,10 @@ DELIMITER $$
 --
 -- Events
 --
-DROP EVENT IF EXISTS `reset_monthly_scores`$$
-CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly_scores` ON SCHEDULE EVERY 1 MONTH STARTS '2023-07-31 23:59:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
-    -- Add monthly score to total score
-    UPDATE your_schema.users
-    SET score = score + monthly_score;
-    
-    -- Reset monthly score to 0
-    UPDATE your_schema.users
-    SET monthly_score = 0;
+DROP EVENT IF EXISTS `reset_monthly`$$
+CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly` ON SCHEDULE EVERY 1 MONTH STARTS '2023-08-11 21:27:18' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+ UPDATE `users` SET `score` = `score` + `monthly_score`;
+ UPDATE `users` SET `monthly_score` = 0;
 END$$
 
 DELIMITER ;
