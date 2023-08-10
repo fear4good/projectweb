@@ -2,7 +2,6 @@ $(document).ready(function() {
 
     let data; // Declare the data variable in a higher scope to make it accessible to other functions
     let selectedProductId;
-    let previousOfferDiscount = null;
     var supermarketId = window.markerid;
     // Function to populate categories and subcategories
     $.ajax({
