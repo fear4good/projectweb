@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Update user's score based on the action
                 if ($user_id !== null) {
                     $score_change = ($action === 'like') ? 5 : -1;
-                    $update_score_sql = "UPDATE users SET score = score + $score_change WHERE id = '$user_id'";
+                    $update_score_sql = "UPDATE users SET monthly_score = monthly_score + $score_change WHERE id = '$user_id'";
                     $db->query($update_score_sql);
                 }
             }

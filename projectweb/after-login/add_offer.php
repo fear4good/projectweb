@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if ($discount <= 0.8 * $previous_day_avg) {
                     // The offer price is 20% or more lower than the average
                     $user_id = $_SESSION['id'];  // Example: fetching user id from session
-                    $stmt = $db->prepare("UPDATE users SET score = score + 50 WHERE id = ?");
+                    $stmt = $db->prepare("UPDATE users SET monthly_score = monthly_score + 50 WHERE id = ?");
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
                 }
@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($discount <= 0.8 * $avg_price_last_week) {
             // Reward user with 20 points
             $user_id = $_SESSION['id'];  // fetching user id from session
-            $stmt = $db->prepare("UPDATE users SET score = score + 20 WHERE id = ?");
+            $stmt = $db->prepare("UPDATE users SET monthly_score = monthly_score + 20 WHERE id = ?");
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             }

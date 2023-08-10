@@ -226,14 +226,15 @@ CREATE TABLE IF NOT EXISTS `price_history` (
   `price` float NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `price_history`
 --
 
 INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
-(1, 0, '2023-08-07', 2);
+(1, 0, '2023-08-09', 2),
+(2, 0, '2023-08-07', 3);
 
 -- --------------------------------------------------------
 
@@ -1692,7 +1693,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `email` varchar(40) NOT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `score` INT DEFAULT 0,
+  `score` int NOT NULL DEFAULT '0',
+  `monthly_score` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
@@ -1701,9 +1703,48 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`,`score`,  `is_admin`) VALUES
-(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', NULL, 1),
-(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com',  '100', 0);
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`, `score`, `monthly_score`) VALUES
+(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1, 0, 0),
+(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com', 0, 454, 20);
+
+--
+-- Triggers `users`
+--
+DROP TRIGGER IF EXISTS `prevent_negative_monthly_score`;
+DELIMITER $$
+CREATE TRIGGER `prevent_negative_monthly_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+    IF NEW.monthly_score < 0 THEN
+        SET NEW.monthly_score = 0;
+    END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `prevent_negative_score`;
+DELIMITER $$
+CREATE TRIGGER `prevent_negative_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+    IF NEW.score < 0 THEN
+        SET NEW.score = 0;
+    END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+--
+-- Events
+--
+DROP EVENT IF EXISTS `reset_monthly_scores`$$
+CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly_scores` ON SCHEDULE EVERY 1 MONTH STARTS '2023-07-31 23:59:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    -- Add monthly score to total score
+    UPDATE your_schema.users
+    SET score = score + monthly_score;
+    
+    -- Reset monthly score to 0
+    UPDATE your_schema.users
+    SET monthly_score = 0;
+END$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
