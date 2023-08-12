@@ -23,28 +23,26 @@ $(document).ready(function() {
       }
     });
   });
-  // Change Password Form Submission
-  $("#change-password-form").submit(function(event) {
-    event.preventDefault();
-    const currentPassword = $("#current-password").val();
-    const newPassword = $("#new-password").val();
+ // Change Password Form Submission
+$("#change-password-form").submit(function(event) {
+  event.preventDefault();
+  const currentPassword = $("#current-password").val();
+  const newPassword = $("#new-password").val();
 
-    // Send AJAX request to update the password using update_password.php
-    $.ajax({
-      url: "update_password.php",
-      method: "POST",
-      data: { current_password: currentPassword, new_password: newPassword },
-      dataType: "json",
-      success: function(response) {
-        // Handle the response (show a success message, update UI, etc.)
-        console.log(response.message);
-      },
-      error: function(error) {
-        console.error("Error updating password:", error);
-      }
-    });
+  // Send AJAX request to update the password using update_password.php
+  $.ajax({
+    url: "update_password.php",
+    method: "POST",
+    data: { "current_password": currentPassword, "new_password": newPassword },
+    success: function(response) {
+      // Handle the response (show a success message, update UI, etc.)
+      console.log(response); // Response is a plain text message
+    },
+    error: function(xhr, textStatus, errorThrown) {
+      console.error("Error updating password:", textStatus, errorThrown);
+    }
   });
-
+});
   // Change Email Form Submission
   $("#change-email-form").submit(function(event) {
     event.preventDefault();
