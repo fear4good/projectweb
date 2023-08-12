@@ -144,7 +144,7 @@ if (isset($_POST['buttonImportProd'])) {
     <select id="chart-select">
         <option value="">Select chart</option>
         <option value="3a">Offers</option>
-        <option value="3b">Discound</option>
+        <option value="3b">Discount</option>
     </select>
 
     <!-- Inputs for selecting the year and the month -->
@@ -154,7 +154,22 @@ if (isset($_POST['buttonImportProd'])) {
         <label for="month">Month:</label>
         <input type="number" id="month" min="1" max="12" step="1" value="1" />
         <button id="show-button">Show</button>
+        <button id="clear-button">Clear</button>
     </div>
+
+    <!-- Inputs for selecting the category and subcategory -->
+    <div id="discount-inputs" style="display: none;">
+        <select id="category-dropdown">
+            <option value="">Select Category</option>
+        </select>
+                
+        <select id="subcategory-dropdown" disabled>
+            <option value="">Select Subcategory</option>
+        </select>
+        <button id="show-button2">Show</button>
+        <button id="clear-button2">Clear</button>
+    </div>
+
 
     <!-- Placeholder for the chart -->
    <div class="chart-container" style="position: relative; height:40vh; width:100vw">
