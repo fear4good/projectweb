@@ -84,6 +84,7 @@ $.ajax({
           offersHtml += "<li>";
           offersHtml += "<img src='prod_images/" + productResponse.image_path + "' alt='Product Image'>";
           offersHtml += "Product: " + productResponse.name + " - Discount: " + offer.discount;
+          offersHtml += " Date: " + offer.date + " Likes: " + offer.likes + " Dislikes: " + offer.dislikes ;
           offersHtml += "</li>";
           userOffersDiv.html(offersHtml); // Set the HTML content
         },
@@ -97,7 +98,6 @@ $.ajax({
     console.error("Error retrieving user offers:", textStatus, errorThrown);
   }
 });
-
   // Retrieve and display user's likes and dislikes
   $.ajax({
     url: "get_user_likes_dislikes.php",
