@@ -178,6 +178,28 @@ if (isset($_POST['buttonImportProd'])) {
     <li><a href="main.php">Main</a></li>
     <?php echo $errorMsg1, $errorMsg2 ; ?>
     <script src="graphs.js"></script>
+
+    <!-- Container for Leaderboard -->
+    <div id="leaderboardContainer">
+        <h2>Leaderboard</h2>
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+            </tbody>
+        </table>
+        <div id="pagination"></div>
+
+        <script src="get_leaderboard.js"></script>
+    </div>
+
+
+
 </body>
 
 </html>
