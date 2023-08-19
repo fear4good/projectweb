@@ -3,6 +3,8 @@
 include "../connect.php";
 
 if(isset($_SESSION['role'])){
+    $role = $_SESSION['role'];
+    echo json_encode(['role' => $role]);
     header("../after-login/main.php");
 }
 

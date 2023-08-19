@@ -25,6 +25,18 @@ L.control.locate().addTo(map);
 
 var markerDataList = [];
 
+var isAdmin = false;
+fetch('../pre-login/fetch_credentials.php')
+  .then(response => response.json())
+  .then(data => {
+    isAdmin = data.role === 'admin';
+  })
+  .catch(error => {
+      console.error('Error fetching role', error);
+  });
+
+
+
 // Define the filterMarkers function outside the AJAX success function
 function filterMarkers(name) {
   // Get the user location marker if it exists
@@ -83,11 +95,13 @@ function filterMarkers(name) {
         var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
         popupContent += '<br>' + externalSiteLink2;
     }
-
+    if (isAdmin) {
+      popupContent += '<br><button class="delete-offer-button" data-offer-id="' + markerData.offer_id + '">Delete offer</button>';
+    }
 
     L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
-      .bindPopup(popupContent)
-      .addTo(map);
+        .bindPopup(popupContent)
+        .addTo(map);     
   });
 }
 
@@ -115,6 +129,40 @@ $(document).on('click', '.add-offer-link', function (e) {
   // Pass the markerData to the review.html page through the newly opened window
   newWindow1.markerid = markerid;
 });
+
+$(document).on('click', '.delete-offer-button', function () {
+  var deleteofferId = $(this).attr('data-offer-id');
+  var confirmation = confirm("Are you sure you want to delete this offer?");
+  if (confirmation) {
+      // Perform the jQuery POST request to delete the offer
+      $.ajax({
+          type: 'POST',
+          url: 'delete_offer.php',
+          data: { offer_id: deleteofferId },
+          dataType: 'json',
+          success: function (response) {
+              // Handle the response here
+              if (response.success) {
+                  // Show a success message to the user
+                  alert('Offer deleted successfully!');
+              } else {
+                  console.error('Error deleting offer:', response.error);
+              }
+
+              // Close the popup after deletion
+              map.closePopup();
+              location.reload();
+          },
+          error: function (xhr, status, error) {
+              console.error('AJAX Error:', error);
+          }
+      });
+  }
+});
+
+
+
+
 
 
 // Define the click event handler for the #btn_search button outside the filterMarkers function
