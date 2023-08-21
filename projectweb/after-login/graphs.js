@@ -33,9 +33,6 @@ $(document).ready(function()
                 // Parse the returned data as JSON
                 var offers = JSON.parse(data);
         
-                // Log the data to the console for debugging
-                console.log(offers);
-        
                 // Prepare the data for the chart
                 var daysInMonth = new Date(year, month, 0).getDate();
                 var labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
@@ -191,7 +188,7 @@ $(document).ready(function()
     }
           
     // Event handler for the Clear button
-    $("#clear-button").click(function () {
+    $("#clear-button2").click(function () {
         // Clear both category, subcategory, and product dropdown selections
         $("#category-dropdown").val("");
         $("#subcategory-dropdown").val("").prop("disabled", true);
@@ -200,6 +197,65 @@ $(document).ready(function()
         // Disable the Submit button after clearing
         $("#show-button2").prop("disabled", true);
     });
+
+    
+// When the "Show" button is clicked
+    $("#show-button2").click(function() {
+        const categoryId = $('#category').val();
+        const subcategoryId = $('#subcategory').val() || null;
+
+        $.ajax({
+            url: 'fetch_discount.php',
+            type: 'POST',
+            data: { 
+                category: categoryId,
+                subcategory: subcategoryId
+                },
+            dataType: 'json',
+            success: function(response) {
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const today = new Date();
+                const labels = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(today);
+                    d.setDate(today.getDate() - i);
+                    labels.push(days[d.getDay()]);
+                }
+                // Create the chart
+                const ctx = document.getElementById('chart');
+
+                new Chart(ctx,  {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Average Discount %',
+                        data: response,
+                        borderColor: 'rgb(75, 192, 192)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                callback: function(value, index, values/*tick*/) {
+                                return value + '%';
+                                //return '$' + Chart.Ticks.formatters.numeric.apply(this, [value, index, values]);
+                                }
+                                
+                            }
+                        }]
+                    }
+                }
+          });
+        }
+    });
+
+});
+
+
     
 });
       
