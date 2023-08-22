@@ -19,7 +19,11 @@ $(document).ready(function()
     //OFFERS
     // Handle the click event of the show button
     $('#show-button').click(function() 
-    {
+    {   
+
+        const c = Chart.getChart("chart")
+        if (c) c.destroy();
+
         var year = $('#year').val();
         var month = $('#month').val();
         if (year && month) 
@@ -104,12 +108,6 @@ $(document).ready(function()
         
         }
     });
-
-    $('#clear-button').click(function() {
-        const c = Chart.getChart("chart")
-        if (c) c.destroy()
-    });
-
     
        
     //DISCOUNT
@@ -192,7 +190,6 @@ $(document).ready(function()
         // Clear both category, subcategory, and product dropdown selections
         $("#category-dropdown").val("");
         $("#subcategory-dropdown").val("").prop("disabled", true);
-        $("#product-dropdown").val("").prop("disabled", true);
       
         // Disable the Submit button after clearing
         $("#show-button2").prop("disabled", true);
@@ -201,12 +198,12 @@ $(document).ready(function()
     
 // When the "Show" button is clicked
     $("#show-button2").click(function() {
-        const categoryId = $('#category').val();
-        const subcategoryId = $('#subcategory').val() || null;
+        const categoryId = $('#category-dropdown').val();
+        const subcategoryId = $('#subcategory-dropdown').val() || null;
 
         $.ajax({
             url: 'fetch_discount.php',
-            type: 'POST',
+            type: 'GET',
             data: { 
                 category: categoryId,
                 subcategory: subcategoryId
@@ -221,6 +218,10 @@ $(document).ready(function()
                     d.setDate(today.getDate() - i);
                     labels.push(days[d.getDay()]);
                 }
+
+                const c = Chart.getChart("chart")
+                if (c) c.destroy();
+
                 // Create the chart
                 const ctx = document.getElementById('chart');
 

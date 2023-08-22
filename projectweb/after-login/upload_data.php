@@ -124,6 +124,7 @@ if (isset($_POST['buttonImportProd'])) {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Import JSON File</title>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -154,7 +155,6 @@ if (isset($_POST['buttonImportProd'])) {
         <label for="month">Month:</label>
         <input type="number" id="month" min="1" max="12" step="1" value="1" />
         <button id="show-button">Show</button>
-        <button id="clear-button">Clear</button>
     </div>
 
     <!-- Inputs for selecting the category and subcategory -->
@@ -169,6 +169,7 @@ if (isset($_POST['buttonImportProd'])) {
         <button id="show-button2">Show</button>
         <button id="clear-button2">Clear</button>
     </div>
+    
 
 
     <!-- Placeholder for the chart -->
