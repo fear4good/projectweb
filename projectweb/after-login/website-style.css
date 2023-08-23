@@ -20,27 +20,52 @@ ul {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background-color: #333;
+	background-color: #4AB1FF;
   }
   
   li {
 	float: right;
   }
   
-  li a {
+li a {
 	display: block;
-	color: white;
+	color: #1D2124;
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
-  }
+	}
   
-  li a:hover {
-	background-color: #111;
+li a:hover {
+	background-color: #4F7FFF;
   }
-  
+li a:active{
+	color:#1DB7E5;
+}
+
   .left{
 	float:left;
-  }
-
+	color: #1D2124;
+	vertical-align: middle;
+    height: 20px;
+    line-height: 40px;
+}
   
+
+  ul li div.dropdown-container {
+    vertical-align: middle;
+    display: inline-block;
+    height: 20px;
+    line-height: 40px;
+}
+
+button:hover {
+	background-color: #E0DCDE;
+}
+
+button:active{
+	color:#1DB7E5;
+}
+  
+select{
+	background-color:#42D5FF;
+}

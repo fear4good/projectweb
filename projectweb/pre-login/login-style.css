@@ -3,6 +3,7 @@
 
 body{
     text-align: center;
+    /*background-color: #F8EFF4;*/
 }
 
   /* Add padding to containers */
@@ -47,6 +48,9 @@ body{
     opacity:1;
   }
    
+  button[type=button]:active{
+    color:#B2FFDA;
+  }
 
   .form-message{
     background-color: rgb(255, 255, 255);
