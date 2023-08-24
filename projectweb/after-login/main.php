@@ -31,7 +31,7 @@ if (isset($_SESSION['loggedin'])) {
     <ul>
         <li><a href="logout.php">Logout</a></li>
         <li><a href="profile.html">Profile</a></li>
-        <li class="left">Hi, <?php echo htmlspecialchars($_SESSION["username"]);?>, Tokens: <span class="tokens"></span>
+        <li class="left">Καλωσορίσατε στη Αρχική Σελίδα, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
         <span class="user-score"></span></li>
 
         <li>

@@ -7,7 +7,7 @@ if(userType === 'user') {
         dataType: "json",
         success: function(data) {
             // Update the score on the page
-            $('.user-score').text('Your Score: ' + data.score);
+            $('.user-score').text('Score: ' + data.score);
         }
     });
     
