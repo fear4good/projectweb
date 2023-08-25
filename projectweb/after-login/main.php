@@ -29,9 +29,7 @@ if (isset($_SESSION['loggedin'])) {
 <body>
     <div id="usertype" style="display:none;" data-usertype="<?php echo (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') ? 'admin' : 'user'; ?>"></div>
     <ul>
-        <li><a href="logout.php">Logout</a></li>
-        <li><a href="profile.html">Profile</a></li>
-        <li class="left">Καλωσορίσατε στη Αρχική Σελίδα, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
+        <li class="left">Καλωσορίσατε, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
         <span class="user-score"></span></li>
 
         <li>
