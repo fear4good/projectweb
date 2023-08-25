@@ -1,0 +1,146 @@
+/* Reset some default styling */
+body, html, ul, li, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color:#ebf4ff; /* Change background color to light blue */
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+ul li {
+    margin-right: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+#usertype {
+    display: none;
+    /* Add your styling for the user type navbar */
+}
+
+#map {
+    width: 80%; /* Adjust the map width */
+    height: 80vh; /* Adjust the map height */
+    margin: 20px auto;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#search-form {
+    display: flex;
+    align-items: center;	
+    justify-content: center;
+    margin-top: 5px;
+}
+
+#search {
+    padding: 5px;
+    width: 300px; /* Adjust the search input width */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
+}
+
+#search:focus {
+    border-color: #555; /* Change border color on focus */
+}
+
+#btn_search {
+    background-color: #333;
+    color: white;
+    border: 1px solid #333; /* Add border */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#btn_search:hover {
+    background-color: #555; /* Change background color on hover */
+    border-color: #555; /* Change border color on hover */
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+}
+
+#category-dropdown,
+#subcategory-dropdown {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
+}
+
+#category-dropdown:focus,
+#subcategory-dropdown:focus {
+    border-color: #555; /* Change border color on focus */
+}
+
+#submit-button,
+#clear-button {
+    background-color: #333;
+    color: white;
+    border: 1px solid #333; /* Add border */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#submit-button:hover,
+#clear-button:hover {
+    background-color: #555; /* Change background color on hover */
+    border-color: #555; /* Change border color on hover */
+}
+
+/* Additional styles for the supermarket theme */
+ul li.left {
+    margin-right: auto; /* Align left elements to the right */
+}
+
+ul li.left .fa-shopping-cart {
+    display: none; /* Hide the shopping cart icon */
+}
+
+ul li.left .user-score {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+/* Style for admin settings */
+ul li.admin-settings {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+ul li.admin-settings a {
+    color: #e74c3c; /* Change color for admin settings */
+}
+
+/* Hover styles for profile and logout buttons */
+#profile:hover,
+#logout:hover {
+    text-decoration: underline;
+}
+
+/* Add any additional styles specific to the supermarket theme */

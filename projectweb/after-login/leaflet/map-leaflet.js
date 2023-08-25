@@ -4,12 +4,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-map.locate({ setView: true, maxZoom: 2 });
+map.locate({ setView: true, maxZoom: 11 });
+
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
   
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
-    L.circle(e.latlng, radius).addTo(map);
   }
   
 // Handle location error event
@@ -47,62 +47,66 @@ function filterMarkers(name) {
     }
   });
 
-  // Remove only the supermarket markers from the map
-  map.eachLayer(function (layer) {
-    if (layer instanceof L.Marker && layer !== userLocationMarker) {
-      map.removeLayer(layer);
-    }
-  });
-
-  // If the search name is empty, filter the markers to include only those with a discount
-  // Otherwise, filter the markers based on the search name
-  var filteredMarkers = markerDataList.filter(function (markerData) {
-    if (name === '') {
-      return markerData.discount;
-    } else {
-      return markerData.poi_name && markerData.poi_name.toLowerCase().includes(name.toLowerCase());
-    }
-  });
-
-  // Add the filtered markers to the map
-  filteredMarkers.forEach(function (markerData) {
-    $('.tokens').text(markerData.tokens);
-    var markerColor = markerData.discount ? 'green' : 'red';
-    var markerIcon = L.ExtraMarkers.icon({
-      markerColor: markerColor,
+  if(userLocationMarker){
+    // Remove only the supermarket markers from the map
+    map.eachLayer(function (layer) {
+      if (layer instanceof L.Marker && layer !== userLocationMarker) {
+        map.removeLayer(layer);
+      }
     });
 
-    var offerLatLng = L.latLng(markerData.lat, markerData.lng);
-    var distanceToOffer = userLocationMarker.getLatLng().distanceTo(offerLatLng);
-
-    var popupContent = markerData.poi_name;
-    if (markerData.discount) {
-      popupContent += '<br>Product: ' + markerData.prod_name;
-      popupContent += '<br>Discount: ' + markerData.discount;
-      var stockStatus = markerData.stock > 0 ? 'Yes' : 'No';
-      popupContent += '<br>Stock: ' + stockStatus;
-      // Use Font Awesome icons for likes and dislikes
-      popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
-      popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
-      if(distanceToOffer <= 10000000){
-        var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
-        popupContent += '<br>' + externalSiteLink;
+    // If the search name is empty, filter the markers to include only those with a discount
+    // Otherwise, filter the markers based on the search name
+    var filteredMarkers = markerDataList.filter(function (markerData) {
+      if (name === '') {
+        return markerData.discount;
+      } else {
+        return markerData.poi_name && markerData.poi_name.toLowerCase().includes(name.toLowerCase());
       }
-      popupContent += '<br>Provided by: ' + markerData.user_prov;
-    }
+    });
 
-    if (distanceToOffer <= 10000000){
-        var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
-        popupContent += '<br>' + externalSiteLink2;
-    }
-    if (isAdmin) {
-      popupContent += '<br><button class="delete-offer-button" data-offer-id="' + markerData.offer_id + '">Delete offer</button>';
-    }
+    // Add the filtered markers to the map
+    filteredMarkers.forEach(function (markerData) {
+      $('.tokens').text(markerData.tokens);
+      var markerColor = markerData.discount ? 'green' : 'red';
+      var markerIcon = L.ExtraMarkers.icon({
+        markerColor: markerColor,
+      });
 
-    L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
-        .bindPopup(popupContent)
-        .addTo(map);     
-  });
+      var offerLatLng = L.latLng(markerData.lat, markerData.lng);
+      var distanceToOffer = userLocationMarker.getLatLng().distanceTo(offerLatLng);
+
+      var popupContent = markerData.poi_name;
+      if (markerData.discount) {
+        popupContent += '<br>Product: ' + markerData.prod_name;
+        popupContent += '<br>Discount: ' + markerData.discount;
+        var stockStatus = markerData.stock > 0 ? 'Yes' : 'No';
+        popupContent += '<br>Stock: ' + stockStatus;
+        // Use Font Awesome icons for likes and dislikes
+        popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
+        popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
+        if(distanceToOffer <= 10000000){
+          var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
+          popupContent += '<br>' + externalSiteLink;
+        }
+        popupContent += '<br>Provided by: ' + markerData.user_prov;
+      }
+
+      if (distanceToOffer <= 10000000){
+          var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
+          popupContent += '<br>' + externalSiteLink2;
+      }
+      if (isAdmin) {
+        popupContent += '<br><button class="delete-offer-button" data-offer-id="' + markerData.offer_id + '">Delete offer</button>';
+      }
+
+      L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
+          .bindPopup(popupContent)
+          .addTo(map);     
+    });
+  }else{
+    console.log("User location marker not found."); // Log the error for debugging
+  }
 }
 
 // Event listener for the "Αξιολόγηση" link
