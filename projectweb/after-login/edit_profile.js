@@ -98,27 +98,115 @@ $.ajax({
     console.error("Error retrieving user offers:", textStatus, errorThrown);
   }
 });
-  // Retrieve and display user's likes and dislikes
-  $.ajax({
-    url: "get_user_likes_dislikes.php",
-    method: "GET",
-    dataType: "json",
-    success: function(response) {
-      const userLikesDislikesDiv = $("#user-likes-dislikes");
-      let likesDislikesHtml = "<ul>"; // Start a list
+// Retrieve and display user's likes
+$.ajax({
+  url: "get_user_likes.php",
+  method: "GET",
+  dataType: "json",
+  success: function(response) {
+    const userLikesDiv = $("#user-likes");
+    let likesHtml = "<ul>"; // Start a list
 
-      // Loop through the likes/dislikes and populate the likesDislikesHtml
-      response.forEach(item => {
-        likesDislikesHtml += "<li>Likes: " + item.likes + " - Dislikes: " + item.dislikes + "</li>";
+    // Loop through the likes and populate the likesHtml
+    response.forEach(like => {
+      // Fetch the offer information associated with the like from the offers table
+      $.ajax({
+        url: "get_offer_info.php",
+        method: "GET",
+        data: { offer_id: like.offer_id }, // Send the offer_id to the PHP script
+        dataType: "json",
+        success: function(offerResponse) {
+          $.ajax({
+            url: "get_product_info.php",
+            method: "GET",
+            data: { product_id: offerResponse.product_id }, // Send the product_id to the PHP script
+            dataType: "json",
+            success: function(productResponse) {
+              // Update the offersHtml with the product name and image
+              likesHtml += "<li>";
+              likesHtml += "<img src='prod_images/" + productResponse.image_path + "' alt='Product Image'>";
+              likesHtml += "Product: " + productResponse.name + " - Discount: " + offerResponse.discount;
+              likesHtml += " Date: " + offerResponse.date + " Likes: " + offerResponse.likes + " Dislikes: " + offerResponse.dislikes ;
+              likesHtml += "</li>";
+              userLikesDiv.html(likesHtml); // Set the HTML content
+
+            },
+            error: function(xhr, textStatus, errorThrown) {
+              console.error("Error retrieving product information:", textStatus, errorThrown);
+            }
+          });
+
+
+          
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          console.error("Error retrieving offer information:", textStatus, errorThrown);
+        }
       });
+    });
 
-      likesDislikesHtml += "</ul>"; // Close the list
-      userLikesDislikesDiv.html(likesDislikesHtml); // Set the HTML content
-    },
-    error: function(xhr, textStatus, errorThrown) {
-      console.error("Error retrieving user likes and dislikes:", textStatus, errorThrown);
-    }
-  });
+    likesHtml += "</ul>"; // Close the list
+    userLikesDiv.html(likesHtml); // Set the HTML content
+  },
+  error: function(xhr, textStatus, errorThrown) {
+    console.error("Error retrieving user likes:", textStatus, errorThrown);
+  }
+});
+
+// Retrieve and display user's dislikes
+$.ajax({
+  url: "get_user_dislikes.php",
+  method: "GET",
+  dataType: "json",
+  success: function(response) {
+    const userDislikesDiv = $("#user-dislikes");
+    let disLikesHtml = "<ul>"; // Start a list
+
+    // Loop through the likes and populate the likesHtml
+    response.forEach(like => {
+      // Fetch the offer information associated with the like from the offers table
+      $.ajax({
+        url: "get_offer_info.php",
+        method: "GET",
+        data: { offer_id: like.offer_id }, // Send the offer_id to the PHP script
+        dataType: "json",
+        success: function(offerResponse) {
+          $.ajax({
+            url: "get_product_info.php",
+            method: "GET",
+            data: { product_id: offerResponse.product_id }, // Send the product_id to the PHP script
+            dataType: "json",
+            success: function(productResponse) {
+              // Update the offersHtml with the product name and image
+              disLikesHtml += "<li>";
+              disLikesHtml += "<img src='prod_images/" + productResponse.image_path + "' alt='Product Image'>";
+              disLikesHtml += "Product: " + productResponse.name + " - Discount: " + offerResponse.discount;
+              disLikesHtml += " Date: " + offerResponse.date + " Likes: " + offerResponse.likes + " Dislikes: " + offerResponse.dislikes ;
+              disLikesHtml += "</li>";
+              userDislikesDiv.html(disLikesHtml); // Set the HTML content
+
+            },
+            error: function(xhr, textStatus, errorThrown) {
+              console.error("Error retrieving product information:", textStatus, errorThrown);
+            }
+          });
+
+
+          
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          console.error("Error retrieving offer information:", textStatus, errorThrown);
+        }
+      });
+    });
+
+    disLikesHtml += "</ul>"; // Close the list
+    userDislikesDiv.html(disLikesHtml); // Set the HTML content
+  },
+  error: function(xhr, textStatus, errorThrown) {
+    console.error("Error retrieving user likes:", textStatus, errorThrown);
+  }
+});
 
  // Retrieve and display user's score
  $.ajax({

@@ -29,11 +29,11 @@ if (isset($_SESSION['loggedin'])) {
 <body>
     <div id="usertype" style="display:none;" data-usertype="<?php echo (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') ? 'admin' : 'user'; ?>"></div>
     <ul>
-        <li>
-            <li class="left">Hi, <?php echo htmlspecialchars($_SESSION["username"]);?>, Tokens: <span class="tokens"></span>
-            <span class="user-score"></span></li>
-            <?php if ($is_admin): ?><li><a class="admin-settings" href="upload_data.php">Admin Settings</a></li><?php endif; ?>
-        </li>    
+        <li><a href="logout.php">Logout</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li class="left">Καλωσορίσατε στη Αρχική Σελίδα, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
+        <span class="user-score"></span></li>
+
         <li>
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
                 <input type="text" id="search" placeholder="Search...">

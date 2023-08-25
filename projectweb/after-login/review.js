@@ -116,6 +116,22 @@ $(document).ready(function() {
           success: function (response) {
             // Update the likes count on the frontend with the response from the server
             likesCountElement.text(response.likes);
+            $.ajax({
+              url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
+              method: 'POST', // Use POST or GET depending on your server-side script requirements
+              data: {
+                offer_id: offerId,
+                likes: 1,
+                dislikes: 0,
+              },
+              dataType: 'json',
+              success: function (saveResponse) {
+
+              },
+              error: function (saveError) {
+                console.error('Error saving like history:', saveError);
+              }
+            });
           },
           error: function (error) {
             console.error('Error updating likes:', error);
@@ -143,6 +159,22 @@ $(document).ready(function() {
           success: function (response) {
             // Update the dislikes count on the frontend with the response from the server
             dislikesCountElement.text(response.dislikes);
+            $.ajax({
+              url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
+              method: 'POST', // Use POST or GET depending on your server-side script requirements
+              data: {
+                offer_id: offerId,
+                likes: 0,
+                dislikes: 1,
+              },
+              dataType: 'json',
+              success: function (saveResponse) {
+
+              },
+              error: function (saveError) {
+                console.error('Error saving like history:', saveError);
+              }
+            });
           },
           error: function (error) {
             console.error('Error updating dislikes:', error);

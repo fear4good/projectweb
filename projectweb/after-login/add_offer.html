@@ -7,28 +7,33 @@
   <title>Add Offer</title>
 </head>
 <body>
+  <h1>Προσθήκη Προσφοράς</h1>
   <div class="dropdown-container">
+    <div class="column">
     <select id="category-dropdown">
-      <option value="">Select Category</option>
+      <option value="">Επιλογή Κατηγορίας</option>
     </select>
     
     <select id="subcategory-dropdown" disabled>
-      <option value="">Select Subcategory</option>
+      <option value="">Επιλογή Υποκατηγορίας</option>
     </select>
     <select id="product-dropdown" disabled>
-      <option value="">Select Product</option>
+      <option value="">Επιλογή προϊόντος</option>
     </select>
-
-    <button id="clear-button">Clear</button>
+    
+    <button id="clear-button">Καθαρισμός</button>
   </div>
+  <div class="column">
   <p>Αρχική Τιμή</p>
-  <input type="number" class="initial-price" placeholder="Αρχική Τιμή" readonly>
+  <input type="number" class="initial-price"  readonly>
   <p>Τιμή Προσφοράς</p>
-  <input type="text" class="offer-price" placeholder="Τιμή Προσφοράς">
+  <input type="text" class="offer-price" placeholder="-">
+  <button id="submit-button" disabled>Υποβολή</button>
+    <div id="response-container"></div>
   <p></p>
-  <button id="submit-button" disabled>Submit</button>
-  <div id="response-container"></div>
-
+ 
+</div>
+</div>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="add_offer.js"></script>
 </body>
