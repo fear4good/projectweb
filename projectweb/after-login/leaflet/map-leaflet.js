@@ -7,8 +7,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 map.locate({ setView: true, maxZoom: 11 });
 
 function onLocationFound(e) {
-    var radius = e.accuracy / 2;
-  
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
   }
   
@@ -35,12 +33,11 @@ fetch('../pre-login/fetch_credentials.php')
       console.error('Error fetching role', error);
   });
 
-
+var userLocationMarker = null;
 
 // Define the filterMarkers function outside the AJAX success function
 function filterMarkers(name) {
   // Get the user location marker if it exists
-  var userLocationMarker = null;
   map.eachLayer(function (layer) {
     if (layer instanceof L.Marker && layer.getPopup() && layer.getPopup().getContent() === "You are here") {
       userLocationMarker = layer;
@@ -65,45 +62,111 @@ function filterMarkers(name) {
       }
     });
 
-    // Add the filtered markers to the map
-    filteredMarkers.forEach(function (markerData) {
-      $('.tokens').text(markerData.tokens);
-      var markerColor = markerData.discount ? 'green' : 'red';
-      var markerIcon = L.ExtraMarkers.icon({
-        markerColor: markerColor,
-      });
-
+    function generatePopupContent(markerData) {
+      let popupContent = '';
+      
+      const keyToLabel = {
+        poi_name: 'Market Name',
+        prod_name: 'Product',
+        user_prov: 'Provider',
+        discount: 'Discount',
+        likes: `<i class="fa fa-thumbs-up" data-offer-id="${markerData.offer_id}"></i> <span class="likes">${markerData.likes}</span>`,
+        dislikes: `<i class="fa fa-thumbs-down" data-offer-id="${markerData.offer_id}"></i> <span class="dislikes">${markerData.dislikes}</span>`,
+        stock: 'Stock',
+        category: 'Category',
+        subcategory: 'Subcategory'
+      };
+    
+      const OnlyNamekeyToLabel = {
+        poi_name: 'Market Name'
+      };
+    
       var offerLatLng = L.latLng(markerData.lat, markerData.lng);
       var distanceToOffer = userLocationMarker.getLatLng().distanceTo(offerLatLng);
 
-      var popupContent = markerData.poi_name;
-      if (markerData.discount) {
-        popupContent += '<br>Product: ' + markerData.prod_name;
-        popupContent += '<br>Discount: ' + markerData.discount;
-        var stockStatus = markerData.stock > 0 ? 'Yes' : 'No';
-        popupContent += '<br>Stock: ' + stockStatus;
-        // Use Font Awesome icons for likes and dislikes
-        popupContent += '<br><i class="fa fa-thumbs-up" data-offer-id="' + markerData.offer_id + '"></i> <span class="likes">' + markerData.likes + '</span>';
-        popupContent += '<br><i class="fa fa-thumbs-down" data-offer-id="' + markerData.offer_id + '"></i> <span class="dislikes">' + markerData.dislikes + '</span>';
-        if(distanceToOffer <= 10000000){
+      popupContent += '<div class="popup-content">';
+      if (!markerData.discount) {
+        for (const key in OnlyNamekeyToLabel) {
+          if (markerData.hasOwnProperty(key)) {
+            const label = keyToLabel[key];
+            const value = markerData[key];
+            popupContent += `<strong>${label}:</strong> ${value}<br>`;
+          }
+        }
+        if (distanceToOffer <= 10000000){
+          var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
+          popupContent += '<br>' + externalSiteLink2;
+        }
+      } else {
+        for (const key in keyToLabel) {
+          if (markerData.hasOwnProperty(key)) {
+            const label = keyToLabel[key];
+            const value = markerData[key];
+            if (key === 'likes' || key === 'dislikes') {
+              popupContent += `${label}<br>`;
+            } else if (key === 'stock') {
+              var stockStatus = value > 0 ? 'Yes' : 'No';
+              popupContent += 'Stock: ' + stockStatus + '<br>';
+            } else {
+              popupContent += `<strong>${label}:</strong> ${value}<br>`;
+            }
+          }
+        }
+        if(distanceToOffer<= 1000000){
           var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
           popupContent += '<br>' + externalSiteLink;
         }
-        popupContent += '<br>Provided by: ' + markerData.user_prov;
-      }
-
-      if (distanceToOffer <= 10000000){
-          var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
-          popupContent += '<br>' + externalSiteLink2;
       }
       if (isAdmin) {
         popupContent += '<br><button class="delete-offer-button" data-offer-id="' + markerData.offer_id + '">Delete offer</button>';
       }
 
-      L.marker([markerData.lat, markerData.lng], { icon: markerIcon })
-          .bindPopup(popupContent)
-          .addTo(map);     
+      popupContent += '</div>';
+    
+      return popupContent;
+    }
+
+    // Create an object to store grouped offers
+    const groupedOffers = {};
+
+    // Group the offers by poi_id
+    filteredMarkers.forEach(function(markerData) {
+      if (!groupedOffers[markerData.poi_id]) {
+        groupedOffers[markerData.poi_id] = [];
+      }
+      groupedOffers[markerData.poi_id].push(markerData);
     });
+
+    // Iterate through grouped offers and create markers with consolidated popup content
+    for (const poi_id in groupedOffers) {
+      const offersAtLocation = groupedOffers[poi_id];
+
+      // Set token count for the first offer in the group
+      $('.tokens').text(offersAtLocation[0].tokens);
+
+      // Determine marker color based on the discount of the first offer in the group
+      const firstOfferDiscount = offersAtLocation[0].discount;
+      var markerColor = firstOfferDiscount ? 'green' : 'red';
+      var markerIcon = L.ExtraMarkers.icon({
+        markerColor: markerColor,
+      });
+
+
+
+      // Generate consolidated popup content for all offers at this location
+      let popupContent = '';
+      offersAtLocation.forEach(function(markerData) {
+        popupContent += generatePopupContent(markerData);
+      });
+
+      // Use the latitude and longitude of the first offer at this location
+      const firstOffer = offersAtLocation[0];
+
+      L.marker([parseFloat(firstOffer.lat), parseFloat(firstOffer.lng)], { icon: markerIcon })
+        .bindPopup(popupContent)
+        .addTo(map);
+    }
+    
   }else{
     console.log("User location marker not found."); // Log the error for debugging
   }
@@ -165,10 +228,6 @@ $(document).on('click', '.delete-offer-button', function () {
 });
 
 
-
-
-
-
 // Define the click event handler for the #btn_search button outside the filterMarkers function
 $('#btn_search').on("click", function () {
   var searchName = $('#search').val();
@@ -183,7 +242,6 @@ function fetchAllMarkers() {
     success: function (data) {
       // Store the data into the markerDataList variable
       markerDataList = data;
-
       // Call filterMarkers after fetching all markers to display them on the map
       filterMarkers("");
     },

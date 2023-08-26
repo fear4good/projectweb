@@ -41,6 +41,12 @@ a {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.popup-content {
+    margin-bottom: 10px; /* Add some spacing between offers */
+    border-bottom: 1px solid #ccc; /* Add a horizontal line between offers */
+    padding-bottom: 10px; /* Add some padding at the bottom of each offer */
+  }
+
 #search-form {
     display: flex;
     align-items: center;	
@@ -142,5 +148,7 @@ ul li.admin-settings a {
 #logout:hover {
     text-decoration: underline;
 }
+
+
 
 /* Add any additional styles specific to the supermarket theme */
