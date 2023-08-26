@@ -115,7 +115,7 @@ if (isset($_POST['buttonImportProd'])) {
             }
         }
     } else {
-        $errorMsg2 = 'Error uploading the file. Please try again.';
+        $errorMsg2 = 'Αποτυχία υποβολής αρχείου. Παρακαλώ προσπαθήστε ξανά.';
     }
 }
 ?>
@@ -123,71 +123,80 @@ if (isset($_POST['buttonImportProd'])) {
 <html>    
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Import JSON File</title>
-
+    <title>Λειτουργίες Διαχειριστή</title>
+    <link rel="stylesheet" href="upload_data.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 
 </head>
 <body>
+    <h1>Λειτουργίες Διαχειριστή</h1>
+<div class="form-chart-container">
+<div class="form-container">
+    <h2>Ανέβασμα αρχείου:</h2>
     <form method="POST" enctype="multipart/form-data">
-        POIS JSON File <input type="file" name="jsonFile">
+       Πληροφορίες Καταστημάτων:<input type="file" name="jsonFile">
         <br>
-        <input type="submit" value="Import" name="buttonImportPois">
+        <input type="submit" value="Υποβολή" name="buttonImportPois">
     </form>
     <form method="POST" enctype="multipart/form-data">
-        PRODUCTS AND CATEGORIES JSON File <input type="file" name="jsonFile">
+        Πληροφορίες προϊόντων:<input type="file" name="jsonFile">
         <br>
-        <input type="submit" value="Import" name="buttonImportProd">
+        <input type="submit" value="Υποβολή" name="buttonImportProd">
     </form>
+    <?php echo $errorMsg1, $errorMsg2 ; ?>
+</div>
+<div class="charts-container">
+    <h2>Προβολή Γραφημάτων:</h2>
     <!-- Dropdown for selecting the chart -->
     <select id="chart-select">
-        <option value="">Select chart</option>
-        <option value="3a">Offers</option>
-        <option value="3b">Discount</option>
+        <option value="">Επιλογή Γραφήματος</option>
+        <option value="3a">Προσφορές</option>
+        <option value="3b">Μέση Έκπτωση</option>
     </select>
 
     <!-- Inputs for selecting the year and the month -->
     <div id="date-inputs" style="display: none;">
-        <label for="year">Year:</label>
+        <label for="year">Χρόνος:</label>
         <input type="number" id="year" min="2000" max="2099" step="1" value="2023" />
-        <label for="month">Month:</label>
+        <label for="month">Μήνας:</label>
         <input type="number" id="month" min="1" max="12" step="1" value="1" />
-        <button id="show-button">Show</button>
+        <button id="show-button">Εμφάνιση</button>
     </div>
 
     <!-- Inputs for selecting the category and subcategory -->
     <div id="discount-inputs" style="display: none;">
         <select id="category-dropdown">
-            <option value="">Select Category</option>
+            <option value="">Επιλογή Κατηγορίας</option>
         </select>
                 
         <select id="subcategory-dropdown" disabled>
-            <option value="">Select Subcategory</option>
+            <option value="">Επιλογή Υποκατηγορίας</option>
         </select>
-        <button id="show-button2">Show</button>
-        <button id="clear-button2">Clear</button>
+        <button id="show-button2">Εμφάνιση</button>
+        <button id="clear-button2">Καθαρισμός</button>
     </div>
     
 
 
     <!-- Placeholder for the chart -->
-   <div class="chart-container" style="position: relative; height:40vh; width:100vw">
+   <div class="chart-container" style="position: relative; height:40vh; width:40vw">
         <canvas id="chart"></canvas>
     </div>
-    <li><a href="main.php">Main</a></li>
-    <?php echo $errorMsg1, $errorMsg2 ; ?>
+    
     <script src="graphs.js"></script>
-
+</div>
+</div>
     <!-- Container for Leaderboard -->
+    <h2>Πίνακας Κατάταξη:ς</h2>
+
     <div id="leaderboardContainer">
-        <h2>Leaderboard</h2>
         <table id="leaderboardTable">
             <thead>
                 <tr>
-                    <th>Rank</th>
-                    <th>Username</th>
+                    <th>Κατάταξη </th>
+                    <th>Όνομα Χρήστη</th>
                     <th>Score</th>
                 </tr>
             </thead>
@@ -198,7 +207,7 @@ if (isset($_POST['buttonImportProd'])) {
 
         <script src="get_leaderboard.js"></script>
     </div>
-
+    <li><a href="main.php">Αρχική Σελίδα</a></li>
 
 
 </body>

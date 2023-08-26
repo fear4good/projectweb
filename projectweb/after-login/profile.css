@@ -1,31 +1,30 @@
-/* Reset default margin and padding */
-body, h1, h2, form {
-    margin: 0;
-    padding: 0;
-  }
-  
+
   /* Basic styling for the body */
   body {
+    margin: 0px;
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #E3DED8;
+    color: #2c3e50;
   }
   
   /* Page header styles */
   h1 {
+    margin: 0px;
     text-align: center;
-    padding: 20px 0;
-    background-color:#333;
-    color: white;
+    padding: 20px;
+    background-color:#D7D7D9;
+    color: #DEA77E;
   }
   
   /* Form styling */
   form {
+    text-align: center;
     max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
+    height: 250px;
+    margin: auto;
+    padding: 15px;
+    background-color: #F2F2F0;
+    border: 1px solid #e0e0e0;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
@@ -34,54 +33,41 @@ body, h1, h2, form {
   label {
     display: block;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-top: 5px;
+    color: #DEA77E;
   }
   
   /* Input field styles */
   input[type="text"],
   input[type="password"],
   input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
+    width: 40%;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #DEA77E;
     border-radius: 4px;
-  }
-  
-  /* Submit button styles */
-  button[type="submit"] {
-    padding: 10px 20px;
-    background-color: #4285f4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #357ae8;
   }
   
   /* Navigation links styles */
   ul {
-    list-style: none;
-    margin: 20px 0;
-    padding: 0;
+    padding: 5px;
     text-align: center;
   }
   
   ul li {
     display: inline-block;
-    margin-right: 15px;
+    padding: 5px
   }
   
   ul li a {
     text-decoration: none;
-    color: #4285f4;
-    transition: color 0.2s;
+    color: #415039;
   }
-  
+
   ul li a:hover {
-    color: #357ae8;
+    color: #3498db; /* Slightly lighter blue for hover state */
+}
+  
+  ul li a:active {
+    color: #53793f;
   }
