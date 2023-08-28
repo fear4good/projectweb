@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Aug 04, 2023 at 11:29 PM
--- Server version: 8.0.31
--- PHP Version: 8.2.0
+-- Host: 127.0.0.1
+-- Generation Time: Aug 28, 2023 at 06:28 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,12 +27,10 @@ SET time_zone = "+00:00";
 -- Table structure for table `categories`
 --
 
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE IF NOT EXISTS `categories` (
+CREATE TABLE `categories` (
   `id` varchar(36) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `categories`
@@ -51,35 +49,61 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `like_history`
+--
+
+CREATE TABLE `like_history` (
+  `like_id` int(11) NOT NULL,
+  `likes` tinyint(1) NOT NULL,
+  `dislikes` tinyint(1) NOT NULL,
+  `offer_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `like_history`
+--
+
+INSERT INTO `like_history` (`like_id`, `likes`, `dislikes`, `offer_id`, `user_id`) VALUES
+(1, 0, 1, 3, 4),
+(2, 1, 0, 3, 4),
+(3, 1, 0, 27, 4),
+(4, 0, 1, 27, 4),
+(5, 0, 1, 28, 4),
+(6, 1, 0, 28, 4);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `offers`
 --
 
-DROP TABLE IF EXISTS `offers`;
-CREATE TABLE IF NOT EXISTS `offers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `supermarket_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `product_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `discount` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `offers` (
+  `id` int(11) NOT NULL,
+  `supermarket_id` varchar(254) NOT NULL,
+  `product_id` varchar(254) NOT NULL,
+  `discount` varchar(254) NOT NULL,
   `date` date NOT NULL,
-  `likes` int NOT NULL DEFAULT '0',
-  `dislikes` int NOT NULL DEFAULT '0',
-  `stock` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `likes` int(11) NOT NULL DEFAULT 0,
+  `dislikes` int(11) NOT NULL DEFAULT 0,
+  `stock` tinyint(1) NOT NULL DEFAULT 0,
+  `user_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `offers`
 --
 
 INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, `likes`, `dislikes`, `stock`, `user_id`) VALUES
-(1, 'node/354449389', '0', '5', '2023-08-20', 6, 2, 10, 4),
+(1, 'node/354449389', '0', '5', '2023-08-20', 8, 2, 10, 4),
 (2, 'node/237917140', '0', '5', '2023-08-18', 13, 2, 10, 4),
-(3, 'node/354449389', '0', '5', '2023-07-05', 6, 2, 10, 4),
+(3, 'node/354449389', '0', '5', '2023-07-05', 7, 3, 10, 4),
 (4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10, 4),
 (5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10, 4),
 (6, 'node/354449389', '0', '5', '2024-02-24', 6, 2, 10, 4),
-(7, 'node/4318329390', '0', '5','2023-07-24', 6, 2, 10, 4);
+(7, 'node/4318329390', '0', '5', '2023-07-24', 6, 2, 10, 4),
+(27, 'node/360226900', '7', '5', '2023-08-28', 4, 4, 1, 4),
+(28, 'node/980515550', '7', '10', '2023-08-28', 1, 1, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -87,33 +111,31 @@ INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, 
 -- Table structure for table `pois`
 --
 
-DROP TABLE IF EXISTS `pois`;
-CREATE TABLE IF NOT EXISTS `pois` (
-  `id` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
-  `city` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `house_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `postcode` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `street` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `brand` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `wikidata` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `wikipedia` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `opening_hours` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `operator` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `bitcoin_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cash_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `coins_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `credit_cards_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `debit_cards_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mastercard_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `visa_payment` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `shop` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `website` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `longitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `latitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `pois` (
+  `id` varchar(40) NOT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `house_number` varchar(255) DEFAULT NULL,
+  `postcode` varchar(255) DEFAULT NULL,
+  `street` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `wikidata` varchar(255) DEFAULT NULL,
+  `wikipedia` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `opening_hours` varchar(255) DEFAULT NULL,
+  `operator` varchar(255) DEFAULT NULL,
+  `bitcoin_payment` varchar(255) DEFAULT NULL,
+  `cash_payment` varchar(255) DEFAULT NULL,
+  `coins_payment` varchar(255) DEFAULT NULL,
+  `credit_cards_payment` varchar(255) DEFAULT NULL,
+  `debit_cards_payment` varchar(255) DEFAULT NULL,
+  `mastercard_payment` varchar(255) DEFAULT NULL,
+  `visa_payment` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `shop` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) NOT NULL,
+  `latitude` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `pois`
@@ -218,15 +240,12 @@ INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`,
 -- Table structure for table `price_history`
 --
 
-DROP TABLE IF EXISTS `price_history`;
-CREATE TABLE IF NOT EXISTS `price_history` (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `product_id` int DEFAULT NULL,
+CREATE TABLE `price_history` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
   `date` date NOT NULL,
-  `price` float NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+  `price` float NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `price_history`
@@ -242,15 +261,13 @@ INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
 -- Table structure for table `products`
 --
 
-DROP TABLE IF EXISTS `products`;
-CREATE TABLE IF NOT EXISTS `products` (
-  `id` int NOT NULL,
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `category_id` varchar(36) DEFAULT NULL,
   `subcategory_id` varchar(36) DEFAULT NULL,
-  `image_path` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `image_path` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `products`
@@ -263,7 +280,7 @@ INSERT INTO `products` (`id`, `name`, `category_id`, `subcategory_id`, `image_pa
 (3, 'Μεβγάλ Τυρί Ημισκλ Μακεδ 420γρ', 'ee0022e7b1b34eb2b834ea334cda52e7', '4c73d0eccd1e4dde8bb882e436a64ebb', ''),
 (4, 'Μινέρβα Χωριό Μαργαρίνη Με Ελαιόλαδο 250γρ', 'ee0022e7b1b34eb2b834ea334cda52e7', 'a240e48245964b02ba73d1a86a2739be', ''),
 (5, 'Εύρηκα Λευκαντικό 60γρ', 'd41744460283406a86f8e4bd5010a66d', '3be81b50494d4b5495d5fea3081759a6', ''),
-(7, 'Sprite 330ml', 'a8ac6be68b53443bbd93b229e2f9cd34', '3010aca5cbdc401e8dfe1d39320a8d1a', ''),
+(7, 'Sprite 330ml', 'a8ac6be68b53443bbd93b229e2f9cd34', '3010aca5cbdc401e8dfe1d39320a8d1a', 'sprite_330ml.jpg'),
 (8, 'Μετέωρα Ξύδι Λευκού Κρασιού 400ml', 'ee0022e7b1b34eb2b834ea334cda52e7', '5dca69b976c94eccbf1341ee4ee68b95', ''),
 (9, 'Μέλισσα Τορτελίνια Γεμ Τυρίων 250γρ', 'ee0022e7b1b34eb2b834ea334cda52e7', '0c347b96540a427e9823f321861ce58e', ''),
 (10, 'Klinex Χλωρίνη Ultra Lemon 750ml', 'd41744460283406a86f8e4bd5010a66d', '3be81b50494d4b5495d5fea3081759a6', ''),
@@ -1537,13 +1554,11 @@ INSERT INTO `products` (`id`, `name`, `category_id`, `subcategory_id`, `image_pa
 -- Table structure for table `subcategories`
 --
 
-DROP TABLE IF EXISTS `subcategories`;
-CREATE TABLE IF NOT EXISTS `subcategories` (
+CREATE TABLE `subcategories` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `category_id` varchar(36) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `category_id` varchar(36) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `subcategories`
@@ -1665,13 +1680,11 @@ INSERT INTO `subcategories` (`id`, `name`, `category_id`) VALUES
 -- Table structure for table `tokens`
 --
 
-DROP TABLE IF EXISTS `tokens`;
-CREATE TABLE IF NOT EXISTS `tokens` (
-  `id` int NOT NULL,
+CREATE TABLE `tokens` (
+  `id` int(11) NOT NULL,
   `date_` date NOT NULL,
-  `tokens` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+  `tokens` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tokens`
@@ -1686,18 +1699,15 @@ INSERT INTO `tokens` (`id`, `date_`, `tokens`) VALUES
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
   `username` varchar(30) NOT NULL,
-  `password` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `password` varchar(200) NOT NULL,
   `email` varchar(40) NOT NULL,
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `score` int NOT NULL DEFAULT '0',
-  `monthly_score` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `score` int(11) NOT NULL DEFAULT 0,
+  `monthly_score` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
@@ -1705,12 +1715,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`, `score`, `monthly_score`) VALUES
 (11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1, 0, 0),
-(4, 'testhash', '$2y$10$S1SXYkEvjoCY3whx3fq32u7jpgyfE86a.O44N6VMtoyI/nGsoeBpu', 'test2@gmail.com', 0, 454, 20);
+(4, 'testhash', '$2y$10$mbl9tp2EedQ2FadasQDK8O7DuA34HSiTt5ZIwSpUNK6vQ9DD3uX9.', 'testing@gmail.com', 0, 454, 54);
 
 --
 -- Triggers `users`
 --
-DROP TRIGGER IF EXISTS `prevent_negative_monthly_score`;
 DELIMITER $$
 CREATE TRIGGER `prevent_negative_monthly_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
     IF NEW.monthly_score < 0 THEN
@@ -1719,7 +1728,6 @@ CREATE TRIGGER `prevent_negative_monthly_score` BEFORE UPDATE ON `users` FOR EAC
 END
 $$
 DELIMITER ;
-DROP TRIGGER IF EXISTS `prevent_negative_score`;
 DELIMITER $$
 CREATE TRIGGER `prevent_negative_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
     IF NEW.score < 0 THEN
@@ -1729,11 +1737,98 @@ END
 $$
 DELIMITER ;
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `like_history`
+--
+ALTER TABLE `like_history`
+  ADD PRIMARY KEY (`like_id`);
+
+--
+-- Indexes for table `offers`
+--
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pois`
+--
+ALTER TABLE `pois`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `price_history`
+--
+ALTER TABLE `price_history`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `subcategories`
+--
+ALTER TABLE `subcategories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tokens`
+--
+ALTER TABLE `tokens`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `like_history`
+--
+ALTER TABLE `like_history`
+  MODIFY `like_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `offers`
+--
+ALTER TABLE `offers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
+-- AUTO_INCREMENT for table `price_history`
+--
+ALTER TABLE `price_history`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
 DELIMITER $$
 --
 -- Events
 --
-DROP EVENT IF EXISTS `reset_monthly`$$
 CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly` ON SCHEDULE EVERY 1 MONTH STARTS '2023-08-11 21:27:18' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
  UPDATE `users` SET `score` = `score` + `monthly_score`;
  UPDATE `users` SET `monthly_score` = 0;

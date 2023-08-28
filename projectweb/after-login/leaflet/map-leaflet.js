@@ -382,8 +382,8 @@ $(document).on('click', '.fa-thumbs-up', function () {
 
   // Send AJAX request to update the likes count on the server
   $.ajax({
-    url: 'upd_likes.php', // Replace 'update_likes.php' with the actual server-side script that handles updating likes
-    method: 'POST', // You can use POST or GET depending on your server-side script requirements
+    url: 'upd_likes.php', // Replace with the actual server-side script for updating likes
+    method: 'POST', // Use POST or GET depending on your server-side script requirements
     data: {
       offer_id: offerId,
       action: 'like', // Indicate the action to perform (like or dislike)
@@ -392,6 +392,23 @@ $(document).on('click', '.fa-thumbs-up', function () {
     success: function (response) {
       // Update the likes count on the frontend with the response from the server
       likesCountElement.text(response.likes);
+      $.ajax({
+        url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
+        method: 'POST', // Use POST or GET depending on your server-side script requirements
+        data: {
+          offer_id: offerId,
+          likes: 1,
+          dislikes: 0,
+        },
+        dataType: 'json',
+        success: function (saveResponse) {
+          console.log('like history saved') ;
+
+        },
+        error: function (saveError) {
+          console.error('Error saving like history:', saveError);
+        }
+      });
     },
     error: function (error) {
       console.error('Error updating likes:', error);
@@ -405,8 +422,8 @@ $(document).on('click', '.fa-thumbs-down', function () {
 
   // Send AJAX request to update the dislikes count on the server
   $.ajax({
-    url: 'upd_likes.php', // Replace 'update_dislikes.php' with the actual server-side script that handles updating dislikes
-    method: 'POST', // You can use POST or GET depending on your server-side script requirements
+    url: 'upd_likes.php', // Replace with the actual server-side script for updating dislikes
+    method: 'POST', // Use POST or GET depending on your server-side script requirements
     data: {
       offer_id: offerId,
       action: 'dislike', // Indicate the action to perform (like or dislike)
@@ -415,6 +432,23 @@ $(document).on('click', '.fa-thumbs-down', function () {
     success: function (response) {
       // Update the dislikes count on the frontend with the response from the server
       dislikesCountElement.text(response.dislikes);
+      $.ajax({
+        url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
+        method: 'POST', // Use POST or GET depending on your server-side script requirements
+        data: {
+          offer_id: offerId,
+          likes: 0,
+          dislikes: 1,
+        },
+        dataType: 'json',
+        success: function (saveResponse) {
+          console.log('dislike history saved');
+
+        },
+        error: function (saveError) {
+          console.error('Error saving like history:', saveError);
+        }
+      });
     },
     error: function (error) {
       console.error('Error updating dislikes:', error);
