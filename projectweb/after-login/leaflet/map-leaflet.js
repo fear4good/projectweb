@@ -93,10 +93,6 @@ function filterMarkers(name) {
             popupContent += `<strong>${label}:</strong> ${value}<br>`;
           }
         }
-        if (distanceToOffer <= 10000000){
-          var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
-          popupContent += '<br>' + externalSiteLink2;
-        }
       } else {
         for (const key in keyToLabel) {
           if (markerData.hasOwnProperty(key)) {
@@ -116,6 +112,10 @@ function filterMarkers(name) {
           var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData)) + '" target="_blank">Αξιολόγηση</a>';
           popupContent += '<br>' + externalSiteLink;
         }
+      }
+      if (distanceToOffer <= 10000000){
+        var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
+        popupContent += '<br>' + externalSiteLink2;
       }
       if (isAdmin) {
         popupContent += '<br><button class="delete-offer-button" data-offer-id="' + markerData.offer_id + '">Delete offer</button>';

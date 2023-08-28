@@ -32,6 +32,8 @@ if (isset($_SESSION['loggedin'])) {
         <li class="left">Καλωσορίσατε, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
         <span class="user-score"></span></li>
 
+        <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
+
         <li>
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
                 <input type="text" id="search" placeholder="Search...">
