@@ -2,7 +2,10 @@ $(document).ready(function() {
 
     let data; // Declare the data variable in a higher scope to make it accessible to other functions
     let selectedProductId;
-    var supermarketId = window.markerid;
+    var urlParams = new URLSearchParams(window.location.search);
+    var marketidParam = urlParams.get('marketid');
+    var supermarketId = JSON.parse(marketidParam);
+
     // Function to populate categories and subcategories
     $.ajax({
       url: "fetch_products.php",
@@ -12,7 +15,6 @@ $(document).ready(function() {
         data = response; // Assign the retrieved data to the variable in the higher scope
         const categoryDropdown = $("#category-dropdown");
         const subcategoryDropdown = $("#subcategory-dropdown");
-        console.log(data);
         // Sort the data array alphabetically based on category_name
         data.sort((a, b) => a.category_name.localeCompare(b.category_name));
   

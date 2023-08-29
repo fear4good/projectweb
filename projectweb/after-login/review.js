@@ -1,11 +1,12 @@
 $(document).ready(function() {
   // Access the markerData object from the newly opened window
-  var markerData = window.markerData;
+  var urlParams = new URLSearchParams(window.location.search);
+  var marketidParam = urlParams.get('marketid');
+  var supermarketId = JSON.parse(marketidParam);
 
   // Function to create a single offer entry HTML element
   function createOfferEntry(offerData) {
-    var offerId = offerData.offer_id;
-
+    var offerId = offerData.id;
     // Create the main offer ID element
     var offerEntry = $('<div class="offer-entry">');
     var offerIdElement = $('<div class="offer-id">' + offerId + '</div>');
@@ -14,18 +15,18 @@ $(document).ready(function() {
     var offerDetails = $('<div class="offer-details">');
 
     // Array to store the properties in the desired order
-    var propertyOrder = ['poi_name', 'prod_name', 'discount', 'date', 'stock', 'category', 'subcategory','user_prov', 'tokens'];
+    var propertyOrder = ['poi_name', 'product_name', 'discount', 'date', 'stock', 'category_name', 'subcategory_name','user_username', 'user_tokens'];
 
     var propertyDisplayNames = {
-      poi_name: 'Point of Interest',
-      prod_name: 'Product Name',
+      poi_name: 'Market',
+      product_name: 'Product Name',
       discount: 'Discount (%)',
       date: 'Offer Date',
       stock: 'Stock',
-      category: 'Category',
-      subcategory: 'Subcategory',
-      user_prov: 'User Provided', // You can add more display names as needed
-      tokens: 'Tokens'
+      category_name: 'Category',
+      subcategory_name: 'Subcategory',
+      user_username: 'User Provided', // You can add more display names as needed
+      user_tokens: 'Tokens'
     };
   
     function displayStock(stockValue) {
@@ -82,7 +83,7 @@ $(document).ready(function() {
 
     // Create an image element with the 'offer-image' class and hide it initially
     var imageElement = $('<img class="offer-image" style="display: none;">');
-    var imagePath = 'prod_images/' + offerData.image_path;
+    var imagePath = 'prod_images/' + offerData.product_image;
     imageElement.attr('src', imagePath);
 
     // Append the image element to the offer entry
@@ -188,8 +189,25 @@ $(document).ready(function() {
 
   // Get the container element to display the offer entries
   var offerContainer = $('#offer-container');
+  $.ajax({
+    url: "get_offer_marketid.php",
+    method: "GET",
+    data: {
+      marketid: supermarketId
+    },
+    dataType: "json",
+    success: function(response) {
+      var Offerdata = response;
 
-  // Create the offer entry for the markerData object
-  var offerEntry = createOfferEntry(markerData);
-  offerContainer.append(offerEntry);
+      // Loop through the data and create and append offer entries
+      Offerdata.forEach(function(offerData) {
+        var offerEntry = createOfferEntry(offerData);
+        offerContainer.append(offerEntry);
+      });
+    },
+    error: function(error) {
+      console.error('Error fetching offer data:', error);
+    }
+  });
+
 });
