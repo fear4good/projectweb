@@ -15,8 +15,8 @@ body {
 h1 {
   text-align: center;
   padding: 20px 0;
-  background-color: #4285f4;
-  color: white;
+  background-color: #D7D7D9;
+  color: #DEA77E;
 }
 
 /* Form styling */
@@ -47,7 +47,7 @@ input[type="text"],
 input[type="password"],
 input[type="email"] {
   width: 100%;
-  padding: 10px;
+  padding: 6px; /* Adjusted padding */
   margin: 5px 0;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -56,7 +56,7 @@ input[type="email"] {
 /* Submit button styles */
 button[type="submit"] {
   padding: 10px 20px;
-  background-color: #4285f4;
+  background-color: #DEA77E;
   color: white;
   border: none;
   border-radius: 4px;
@@ -65,7 +65,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #357ae8;
+  background-color: #DEA77E;
 }
 
 /* List styles for user likes and dislikes */
@@ -78,6 +78,7 @@ ul {
 ul li {
   margin-bottom: 5px;
 }
+
 /* List styles for user offers */
 #user-offers ul {
   list-style-type: none;
@@ -126,4 +127,26 @@ ul li {
 #user-likes .offer-info,
 #user-dislikes .offer-info {
   flex: 1;
+}
+
+/* Styling for user score and tokens */
+#user-score,
+#user-tokens {
+  margin-top: 20px;
+  text-align: center;
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#user-score h2,
+#user-tokens h2 {
+  margin-bottom: 10px;
+}
+
+#user-score p,
+#user-tokens p {
+  font-size: 18px;
 }
