@@ -4,6 +4,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+
 map.locate({ setView: true, maxZoom: 11 });
 
 function onLocationFound(e) {
@@ -473,4 +474,3 @@ $(document).on('click', '.fa-thumbs-down', function () {
     }
   });
 });
-
