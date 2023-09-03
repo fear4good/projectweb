@@ -1,0 +1,137 @@
+/* Reset some default styling */
+body, html, ul, li, h1, h2, h3, p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color:#ebf4ff; /* Change background color to light blue */
+  background-image: url('leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
+  background-size: cover; /* This will cover the entire body with the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+}
+
+
+h1{
+  padding: 11px;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: auto; /* Take the entire screen width */
+  margin-bottom: 20px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left .return-icon {
+  width: 70px;
+  height: auto;
+  margin-right: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-center {
+  flex-grow: 1;
+  text-align: center; /* Center text horizontally */
+}
+
+.navbar-center h1 {
+  font-size: 24px; /* Adjust font size as needed */
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right .profile-picture{
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 50%;
+}
+.navbar-right .logout-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40px;
+}
+
+.dropdown-container {
+  width: 30%; 
+  padding: 40px;
+
+  background: #EAF4E5; 
+  border-radius: 20px;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center; 
+  gap: 10px; 
+  color: #BD634E;
+}
+
+.column {
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 80%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #BDBDBD;  
+  border-radius: 5px;
+  background: #FAFAFA; 
+  color: black;
+}
+
+button {
+  padding: 8px 10px;
+  background-color: #6B9DDA;  
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #009476;  
+}
+
+button:active {
+  background-color: #CDB494; 
+}
+
+.success-message {
+  color: #4CAF50;  
+}
+
+.error-message {
+  color: #F44336;  
+}
+

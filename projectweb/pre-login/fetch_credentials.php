@@ -3,6 +3,9 @@
 include "../connect.php";
 
 if(isset($_SESSION['role'])){
+    $role = $_SESSION['role'];
+    $name = $_SESSION['username'];
+    echo json_encode(['role' => $role, 'username'=> $name]);
     header("../after-login/main.php");
 }
 
@@ -96,12 +99,14 @@ if(isset($_POST['btn_login'])){
                     $_SESSION['loggedin'] = true;
                     $_SESSION['role'] = 'user';
                     $_SESSION['username'] = $lquery_ret['username'];
+                    $_SESSION['id'] = $lquery_ret['id'];
                 }
                 else{
                     $l_response['status'] = 1;
                     $_SESSION['loggedin'] = true;
                     $_SESSION['role'] = 'admin';
                     $_SESSION['username'] = $lquery_ret['username'];
+                    $_SESSION['id'] = $lquery_ret['id'];
                 }
             }
         }   

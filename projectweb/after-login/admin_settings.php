@@ -115,29 +115,7 @@ if (isset($_POST['buttonImportProd'])) {
             }
         }
     } else {
-        $errorMsg2 = 'Error uploading the file. Please try again.';
+        $errorMsg2 = 'Αποτυχία υποβολής αρχείου. Παρακαλώ προσπαθήστε ξανά.';
     }
 }
 ?>
-
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Import JSON File</title>
-</head>
-<body>
-    <form method="POST" enctype="multipart/form-data">
-        POIS JSON File <input type="file" name="jsonFile">
-        <br>
-        <input type="submit" value="Import" name="buttonImportPois">
-    </form>
-    <form method="POST" enctype="multipart/form-data">
-        PRODUCTS AND CATEGORIES JSON File <input type="file" name="jsonFile">
-        <br>
-        <input type="submit" value="Import" name="buttonImportProd">
-    </form>
-    <li><a href="main.php">Main</a></li>
-    <?php echo $errorMsg1, $errorMsg2 ; ?>
-</body>
-
-</html>

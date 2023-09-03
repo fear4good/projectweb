@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="add_offer.css">
+  <title>Add Offer</title>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="navbar-left">
+        <a href="main.php">
+            <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+        </a>
+    </div>
+    <div class="navbar-center">
+        <h1>Προσθήκη Προσφοράς</h1>
+    </div>
+    <div class="navbar-right">
+        <a id="profile" href="profile.html">
+            <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+        </a>
+        <a id="logout" href="logout.php">
+            <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+        </a>
+    </div>
+  </div>
+
+  <div class ="centered">
+
+    <div class="dropdown-container">
+      <div class="column">
+      <select id="category-dropdown">
+        <option value="">Επιλογή Κατηγορίας</option>
+      </select>
+      
+      <select id="subcategory-dropdown" disabled>
+        <option value="">Επιλογή Υποκατηγορίας</option>
+      </select>
+      <select id="product-dropdown" disabled>
+        <option value="">Επιλογή προϊόντος</option>
+      </select>
+      
+      <button id="clear-button">Καθαρισμός</button>
+    </div>
+
+    <div class="column">
+      <p>Αρχική Τιμή</p>
+      <input type="number" class="initial-price"  readonly>
+      <p>Τιμή Προσφοράς</p>
+      <input type="text" class="offer-price" placeholder="-">
+      <button id="submit-button" disabled>Υποβολή</button>
+        <div id="response-container"></div>
+      <p></p>
+    </div>
+
+  <div>
+</div>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="add_offer.js"></script>
+</body>
+</html>

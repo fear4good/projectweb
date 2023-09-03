@@ -1,0 +1,172 @@
+/* Reset some default styling */
+body, html, ul, li, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color:#ebf4ff; /* Change background color to light blue */
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: auto;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left .return-icon {
+    width: 70px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.navbar-center {
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-center form {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-center .dropdown-container {
+    margin-left: 40px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right .profile-picture{
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+.navbar-right .logout-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-right .admin-settings-picture {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
+
+#map {
+    width: 80%; /* Adjust the map width */
+    height: 80vh; /* Adjust the map height */
+    margin: 20px auto;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.popup-content {
+    margin-bottom: 10px; /* Add some spacing between offers */
+    border-bottom: 1px solid #ccc; /* Add a horizontal line between offers */
+    padding-bottom: 10px; /* Add some padding at the bottom of each offer */
+  }
+
+#search-form {
+    display: flex;
+    align-items: center;	
+    justify-content: center;
+    margin-top: 5px;
+}
+#search {
+    padding: 5px;
+    width: 300px; /* Adjust the search input width */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
+}
+
+#search:focus {
+    border-color: #555; /* Change border color on focus */
+}
+
+#btn_search {
+    background-color: #a09f9f;
+    color: black;
+    border: 1px solid #333; /* Add border */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#btn_search:hover {
+    background-color: #555; /* Change background color on hover */
+    border-color: #555; /* Change border color on hover */
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;	
+    justify-content: center;
+    margin-top: 5px;
+}
+
+#category-dropdown,
+#subcategory-dropdown {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
+}
+
+#category-dropdown:focus,
+#subcategory-dropdown:focus {
+    border-color: #555; /* Change border color on focus */
+}
+
+#submit-button,
+#clear-button {
+    background-color: #a09f9f;
+    color: black;
+    border: 1px solid #333; /* Add border */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#submit-button:hover,
+#clear-button:hover {
+    background-color: #555; /* Change background color on hover */
+    border-color: #555; /* Change border color on hover */
+}
+
+/* Hover styles for profile and logout buttons */
+#profile:hover,
+#logout:hover {
+    text-decoration: underline;
+}

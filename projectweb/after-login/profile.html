@@ -1,26 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="profile.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>User Profile</title>
+  <link rel="stylesheet" type="text/css" href="profile.css">
 </head>
 <body>
-  <h1>User Profile</h1>
-  <form id="profileForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username"  name="username" required>
 
-    <label for="password">Password: </label>
-    <input type="password" id="password" name="password" required>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="main.php">
+                <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+            </a>
+        </div>
+        <div class="navbar-center">
+            <h1>ΠΡΟΦΙΛ</h1>
+        </div>
+        <div class="navbar-right">
+            <a id="profile" href="profile.html">
+                <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+            </a>
+            <a id="logout" href="logout.php">
+                <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+            </a>
+        </div>
+    </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    <li><a href="main.php">Main</a></li>
+    <form id="profileForm">
+        <div class="form-group">
+            <div class="input-label">Name:</div>
+            <input type="text" id="username" name="name" readonly>
+        </div>
+        <div class="form-group">
+            <div class="input-label">Email:</div>
+            <input type="email" id="email" name="email" readonly>
+        </div>
+        <div class="form-group">
+            <div class="input-label">Monthly Score:</div>
+            <div id="user-Mscore"></div>
+        </div>
+        <div class="form-group">
+            <div class="input-label">Score:</div>
+            <div id="user-score"></div>
+        </div>
+        <div class="form-group">
+            <div class="input-label">Tokens:</div>
+            <div id="user-tokens"></div>
+        </div>
+
+        <div class="edit-profile">
+            <a href="edit_profile.html">Επεξεργασία Προφίλ</a>
+        </div>
+
+    </form>
+
+
+    <div class="user-offers-container">
+        <h2>Offer History</h2>
+        <div id="user-offers"></div>
+    </div>
     
-  </form>
+    <div class="likes-dislikes-container">
+        <!-- User's Likes -->
+        <div class="likes-dislikes">
+            <h2>Likes</h2>
+            <div id="user-likes"></div>
+        </div>
+    
+        <!-- User's Dislikes -->
+        <div class="likes-dislikes">
+            <h2>Dislikes</h2>
+            <div id="user-dislikes"></div>
+        </div>
+    </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-    <script src = "profile.js"></script>
 </body>
 </html>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src = "profile.js"></script>

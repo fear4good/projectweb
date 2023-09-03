@@ -3,13 +3,22 @@
 
 body{
     text-align: center;
+  background-color:#ebf4ff; /* Change background color to light blue */
+  background-image: url('../after-login/leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
+  background-size: cover; /* This will cover the entire body with the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* This ensures the container is centered vertically */
+  margin: 0; /* Remove default body margin */
 }
+    
 
   /* Add padding to containers */
   .container {
     padding: 16px;
     width: 25%;
-    display: inline-block;
     text-align: left;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
@@ -47,6 +56,9 @@ body{
     opacity:1;
   }
    
+  button[type=button]:active{
+    color:#B2FFDA;
+  }
 
   .form-message{
     background-color: rgb(255, 255, 255);

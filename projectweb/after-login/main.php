@@ -1,77 +1,60 @@
-<?php
-session_start();
-
-$is_admin = false;
-
-if (isset($_SESSION['loggedin'])) {
-    if ($_SESSION['role'] == 'admin') {
-        $is_admin = true;
-    }
-} else {
-    header('Location: ../index');
-    exit();
-}
-
-/* Connect to your database
-$db = new PDO('mysql:host=localhost;dbname=projectweb;charset=utf8', 'root', ' ');
-
-// Query the database for the categories
-$result = $db->query('SELECT name FROM categories');
-
-// Fetch the categories as an associative array
-$categories = $result->fetchAll(PDO::FETCH_ASSOC);
-*/
-
-
-?>
+<?php session_start(); ?>
 
 <!DOCTYPE html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>  
     <title>Welcome</title>
-    <link rel="stylesheet" href="website-style.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="leaflet/dist/css/leaflet.extra-markers.min.css">
-    
-
 </head>
 <body>
-    <ul>
-        <li><a href="logout.php">Logout</a></li>
-        <li><a href="profile.html">Profile</a></li>
-        <li class = "left"><a >Hi, <?php echo htmlspecialchars($_SESSION["username"]); ?></a></li>
-        <select id="category_select">
-        <option value="">All Categories</option>
-        <!--<option value="Groceries">Groceries</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Clothing">Clothing</option>
-        <option value="Books">Books</option> -->
+    <div class="navbar">
+        <div class="navbar-left">
+                <a href="main.php">
+                    <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+                </a>
+                <a>Καλωσορίσατε, <span id="welcome-username"></span></a>
+        </div>
 
-        <!-- li>
+        <div class="navbar-center">
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
-            <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
-            Add the new dropdown select for the product categories here 
-            <select id="category_select">
-              <option value="">All Categories</option>
-              <?php foreach ($categories as $category): ?>
-                <option value="<?php echo htmlspecialchars($category['category_name']); ?>">
-                  <?php echo htmlspecialchars($category['category_name']); ?>
-                </option>
-              <?php endforeach; ?>
-            </select> -->
-
-    </select>
-        <li>
-            <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
-            <input type="text" id="search" placeholder="Search..."> <style> #search{margin-top:13px;}</style>
-            <button type="button" id="btn_search">Search</button>
+                <input type="text" id="search" placeholder="Search...">
+                <button type="button" id="btn_search">Search</button>
             </form>
-            <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
-        </li>
-    </ul>
+
+            <div class="dropdown-container">
+                <select id="category-dropdown">
+                    <option value="">Select Category</option>
+                </select>
+                
+                <select id="subcategory-dropdown" disabled>
+                    <option value="">Select Subcategory</option>
+                </select>
+
+                <button id="submit-button" disabled>Submit</button>
+                <button id="clear-button">Clear</button>
+            </div>
+        </div>
+
+        <div class="navbar-right">
+            <li id="admin-settings-li" style="display: none;"><a href="admin_settings.html">
+                <img src="leaflet/images/admin_settings.png" alt="Admin Settings Picture" class="admin-settings-picture">
+                </a>
+            </li>
+            <a id="profile" href="profile.html">
+                <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+            </a>
+            <a id="logout" href="logout.php">
+                <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+            </a>
+        </div>
+    </div>
 
     <div id="map"></div>
+    
 </body>
 </html>
 

@@ -1,0 +1,109 @@
+<html>    
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Λειτουργίες Διαχειριστή</title>
+    <link rel="stylesheet" href="admin_settings.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="main.php">
+                <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+            </a>
+        </div>
+        <div class="navbar-center">
+            <h1>ΛΕΙΤΟΥΡΓΙΕΣ ΔΙΑΧΕΙΡΙΣΤΗ</h1>
+        </div>
+        <div class="navbar-right">
+            <a id="profile" href="profile.html">
+                <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+            </a>
+            <a id="logout" href="logout.php">
+                <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+            </a>
+        </div>
+    </div>
+
+    <div class="form-chart-container">
+    <div class="form-container">
+        <h2>Ανέβασμα αρχείου:</h2>
+        <form method="POST" enctype="multipart/form-data">
+        Πληροφορίες Καταστημάτων:<input type="file" name="jsonFile">
+            <br>
+            <input type="submit" value="Υποβολή" name="buttonImportPois">
+        </form>
+        <form method="POST" enctype="multipart/form-data">
+            Πληροφορίες προϊόντων:<input type="file" name="jsonFile">
+            <br>
+            <input type="submit" value="Υποβολή" name="buttonImportProd">
+        </form>
+    </div>
+    <div class="charts-container">
+        <h2>Προβολή Γραφημάτων:</h2>
+        <!-- Dropdown for selecting the chart -->
+        <select id="chart-select">
+            <option value="">Επιλογή Γραφήματος</option>
+            <option value="3a">Προσφορές</option>
+            <option value="3b">Μέση Έκπτωση</option>
+        </select>
+
+        <!-- Inputs for selecting the year and the month -->
+        <div id="date-inputs" style="display: none;">
+            <label for="year">Χρόνος:</label>
+            <input type="number" id="year" min="2000" max="2099" step="1" value="2023" />
+            <label for="month">Μήνας:</label>
+            <input type="number" id="month" min="1" max="12" step="1" value="1" />
+            <button id="show-button">Εμφάνιση</button>
+        </div>
+
+        <!-- Inputs for selecting the category and subcategory -->
+        <div id="discount-inputs" style="display: none;">
+            <select id="category-dropdown">
+                <option value="">Επιλογή Κατηγορίας</option>
+            </select>
+                    
+            <select id="subcategory-dropdown" disabled>
+                <option value="">Επιλογή Υποκατηγορίας</option>
+            </select>
+            <button id="show-button2">Εμφάνιση</button>
+            <button id="clear-button2">Καθαρισμός</button>
+        </div>
+        
+
+
+        <!-- Placeholder for the chart -->
+    <div class="chart-container" style="position: relative; height:40vh; width:40vw">
+            <canvas id="chart"></canvas>
+        </div>
+        
+        <script src="graphs.js"></script>
+    </div>
+    </div>
+        <!-- Container for Leaderboard -->
+        <h2>Πίνακας Κατάταξης:</h2>
+
+        <div id="leaderboardContainer">
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th>Κατάταξη </th>
+                        <th>Όνομα Χρήστη</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                </tbody>
+            </table>
+            <div id="pagination"></div>
+
+            <script src="get_leaderboard.js"></script>
+        </div>
+
+
+</body>
+
+</html>
