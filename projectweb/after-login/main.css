@@ -9,28 +9,72 @@ body {
     background-color:#ebf4ff; /* Change background color to light blue */
 }
 
-ul {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    background-color: #333;
-    color: white;
-    padding: 10px;
-}
-
-ul li {
-    margin-right: 20px;
-}
-
 a {
     text-decoration: none;
     color: white;
 }
 
-#usertype {
-    display: none;
-    /* Add your styling for the user type navbar */
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: auto;
 }
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left .return-icon {
+    width: 70px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.navbar-center {
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-center form {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-center .dropdown-container {
+    margin-left: 40px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right .profile-picture{
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+.navbar-right .logout-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-right .admin-settings-picture {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
 
 #map {
     width: 80%; /* Adjust the map width */
@@ -40,6 +84,7 @@ a {
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 
 .popup-content {
     margin-bottom: 10px; /* Add some spacing between offers */
@@ -53,7 +98,6 @@ a {
     justify-content: center;
     margin-top: 5px;
 }
-
 #search {
     padding: 5px;
     width: 300px; /* Adjust the search input width */
@@ -68,8 +112,8 @@ a {
 }
 
 #btn_search {
-    background-color: #333;
-    color: white;
+    background-color: #a09f9f;
+    color: black;
     border: 1px solid #333; /* Add border */
     border-radius: 5px;
     padding: 5px 10px;
@@ -84,7 +128,9 @@ a {
 
 .dropdown-container {
     display: flex;
-    align-items: center;
+    align-items: center;	
+    justify-content: center;
+    margin-top: 5px;
 }
 
 #category-dropdown,
@@ -103,8 +149,8 @@ a {
 
 #submit-button,
 #clear-button {
-    background-color: #333;
-    color: white;
+    background-color: #a09f9f;
+    color: black;
     border: 1px solid #333; /* Add border */
     border-radius: 5px;
     padding: 5px 10px;
@@ -119,36 +165,8 @@ a {
     border-color: #555; /* Change border color on hover */
 }
 
-/* Additional styles for the supermarket theme */
-ul li.left {
-    margin-right: auto; /* Align left elements to the right */
-}
-
-ul li.left .fa-shopping-cart {
-    display: none; /* Hide the shopping cart icon */
-}
-
-ul li.left .user-score {
-    margin-left: 10px;
-    font-weight: bold;
-}
-
-/* Style for admin settings */
-ul li.admin-settings {
-    margin-right: auto;
-    margin-left: 0;
-}
-
-ul li.admin-settings a {
-    color: #e74c3c; /* Change color for admin settings */
-}
-
 /* Hover styles for profile and logout buttons */
 #profile:hover,
 #logout:hover {
     text-decoration: underline;
 }
-
-
-
-/* Add any additional styles specific to the supermarket theme */

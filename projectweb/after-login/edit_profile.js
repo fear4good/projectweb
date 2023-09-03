@@ -1,9 +1,13 @@
 $(document).ready(function() {
+
+  const responseContainer = $("#response-message");
+  responseContainer.removeClass("success-message error-message");
+
   // Change Username Form Submission
   $("#change-username-form").submit(function(event) {
     event.preventDefault();
     const newUsername = $("#new-username").val();
-
+    responseContainer.removeClass("success-message error-message");
      // Send AJAX request to update the username using update_username.php
     $.ajax({
       url: "update_username.php",
@@ -11,15 +15,16 @@ $(document).ready(function() {
       data: { new_username: newUsername },
       dataType: "json",
       success: function(response) {
-        // Handle the response (show a success message, update UI, etc.)
         if (response.success) {
-          console.log(response.message);
+          // Display a success message in the response-message div
+          $("#response-message").html("<p class='success-message'>" + response.message + "</p>");
         } else {
-          console.error("Error updating username:", response.message);
+          // Display an error message in the response-message div
+          $("#response-message").html("<p class='error-message'>" + response.message + "</p>");
         }
       },
-      error: function(response) {
-        console.error("Error updating username:", response);
+      error: function(xhr, textStatus, errorThrown) {
+        $("#response-message").html("<p class='error-message'>Error updating username: " + textStatus + errorThrown + "</p>");
       }
     });
   });
@@ -28,18 +33,28 @@ $("#change-password-form").submit(function(event) {
   event.preventDefault();
   const currentPassword = $("#current-password").val();
   const newPassword = $("#new-password").val();
+  responseContainer.removeClass("success-message error-message");
 
-  // Send AJAX request to update the password using update_password.php
   $.ajax({
     url: "update_password.php",
     method: "POST",
-    data: { "current_password": currentPassword, "new_password": newPassword },
+    data: { "current_password": currentPassword, 
+            "new_password": newPassword },
+    cache: "false",
+    dataType: 'json',
     success: function(response) {
-      // Handle the response (show a success message, update UI, etc.)
-      console.log(response); // Response is a plain text message
+      if (response.success) {
+        // Display a success message in the response-message div
+        $("#response-message").html("<p class='success-message'>" + response.message + "</p>");
+        alert('Correct Password. You are gonna get logged out');
+        window.location.href = "logout.php";
+      } else {
+        // Display an error message in the response-message div
+        $("#response-message").html("<p class='error-message'>" + response.message + "</p>");
+      }
     },
     error: function(xhr, textStatus, errorThrown) {
-      console.error("Error updating password:", textStatus, errorThrown);
+      $("#response-message").html("<p class='error-message'>Error updating password: " + textStatus + errorThrown + "</p>");
     }
   });
 });
@@ -47,6 +62,7 @@ $("#change-password-form").submit(function(event) {
   $("#change-email-form").submit(function(event) {
     event.preventDefault();
     const newEmail = $("#new-email").val();
+    responseContainer.removeClass("success-message error-message");
 
     // Send AJAX request to update the email using update_email.php
     $.ajax({
@@ -55,10 +71,16 @@ $("#change-password-form").submit(function(event) {
       data: { new_email: newEmail },
       dataType: "json",
       success: function(response) {
-        console.log(response);
+        if (response.success) {
+          // Display a success message in the response-message div
+          $("#response-message").html("<p class='success-message'>" + response.message + "</p>");
+        } else {
+          // Display an error message in the response-message div
+          $("#response-message").html("<p class='error-message'>" + response.message + "</p>");
+        }
       },
-      error: function(error) {
-        console.error("Error updating email:", error);
+      error: function(xhr, textStatus, errorThrown) {
+        $("#response-message").html("<p class='error-message'>Error updating email: " + textStatus + errorThrown + "</p>");
       }
     });
   });

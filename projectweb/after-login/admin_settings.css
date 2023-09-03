@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #F5DFDB;
+    background-color: #ebf4ff;
     color: #333333;
     display:flex;
     flex-direction: column; /* Added */
@@ -14,28 +14,76 @@ body {
 }
 
 h1{
-    background-color:#D6CEC7 ;
+    padding: 11px;
     width: 100%;
-    padding:20px;
-    color: #829392;
+    color: #fff;
     text-align: center;
 }
 
 h2 {
     text-align: center;
-    color: #829392;
+    color: #000;
     margin:10px;
 }
 
 /* Forms */
 form {
     align-items: center;
-    background-color: #EDEAE6;
+    background-color: #f2f2f2;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 5px 5px 5px #D6CEC7;
     width: 80%;
     margin:10px;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 100%; /* Take the entire screen width */
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left .return-icon {
+    width: 70px;
+    height: auto;
+    margin-right: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-center {
+    flex-grow: 1;
+    text-align: center; /* Center text horizontally */
+}
+
+.navbar-center h1 {
+    font-size: 24px; /* Adjust font size as needed */
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right .profile-picture{
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+.navbar-right .logout-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
 }
 
 input[type="file"], input[type="number"], input[type="submit"] {
@@ -66,7 +114,7 @@ input[type="submit"]:active {
 /* Chart */
 .chart-container {
     margin: 10px;
-    background-color: #EDEAE6;
+    background-color: #f2f2f2;
     box-shadow: 5px 5px 5px #D6CEC7;
 }
 
@@ -78,7 +126,7 @@ flex-direction: column;
 
 /* Leaderboard */
 #leaderboardContainer {
-    background-color: #EDEAE6;
+    background-color: #f2f2f2;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 5px 5px 5px #D6CEC7;
@@ -162,3 +210,6 @@ width:80%;
     width:30%;
     margin:10px;
 }
+
+
+

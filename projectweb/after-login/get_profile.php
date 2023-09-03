@@ -1,10 +1,11 @@
 <?php
 
     include '../connect.php';
+    
     $logged_user = $_SESSION['username'];
 
     $userData = array();
-    $sql_user = "SELECT username, password, email FROM users WHERE username=?";
+    $sql_user = "SELECT username, email FROM users WHERE username=?";
     $stmt = $db->prepare($sql_user);
     $stmt->bind_param("s", $logged_user);
     $stmt->execute();
@@ -14,7 +15,6 @@
         while ($row = $result->fetch_assoc()) {
             $uData = array(
                 'username' => $row['username'],
-                'password' => $row['password'],
                 'email' => $row['email']
             );
             $userData[] = $uData;

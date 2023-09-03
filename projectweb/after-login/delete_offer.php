@@ -16,7 +16,7 @@ if ($stmt->execute()) {
     $response['success'] = true;
 } else {
     $response['success'] = false;
-    $response['error'] = "Error deleting offer: " . $conn->error;
+    $response['error'] = "Error deleting offer: " . $db->error;
 }
 
 $stmt->close();

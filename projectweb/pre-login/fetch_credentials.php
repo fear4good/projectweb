@@ -4,7 +4,8 @@ include "../connect.php";
 
 if(isset($_SESSION['role'])){
     $role = $_SESSION['role'];
-    echo json_encode(['role' => $role]);
+    $name = $_SESSION['username'];
+    echo json_encode(['role' => $role, 'username'=> $name]);
     header("../after-login/main.php");
 }
 

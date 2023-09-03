@@ -9,14 +9,59 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   color: #333;
+  background-image: url('leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
+  background-size: cover; /* This will cover the entire body with the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
 }
 
-/* Page header styles */
-h1 {
-  text-align: center;
-  padding: 20px 0;
-  background-color: #D7D7D9;
-  color: #DEA77E;
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: auto; /* Take the entire screen width */
+  margin-bottom: 20px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left .return-icon {
+  width: 70px;
+  height: auto;
+  margin-right: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-center {
+  flex-grow: 1;
+  text-align: center; /* Center text horizontally */
+}
+
+.navbar-center h1 {
+  font-size: 24px; /* Adjust font size as needed */
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right .profile-picture{
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 50%;
+}
+.navbar-right .logout-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
 }
 
 /* Form styling */
@@ -28,18 +73,17 @@ form {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-/* Form header styles */
-h2 {
-  margin-top: 20px;
+
+
+.form-container h2 {
+  text-align: center;
 }
 
-/* Form label styles */
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+#change-username-form button{
+  align-items: center;
 }
 
 /* Input field styles */
@@ -64,89 +108,23 @@ button[type="submit"] {
   transition: background-color 0.2s;
 }
 
+
 button[type="submit"]:hover {
   background-color: #DEA77E;
 }
 
-/* List styles for user likes and dislikes */
-ul {
-  list-style: none;
-  margin: 10px 0;
-  padding: 0;
-}
 
-ul li {
-  margin-bottom: 5px;
-}
-
-/* List styles for user offers */
-#user-offers ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#user-offers li {
-  background-color: #fff;
+.response-message {
+  margin-top: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-}
-
-#user-offers img {
-  max-width: 100px;
-  margin-right: 10px;
-}
-
-/* List styles for user likes and dislikes */
-#user-likes ul,
-#user-dislikes ul {
-  list-style: none;
-  margin: 10px 0;
-  padding: 0;
-}
-
-#user-likes li,
-#user-dislikes li {
-  margin-bottom: 5px;
-  background-color: #f9f9f9;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-}
-
-#user-likes img,
-#user-dislikes img {
-  max-width: 50px;
-  margin-right: 10px;
-}
-
-#user-likes .offer-info,
-#user-dislikes .offer-info {
-  flex: 1;
-}
-
-/* Styling for user score and tokens */
-#user-score,
-#user-tokens {
-  margin-top: 20px;
+  border-radius: 5px;
   text-align: center;
-  background-color: #fff;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#user-score h2,
-#user-tokens h2 {
-  margin-bottom: 10px;
+.success-message {
+  color: green;
 }
 
-#user-score p,
-#user-tokens p {
-  font-size: 18px;
+.error-message {
+  color: red;
 }

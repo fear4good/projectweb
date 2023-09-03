@@ -1,20 +1,4 @@
-<?php
-session_start();
-
-$is_admin = false;
-
-if (isset($_SESSION['loggedin'])) {
-    if ($_SESSION['role'] == 'admin') {
-        $is_admin = true;
-    }
-} else {
-    header('Location: ../index');
-    exit();
-}
-
-
-?>
-
+<?php session_start(); ?>
 
 <!DOCTYPE html>
 <head>
@@ -27,23 +11,23 @@ if (isset($_SESSION['loggedin'])) {
     <link rel="stylesheet" href="leaflet/dist/css/leaflet.extra-markers.min.css">
 </head>
 <body>
-    <div id="usertype" style="display:none;" data-usertype="<?php echo (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') ? 'admin' : 'user'; ?>"></div>
-    <ul>
-        <li class="left">Καλωσορίσατε, <?php echo htmlspecialchars($_SESSION["username"]);?> Tokens: <span class="tokens"></span>
-        <span class="user-score"></span></li>
+    <div class="navbar">
+        <div class="navbar-left">
+                <a href="main.php">
+                    <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+                </a>
+                <a>Καλωσορίσατε, <span id="welcome-username"></span></a>
+        </div>
 
-        <?php if ($is_admin): ?><li><a href="upload_data.php">Admin Settings</a></li><?php endif; ?>
-
-        <li>
+        <div class="navbar-center">
             <form autocomplete="off" method="POST" id="search-form" onsubmit="return false;"> 
                 <input type="text" id="search" placeholder="Search...">
                 <button type="button" id="btn_search">Search</button>
             </form>
-        </li>
-        <li>
+
             <div class="dropdown-container">
                 <select id="category-dropdown">
-                <option value="">Select Category</option>
+                    <option value="">Select Category</option>
                 </select>
                 
                 <select id="subcategory-dropdown" disabled>
@@ -52,14 +36,25 @@ if (isset($_SESSION['loggedin'])) {
 
                 <button id="submit-button" disabled>Submit</button>
                 <button id="clear-button">Clear</button>
+            </div>
         </div>
 
-        <li><a id = "profile" href="profile.html">Profile</a></li>
-        <li><a id = "logout" href="logout.php">Logout</a></li>
-        </li>
-    </ul>
+        <div class="navbar-right">
+            <li id="admin-settings-li" style="display: none;"><a href="admin_settings.html">
+                <img src="leaflet/images/admin_settings.png" alt="Admin Settings Picture" class="admin-settings-picture">
+                </a>
+            </li>
+            <a id="profile" href="profile.html">
+                <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+            </a>
+            <a id="logout" href="logout.php">
+                <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+            </a>
+        </div>
+    </div>
 
     <div id="map"></div>
+    
 </body>
 </html>
 
@@ -68,4 +63,3 @@ if (isset($_SESSION['loggedin'])) {
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
 <script src="leaflet/map-leaflet.js"></script>
 <script src="leaflet/dist/js/leaflet.extra-markers.min.js"></script>
-<script src="fetch_score.js"></script>

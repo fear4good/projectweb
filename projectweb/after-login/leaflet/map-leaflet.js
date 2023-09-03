@@ -24,14 +24,32 @@ L.control.locate().addTo(map);
 var markerDataList = [];
 
 var isAdmin = false;
+var username = '';
+
 fetch('../pre-login/fetch_credentials.php')
   .then(response => response.json())
   .then(data => {
+    username = data.username;
     isAdmin = data.role === 'admin';
+
+
+    // Update the welcome message with the fetched username
+    const welcomeUsernameSpan = document.getElementById('welcome-username');
+    welcomeUsernameSpan.textContent = username;
+
+    // Get the <li> element for "Admin Settings"
+    const adminSettingsLi = document.getElementById('admin-settings-li');
+
+    // Show the "Admin Settings" link if the user is an admin
+    if (isAdmin) {
+      adminSettingsLi.style.display = 'block';
+    }
   })
   .catch(error => {
-      console.error('Error fetching role', error);
+    console.error('Error fetching data', error);
   });
+
+
 
 var userLocationMarker = null;
 
@@ -141,17 +159,12 @@ function filterMarkers(name) {
     for (const poi_id in groupedOffers) {
       const offersAtLocation = groupedOffers[poi_id];
 
-      // Set token count for the first offer in the group
-      $('.tokens').text(offersAtLocation[0].tokens);
-
       // Determine marker color based on the discount of the first offer in the group
       const firstOfferDiscount = offersAtLocation[0].discount;
       var markerColor = firstOfferDiscount ? 'green' : 'red';
       var markerIcon = L.ExtraMarkers.icon({
         markerColor: markerColor,
       });
-
-
 
       // Generate consolidated popup content for all offers at this location
       let popupContent = '';
