@@ -77,25 +77,31 @@ $(document).ready(function() {
 
     // Create the arrow icon for expanding/collapsing the offer details
     var arrowIcon = $('<i class="fa fa-chevron-right"></i>');
-    offerEntry.append(arrowIcon);
-    offerEntry.append(offerIdElement);
-    offerEntry.append(offerDetails);
+
 
     // Create an image element with the 'offer-image' class and hide it initially
-    var imageElement = $('<img class="offer-image" style="display: none;">');
+    var imageElement = $('<img class="offer-image">');
     var imagePath = 'prod_images/' + offerData.product_image;
     imageElement.attr('src', imagePath);
 
-    // Append the image element to the offer entry
-    offerEntry.append(imageElement);
-    offerEntry.append(likesDislikesContainer);
+
+    var leftContainer = $('<div class = left-offer-container></div>');
+    leftContainer.append(imageElement);
+    var centerContainer = $('<div class = center-offer-container></div>');
+    centerContainer.append(offerIdElement);
+    var rightContainer = $('<div class = right-offer-container></div>');
+    rightContainer.append(arrowIcon);
+
+    var expandContainer = $('<div class = expand-offer-container></div>');
+    expandContainer.append(offerDetails, likesDislikesContainer)
+
+    offerEntry.append(leftContainer, centerContainer, rightContainer, expandContainer);
 
     // Event listener for clicking the arrow icon to expand/collapse the offer details
     arrowIcon.on('click', function () {
-      offerDetails.toggle(); // Toggle the visibility of the offer details
-      imageElement.toggle(); // Toggle the visibility of the image
+      expandContainer.toggle(); // Toggle the visibility of the offer details
       likesDislikesContainer.toggle(); // Toggle the visibility of the likes and dislikes container
-      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction
+      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction 
     });
 
     // Event listener for clicking the thumbs-up icon (likes)

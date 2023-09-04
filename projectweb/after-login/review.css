@@ -1,15 +1,152 @@
+body, html, ul, li, h1, h2, h3, p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color:#ebf4ff; /* Change background color to light blue */
+  background-image: url('leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
+  background-size: cover; /* This will cover the entire body with the background image */
+  background-repeat:repeat-y; /* Prevent the image from repeating */
+  width: 100%;
+  height: 100vh;
+}
+
+
+h1{
+  padding: 11px;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+}
+
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: auto; /* Take the entire screen width */
+  margin-bottom: 20px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left .return-icon {
+  width: 70px;
+  height: auto;
+  margin-right: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-center {
+  flex-grow: 1;
+  text-align: center; /* Center text horizontally */
+}
+
+.navbar-center h1 {
+  font-size: 24px; /* Adjust font size as needed */
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right .profile-picture{
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  border-radius: 50%;
+}
+.navbar-right .logout-icon {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+.navbar-right .admin-settings-picture {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
+#offer-container{
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+
+  overflow:-moz-hidden-unscrollable; /* Add this to enable vertical scrolling if needed */
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column; /* Stack child divs vertically */
+  margin-top: 150px;
+}
+
 .offer-entry {
-  overflow: hidden; /* Clear floats */
-}
-  
-.offer-id {
-  float: left; /* Float the offer_id to the left */
+  overflow:visible;
+  width: 700px;
+
+  background-color: #F2F2F0;
+  border: 1px solid gray;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap to the next row when necessary */
+  justify-content: flex-start;
+
+  margin-bottom: 10px; /* Add margin to create space between offer-entries */
+  transition: margin-bottom 0.3s ease; /* Add a smooth transition for margin changes */
 }
 
 
-.offer-details {
+.offer-entry .left-offer-container{
+  display:grid;
+  width: 50px;  
+  height: 60px;
+  justify-content: center; /* Horizontally center items */
+  align-items: center; /* Vertically center items */
+}
+
+.offer-entry .center-offer-container{
+  display:grid;
+  width: 600px;
+  height: 60px;
+  justify-content: center; /* Horizontally center items */
+  align-items: center; /* Vertically center items */
+}
+
+.offer-entry .right-offer-container{
+  display:grid;
+  width: 50px;
+  height: 60px;
+  justify-content: center; /* Horizontally center items */
+  align-items: center; /* Vertically center items */
+}
+
+
+.expand-offer-container {
   display: none; /* Hide offer details by default */
+  overflow: visible;
+  width: 100%;
+  margin-left: 10px;
 }
+
+.offer-image{
+  width: 50px;
+  height: 50px;
+}
+
 
 /* Styles for disabled likes and dislikes icons */
 .likes-dislikes i.fa.fa-thumbs-up,

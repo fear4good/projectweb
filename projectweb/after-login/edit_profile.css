@@ -64,6 +64,13 @@ body {
   /* Adjust the width, height, and margin as needed */
 }
 
+.navbar-right .admin-settings-picture {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
 /* Form styling */
 form {
   max-width: 400px;

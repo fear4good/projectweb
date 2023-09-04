@@ -70,6 +70,13 @@ h1{
   /* Adjust the width, height, and margin as needed */
 }
 
+.navbar-right .admin-settings-picture {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
 .centered {
   display: flex;
   justify-content: center;
@@ -81,7 +88,7 @@ h1{
   width: 30%; 
   padding: 40px;
 
-  background: #EAF4E5; 
+  background: #ebf4ff; 
   border-radius: 20px;
   box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
   display: flex;

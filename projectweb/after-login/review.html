@@ -2,14 +2,45 @@
 <html>
 <head>
   <title>Review</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="review.css">
   <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
-<body>
-  <div id="offer-container">
-    <!-- Offers will be dynamically added here by review.js -->
+
+<div class="navbar">
+  <div class="navbar-left">
+      <a href="main.php">
+          <img src="leaflet/images/return_icon.png" title="SuperMap" alt="Return to Main" class="return-icon">
+      </a>
   </div>
+  <div class="navbar-center">
+      <h1>Review</h1>
+  </div>
+  <div class="navbar-right">
+      <li id="admin-settings-li" style="display: none;">
+        <a href="admin_settings.html">
+            <img src="leaflet/images/admin_settings.png" title="Admin Settings" alt="Admin Settings Picture" class="admin-settings-picture">
+        </a>
+      </li>
+      <a id="profile" href="profile.html">
+          <img src="leaflet/images/profile_picture.jpg" title="Profile" alt="Profile Picture" class="profile-picture">
+      </a>
+      <a id="logout" href="logout.php">
+          <img src="leaflet/images/logout_icon.png" title="Logout" alt="Logout" class="logout-icon">
+      </a>
+  </div>
+</div>
+
+<body>
+
+
+
+  <div id="offer-container"></div>
+    <!-- Offers will be dynamically added here by review.js -->
+
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="role-check.js"></script>
   <script src="review.js"></script>
 </body>
 </html>

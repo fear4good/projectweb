@@ -9,6 +9,9 @@ map.locate({ setView: true, maxZoom: 11 });
 
 function onLocationFound(e) {
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+    if(e.latlng == null){
+      onLocationFound;
+    }
   }
   
 // Handle location error event
@@ -19,6 +22,8 @@ function onLocationError(e) {
 // Listen for location found and error events
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
+
+
 
 L.control.locate().addTo(map);
 
@@ -89,11 +94,11 @@ function filterMarkers(name) {
         prod_name: 'Product',
         user_prov: 'Provider',
         discount: 'Discount',
-        likes: `<i class="fa fa-thumbs-up" data-offer-id="${markerData.offer_id}"></i> <span class="likes">${markerData.likes}</span>`,
-        dislikes: `<i class="fa fa-thumbs-down" data-offer-id="${markerData.offer_id}"></i> <span class="dislikes">${markerData.dislikes}</span>`,
         stock: 'Stock',
         category: 'Category',
-        subcategory: 'Subcategory'
+        subcategory: 'Subcategory',
+        likes: `<i class="fa fa-thumbs-up" data-offer-id="${markerData.offer_id}"></i> <span class="likes">${markerData.likes}</span>`,
+        dislikes: `<i class="fa fa-thumbs-down" data-offer-id="${markerData.offer_id}"></i> <span class="dislikes">${markerData.dislikes}</span>`
       };
     
       const OnlyNamekeyToLabel = {
@@ -118,7 +123,7 @@ function filterMarkers(name) {
             const label = keyToLabel[key];
             const value = markerData[key];
             if (key === 'likes' || key === 'dislikes') {
-              popupContent += `${label}<br>`;
+              popupContent += `${label}&nbsp`;
             } else if (key === 'stock') {
               var stockStatus = value > 0 ? 'Yes' : 'No';
               popupContent += 'Stock: ' + stockStatus + '<br>';
@@ -128,12 +133,12 @@ function filterMarkers(name) {
           }
         }
         if(distanceToOffer<= 1000000){
-          var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Αξιολόγηση</a>';
+          var externalSiteLink = '<a href="#" class="review-link" data-marker-data="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Review</a>';
           popupContent += '<br>' + externalSiteLink;
         }
       }
       if (distanceToOffer <= 10000000){
-        var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Προσθήκη Προσφοράς</a>';
+        var externalSiteLink2 = '<a href="#" class="add-offer-link" data-marker-id="' + encodeURIComponent(JSON.stringify(markerData.poi_id)) + '" target="_blank">Add Offer</a>';
         popupContent += '<br>' + externalSiteLink2;
       }
       if (isAdmin) {
