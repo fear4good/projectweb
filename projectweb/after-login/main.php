@@ -1,4 +1,13 @@
-<?php session_start(); ?>
+<?php 
+
+    session_start();
+    
+    $now = time();
+
+    if ($now > $_SESSION['expire']) {
+        header('Location: logout.php');
+    }
+?>
 
 <!DOCTYPE html>
 <head>

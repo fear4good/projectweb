@@ -100,6 +100,8 @@ if(isset($_POST['btn_login'])){
                     $_SESSION['role'] = 'user';
                     $_SESSION['username'] = $lquery_ret['username'];
                     $_SESSION['id'] = $lquery_ret['id'];
+                    $_SESSION['start'] = time();
+                    $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
                 }
                 else{
                     $l_response['status'] = 1;
@@ -107,6 +109,8 @@ if(isset($_POST['btn_login'])){
                     $_SESSION['role'] = 'admin';
                     $_SESSION['username'] = $lquery_ret['username'];
                     $_SESSION['id'] = $lquery_ret['id'];
+                    $_SESSION['start'] = time();
+                    $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
                 }
             }
         }   
