@@ -85,12 +85,18 @@ a {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.leaflet-popup-content{
+    max-height: 300px;
+    overflow:auto;
+}
 
 .popup-content {
     margin-bottom: 10px; /* Add some spacing between offers */
     border-bottom: 1px solid #ccc; /* Add a horizontal line between offers */
     padding-bottom: 10px; /* Add some padding at the bottom of each offer */
-  }
+    width: 280px;
+}
+
 
 #search-form {
     display: flex;

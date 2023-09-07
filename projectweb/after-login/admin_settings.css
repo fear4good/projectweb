@@ -86,6 +86,13 @@ form {
     /* Adjust the width, height, and margin as needed */
 }
 
+.navbar-right .admin-settings-picture {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    /* Adjust the width, height, and margin as needed */
+}
+
 input[type="file"], input[type="number"], input[type="submit"] {
     margin: 5px;
     padding: 5px;
@@ -116,6 +123,7 @@ input[type="submit"]:active {
     margin: 10px;
     background-color: #f2f2f2;
     box-shadow: 5px 5px 5px #D6CEC7;
+    border-radius: 5px;
 }
 
 

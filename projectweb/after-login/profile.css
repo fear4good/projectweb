@@ -10,6 +10,7 @@ body {
   background-image: url('leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
   background-size: cover; /* This will cover the entire body with the background image */
   background-repeat: no-repeat; /* Prevent the image from repeating */
+  
 }
 
 a {
@@ -75,6 +76,13 @@ h1{
   /* Adjust the width, height, and margin as needed */
 }
 
+.navbar-right .admin-settings-picture {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
   
 #profileForm {
   text-align: center;
@@ -84,6 +92,7 @@ h1{
   padding-left: 80px;
   padding-right: 80px;
   padding-top: 20px;
+  padding-bottom: 20px;
   background-color: #F2F2F0;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
@@ -99,7 +108,8 @@ h1{
 
 #user-score,
 #user-Mscore,
-#user-tokens{
+#user-tokens,
+#user-Mtokens{
   padding-left: 10px;
 }
 
@@ -130,18 +140,6 @@ input[type="email"] {
   padding: 5px;
 }
 
-
-  /* List styles for user likes and dislikes */
-ul {
-  list-style: none;
-  margin: 10px 0;
-  padding: 0;
-}
-
-ul li {
-  margin-bottom: 5px;
-}
-
 .likes-dislikes-container {
   display: flex;
   justify-content: space-between;
@@ -158,6 +156,8 @@ ul li {
   display: flex;
   flex-wrap: wrap; /* Allow elements to wrap into a new row when necessary */
   justify-content: space-between; /* Create space between columns */
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 #user-offers li {
@@ -170,7 +170,7 @@ ul li {
   align-items: center;
   width: calc(50% - 10px); /* Set the width of each item to 50% minus spacing */
   box-sizing: border-box; /* Include padding and border in the element's total width */
-  margin-left: 10px
+  overflow:visible;
 }
 
 #user-offers img {
@@ -180,7 +180,7 @@ ul li {
 
 #user-likes,
 #user-dislikes{
- padding-left: 60px;
+ padding-left: 20px;
 }
 
 /* List styles for user likes and dislikes */
@@ -200,7 +200,8 @@ ul li {
   border-radius: 4px;
   display: flex;
   align-items: center;
-  width: 800px;
+  width: auto;
+  overflow: visible;
 }
 
 #user-likes img,

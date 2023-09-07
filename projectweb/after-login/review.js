@@ -13,7 +13,6 @@ $(document).ready(function() {
 
     // Create the details container for each offer
     var offerDetails = $('<div class="offer-details">');
-
     // Array to store the properties in the desired order
     var propertyOrder = ['poi_name', 'product_name', 'discount', 'date', 'stock', 'category_name', 'subcategory_name','user_username', 'user_tokens'];
 
@@ -25,7 +24,7 @@ $(document).ready(function() {
       stock: 'Stock',
       category_name: 'Category',
       subcategory_name: 'Subcategory',
-      user_username: 'User Provided', // You can add more display names as needed
+      user_username: 'User Provided',
       user_tokens: 'Tokens'
     };
   
@@ -33,20 +32,18 @@ $(document).ready(function() {
       return stockValue > 0 ? 'Yes' : 'No';
     }
   
-    // Loop through the properties and display them in the details container
     propertyOrder.forEach(function (prop) {
-      if (offerData[prop]) {
-        var detailElement;
-        var propName = propertyDisplayNames[prop] || prop; // Use the display name if available, or the original key name
-        
-        // Special handling for the "stock" property
-        var propValue = prop === 'stock' ? displayStock(offerData[prop]) : offerData[prop];
-        
-        detailElement = $('<div class="detail"><strong>' + propName + ':</strong> ' + propValue + '</div>');
-        offerDetails.append(detailElement);
-      }
-    });
+      var detailElement;
+      var propName = propertyDisplayNames[prop] || prop; // Use the display name if available, or the original key name
+    
+      // Special handling for the "stock" property
+      var propValue = prop === 'stock' ? displayStock(offerData[prop]) : offerData[prop];
 
+      // Only display other properties if they are not undefined or null
+      detailElement = $('<div class="detail"><strong>' + propName + ':</strong> ' + propValue + '</div>');
+      offerDetails.append(detailElement);
+    });
+    
     // Create a container for likes and dislikes
     var likesDislikesContainer = $('<div class="likes-dislikes" style="display: none;">');
     if (offerData.stock == 0) {
@@ -77,25 +74,31 @@ $(document).ready(function() {
 
     // Create the arrow icon for expanding/collapsing the offer details
     var arrowIcon = $('<i class="fa fa-chevron-right"></i>');
-    offerEntry.append(arrowIcon);
-    offerEntry.append(offerIdElement);
-    offerEntry.append(offerDetails);
+
 
     // Create an image element with the 'offer-image' class and hide it initially
-    var imageElement = $('<img class="offer-image" style="display: none;">');
+    var imageElement = $('<img class="offer-image">');
     var imagePath = 'prod_images/' + offerData.product_image;
     imageElement.attr('src', imagePath);
 
-    // Append the image element to the offer entry
-    offerEntry.append(imageElement);
-    offerEntry.append(likesDislikesContainer);
+
+    var leftContainer = $('<div class = left-offer-container></div>');
+    leftContainer.append(imageElement);
+    var centerContainer = $('<div class = center-offer-container></div>');
+    centerContainer.append(offerIdElement);
+    var rightContainer = $('<div class = right-offer-container></div>');
+    rightContainer.append(arrowIcon);
+
+    var expandContainer = $('<div class = expand-offer-container></div>');
+    expandContainer.append(offerDetails, likesDislikesContainer)
+
+    offerEntry.append(leftContainer, centerContainer, rightContainer, expandContainer);
 
     // Event listener for clicking the arrow icon to expand/collapse the offer details
     arrowIcon.on('click', function () {
-      offerDetails.toggle(); // Toggle the visibility of the offer details
-      imageElement.toggle(); // Toggle the visibility of the image
+      expandContainer.toggle(); // Toggle the visibility of the offer details
       likesDislikesContainer.toggle(); // Toggle the visibility of the likes and dislikes container
-      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction
+      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction 
     });
 
     // Event listener for clicking the thumbs-up icon (likes)
@@ -198,7 +201,6 @@ $(document).ready(function() {
     dataType: "json",
     success: function(response) {
       var Offerdata = response;
-
       // Loop through the data and create and append offer entries
       Offerdata.forEach(function(offerData) {
         var offerEntry = createOfferEntry(offerData);

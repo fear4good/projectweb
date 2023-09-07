@@ -9,14 +9,13 @@ $sql = "SELECT
             products.name AS product_name, 
             products.image_path AS product_image,
             users.username AS user_username,
-            tokens.tokens AS user_tokens,
+            users.total_tokens AS user_tokens,
             categories.name AS category_name,
             subcategories.name AS subcategory_name,
             pois.name AS poi_name
         FROM offers
         LEFT JOIN products ON offers.product_id = products.id
         LEFT JOIN users ON offers.user_id = users.id
-        LEFT JOIN tokens ON users.id = tokens.id
         LEFT JOIN categories ON products.category_id = categories.id
         LEFT JOIN subcategories ON products.subcategory_id = subcategories.id
         LEFT JOIN pois ON offers.supermarket_id = pois.id

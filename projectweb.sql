@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.3
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Aug 28, 2023 at 06:28 PM
--- Server version: 10.4.14-MariaDB
--- PHP Version: 7.4.11
+-- Host: 127.0.0.1:3306
+-- Generation Time: Sep 07, 2023 at 03:36 PM
+-- Server version: 8.0.31
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,30 +21,82 @@ SET time_zone = "+00:00";
 -- Database: `projectweb`
 --
 
+DELIMITER $$
+--
+-- Procedures
+--
+DROP PROCEDURE IF EXISTS `generate_and_distribute_monthly_tokens`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `generate_and_distribute_monthly_tokens` ()   BEGIN
+  DECLARE user_id INT;
+  DECLARE token_value INT;
+  DECLARE monthly_score INT;
+  DECLARE highest_score INT;
+  DECLARE total_users INT;
+
+  -- Get the current month
+  SET @current_month = DATE_FORMAT(NOW(), '%Y-%m-01');
+
+  -- Count the number of non-admin users
+  SELECT COUNT(*) INTO total_users FROM users WHERE is_admin = 0;
+
+  -- Calculate the total number of tokens to distribute (80% of 100 per user)
+  SET @total_tokens = total_users * 100 * 0.8;
+
+  -- Calculate the tokens per user (rounded to the nearest integer)
+  SET @tokens_per_user = ROUND(@total_tokens / total_users);
+
+  -- Calculate the remainder tokens
+  SET @remainder_tokens = @total_tokens - (@tokens_per_user * total_users);
+
+  -- Find the user with the highest monthly score
+  SELECT MAX(monthly_score) INTO highest_score FROM users WHERE is_admin = 0;
+
+  -- Create a temporary table to store user IDs and their tokens
+  CREATE TEMPORARY TABLE temp_tokens (user_id INT, tokens_to_add INT);
+
+  -- Loop through non-admin users
+  INSERT INTO temp_tokens
+  SELECT id, @tokens_per_user + IF(monthly_score = highest_score, @remainder_tokens, 0)
+  FROM users
+  WHERE is_admin = 0;
+
+  -- Update monthly_tokens in the users table
+  UPDATE users u
+  JOIN temp_tokens tt ON u.id = tt.user_id
+  SET u.monthly_tokens = u.monthly_tokens + tt.tokens_to_add;
+
+  -- Drop the temporary table
+  DROP TEMPORARY TABLE temp_tokens;
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `categories`
 --
 
-CREATE TABLE `categories` (
-  `id` varchar(36) NOT NULL,
-  `name` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
 --
 
 INSERT INTO `categories` (`id`, `name`) VALUES
-('8016e637b54241f8ad242ed1699bf2da', 'Βρεφικά Είδη'),
-('d41744460283406a86f8e4bd5010a66d', 'Καθαριότητα'),
-('a8ac6be68b53443bbd93b229e2f9cd34', 'Ποτά - Αναψυκτικά'),
-('8e8117f7d9d64cf1a931a351eb15bd69', 'Προσωπική φροντίδα'),
-('ee0022e7b1b34eb2b834ea334cda52e7', 'Τρόφιμα'),
-('e4b4de2e31fc43b7b68a0fe4fbfad2e6', 'Αντισηπτικά'),
 ('2d5f74de114747fd824ca8a6a9d687fa', 'Προστασία Υγείας'),
-('662418cbd02e435280148dbb8892782a', 'Για κατοικίδια');
+('662418cbd02e435280148dbb8892782a', 'Για κατοικίδια'),
+('8016e637b54241f8ad242ed1699bf2da', 'Βρεφικά Είδη'),
+('8e8117f7d9d64cf1a931a351eb15bd69', 'Προσωπική φροντίδα'),
+('a8ac6be68b53443bbd93b229e2f9cd34', 'Ποτά - Αναψυκτικά'),
+('d41744460283406a86f8e4bd5010a66d', 'Καθαριότητα'),
+('e4b4de2e31fc43b7b68a0fe4fbfad2e6', 'Αντισηπτικά'),
+('ee0022e7b1b34eb2b834ea334cda52e7', 'Τρόφιμα');
 
 -- --------------------------------------------------------
 
@@ -52,13 +104,17 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 -- Table structure for table `like_history`
 --
 
-CREATE TABLE `like_history` (
-  `like_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `like_history`;
+CREATE TABLE IF NOT EXISTS `like_history` (
+  `like_id` int NOT NULL AUTO_INCREMENT,
   `likes` tinyint(1) NOT NULL,
   `dislikes` tinyint(1) NOT NULL,
-  `offer_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `offer_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`like_id`),
+  KEY `offer_id` (`offer_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `like_history`
@@ -70,7 +126,9 @@ INSERT INTO `like_history` (`like_id`, `likes`, `dislikes`, `offer_id`, `user_id
 (3, 1, 0, 27, 4),
 (4, 0, 1, 27, 4),
 (5, 0, 1, 28, 4),
-(6, 1, 0, 28, 4);
+(6, 1, 0, 28, 4),
+(7, 1, 0, 6, 4),
+(8, 1, 0, 6, 4);
 
 -- --------------------------------------------------------
 
@@ -78,17 +136,21 @@ INSERT INTO `like_history` (`like_id`, `likes`, `dislikes`, `offer_id`, `user_id
 -- Table structure for table `offers`
 --
 
-CREATE TABLE `offers` (
-  `id` int(11) NOT NULL,
-  `supermarket_id` varchar(254) NOT NULL,
-  `product_id` varchar(254) NOT NULL,
-  `discount` varchar(254) NOT NULL,
+DROP TABLE IF EXISTS `offers`;
+CREATE TABLE IF NOT EXISTS `offers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `supermarket_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `product_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `discount` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
   `date` date NOT NULL,
-  `likes` int(11) NOT NULL DEFAULT 0,
-  `dislikes` int(11) NOT NULL DEFAULT 0,
-  `stock` tinyint(1) NOT NULL DEFAULT 0,
-  `user_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+  `likes` int NOT NULL DEFAULT '0',
+  `dislikes` int NOT NULL DEFAULT '0',
+  `stock` tinyint(1) NOT NULL DEFAULT '0',
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `supermarket_id` (`supermarket_id`),
+  KEY `offers_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `offers`
@@ -100,10 +162,11 @@ INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, 
 (3, 'node/354449389', '0', '5', '2023-07-05', 7, 3, 10, 4),
 (4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10, 4),
 (5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10, 4),
-(6, 'node/354449389', '0', '5', '2024-02-24', 6, 2, 10, 4),
+(6, 'node/354449389', '0', '5', '2024-02-24', 8, 2, 10, 4),
 (7, 'node/4318329390', '0', '5', '2023-07-24', 6, 2, 10, 4),
 (27, 'node/360226900', '7', '5', '2023-08-28', 4, 4, 1, 4),
-(28, 'node/980515550', '7', '10', '2023-08-28', 1, 1, 1, 4);
+(28, 'node/980515550', '7', '10', '2023-08-28', 1, 1, 1, 4),
+(30, 'node/980515550', '0', '1.5', '2023-09-07', 0, 0, 1, 11);
 
 -- --------------------------------------------------------
 
@@ -111,128 +174,114 @@ INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, 
 -- Table structure for table `pois`
 --
 
-CREATE TABLE `pois` (
-  `id` varchar(40) NOT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `house_number` varchar(255) DEFAULT NULL,
-  `postcode` varchar(255) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `brand` varchar(255) DEFAULT NULL,
-  `wikidata` varchar(255) DEFAULT NULL,
-  `wikipedia` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `opening_hours` varchar(255) DEFAULT NULL,
-  `operator` varchar(255) DEFAULT NULL,
-  `bitcoin_payment` varchar(255) DEFAULT NULL,
-  `cash_payment` varchar(255) DEFAULT NULL,
-  `coins_payment` varchar(255) DEFAULT NULL,
-  `credit_cards_payment` varchar(255) DEFAULT NULL,
-  `debit_cards_payment` varchar(255) DEFAULT NULL,
-  `mastercard_payment` varchar(255) DEFAULT NULL,
-  `visa_payment` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `shop` varchar(255) DEFAULT NULL,
-  `website` varchar(255) DEFAULT NULL,
-  `longitude` varchar(255) NOT NULL,
-  `latitude` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `pois`;
+CREATE TABLE IF NOT EXISTS `pois` (
+  `id` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `shop` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `longitude` double NOT NULL,
+  `latitude` double NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pois`
 --
 
-INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`, `wikidata`, `wikipedia`, `name`, `opening_hours`, `operator`, `bitcoin_payment`, `cash_payment`, `coins_payment`, `credit_cards_payment`, `debit_cards_payment`, `mastercard_payment`, `visa_payment`, `phone`, `shop`, `website`, `longitude`, `latitude`) VALUES
-('node/354449389', NULL, NULL, NULL, NULL, 'Lidl', 'Q151954', 'en:Lidl', 'Lidl', 'Mo-Fr 07:00-21:00, Sa 07:00-20:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.712654', '38.2080319'),
-('node/360217468', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'The Mart', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7806567', '38.28931'),
-('node/360226900', 'Πάτρα', '9', '26442', 'Νοταρά', 'Lidl', 'Q151954', 'en:Lidl', 'Lidl', 'Mo-Fr 09:00-21:00; Sa 9:00-20:00', 'LIDL', 'no', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', '800 111 3333', 'supermarket', 'https://www.lidl-hellas.gr/el/index.htm', '21.7434265', '38.2633511'),
-('node/364381224', 'Ρίο', '23', '26504', 'Αθηνών', NULL, NULL, NULL, 'Σουπερμάρκετ Ανδρικόπουλος', NULL, 'Andrikopoulos', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7908028', '38.2952086'),
-('node/364463568', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', NULL, 'Σκλαβενίτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7642075', '38.2104365'),
-('node/598279836', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Papakos', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7622778', '38.23553'),
-('node/633369803', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7540236', '38.2612908'),
-('node/980515550', NULL, NULL, NULL, NULL, 'Lidl', 'Q151954', 'en:Lidl', 'Lidl', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.740082', '38.2312926'),
-('node/1643373636', 'Δημοτική Ενότητα Ρίου', NULL, NULL, 'Σώμερσετ', 'Σκλαβενίτης', 'Q7536037', NULL, 'Σκλαβενίτης', 'Mo-Fr 08:00-21:00; Sa 08:00-20:00; Su 11:00-18:00', NULL, NULL, 'yes', NULL, 'yes', NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7814957', '38.3013087'),
-('node/1643373639', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.790383', '38.2949372'),
-('node/1643713403', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7666723', '38.2852364'),
-('node/1643713405', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7714546', '38.2911121'),
-('node/1643713406', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7666079', '38.2913332'),
-('node/1643818244', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7625472', '38.2779126'),
-('node/1643818267', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7574031', '38.2751636'),
-('node/1643818277', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7629172', '38.2756942'),
-('node/1643818281', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7489662', '38.2596476'),
-('node/1643825320', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7883123', '38.2945036'),
-('node/1643889596', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7568738', '38.2126477'),
-('node/1657132006', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ρουμελιώτης SUPER Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7436127', '38.2613806'),
-('node/1657132008', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.741582', '38.2585236'),
-('node/1657962066', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7854989', '38.2991382'),
-('node/1695934267', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7712803', '38.2915409'),
-('node/1763830009', NULL, '52-56', NULL, 'Καλαβρύτων', NULL, NULL, NULL, 'My market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7473265', '38.2323892'),
-('node/1763830474', NULL, NULL, NULL, NULL, 'ΑΒ Βασιλόπουλος', 'Q4721807', 'el:Άλφα Βήτα Βασιλόπουλος', 'ΑΒ Βασιλόπουλος', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7257294', '38.2322376'),
-('node/1770994538', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Markoulas', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7603629', '38.2644973'),
-('node/1771512424', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7593252', '38.2657865'),
-('node/1815896581', NULL, NULL, NULL, NULL, 'Lidl', 'Q151954', 'en:Lidl', 'Lidl', 'Mo-Sa 08:00-20:00', 'Lidl', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.8051332', '38.3067563'),
-('node/1971240515', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ανδρικόπουλος', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.736371', '38.2399863'),
-('node/1971240518', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7399001', '38.2377144'),
-('node/1971247760', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7373409', '38.2364945'),
-('node/1971249846', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'My Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7342362', '38.2427052'),
-('node/1997401665', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7689392', '38.2803811'),
-('node/1997401682', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7646316', '38.2767389'),
-('node/3144355008', 'Πάτρα', NULL, '26441', 'Αγίας Σοφίας & Αθηνών', NULL, NULL, NULL, 'My market', '08:00-21:00 (Saturday: 08:00-20:00)', 'ΜETRO AEBE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7396708', '38.2568618'),
-('node/3354481184', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ανδρικόπουλος', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7323293', '38.1951968'),
-('node/4101518891', NULL, NULL, NULL, 'Εγνατίας', NULL, NULL, NULL, 'ΑΒ ΒΑΣΙΛΟΠΟΥΛΟΣ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7418506', '38.2565589'),
-('node/4356067891', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7365286', '38.2450095'),
-('node/4356183595', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', 'Mo-Fr 08:00-21:00; Sa 08:00-20:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.733285', '38.2434859'),
-('node/4357098895', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7339549', '38.2438242'),
-('node/4357217589', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7414219', '38.2524287'),
-('node/4357425491', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7423925', '38.2512732'),
-('node/4357589496', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ανδρικόπουλος', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7302559', '38.2427963'),
-('node/4358244594', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7337191', '38.2454121'),
-('node/4372108797', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Mini Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.8364993', '38.2725804'),
-('node/4484528391', NULL, NULL, NULL, 'Εθνική Οδός 8α', NULL, NULL, NULL, 'Carna', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7667136', '38.2795377'),
-('node/4752810729', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Mini Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7770011', '38.3052409'),
-('node/4931300543', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kronos', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7296435', '38.2425794'),
-('node/4953268497', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Φίλιππας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7504681', '38.2585639'),
-('node/4969309651', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7940989', '38.3015018'),
-('node/5005384516', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'No supermarket', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7363349', '38.2498065'),
-('node/5005409493', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kiosk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.735128', '38.2490852'),
-('node/5005409494', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kiosk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7349115', '38.2493169'),
-('node/5005409495', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kiosk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7344427', '38.2489563'),
-('node/5005476710', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kiosk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7413066', '38.2569875'),
-('node/5005476711', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kiosk', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7409531', '38.2561434'),
-('node/5132918123', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7400704', '38.2523678'),
-('node/5164678230', 'Πάτρα', '1 - 3', '26442', 'Αξιού', NULL, NULL, NULL, 'Ανδρικόπουλος - Supermarket', 'Mo-Fr 08:00-21:00; Sa 08:00-20:00', 'Ανδρικόπουλος', NULL, 'yes', NULL, 'yes', 'yes', NULL, NULL, '+302610430062', 'supermarket', 'https://www.andrikopoulos.com.gr/', '21.7481501', '38.2691937'),
-('node/5164741179', NULL, NULL, '26442', 'Νοταρά', 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', 'Mo-Fr 9:00-21:00, Sa 9:00-20:00', NULL, NULL, 'yes', NULL, 'yes', 'yes', NULL, NULL, NULL, 'supermarket', NULL, '21.7497014', '38.2690963'),
-('node/5350727524', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7251655', '38.233827'),
-('node/5396345464', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Mini Market', 'Mo-Sa 07:00-22:00', NULL, NULL, 'yes', 'yes', 'yes', NULL, NULL, NULL, NULL, 'convenience', NULL, '21.8764222', '38.3277388'),
-('node/5620198221', NULL, NULL, NULL, NULL, 'ΑΒ Βασιλόπουλος', 'Q4721807', 'el:Άλφα Βήτα Βασιλόπουλος', 'ΑΒ Βασιλόπουλος', 'Mo-Fr 08:00-21:00; Sa 08:00-20:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7357783', '38.2170935'),
-('node/5620208927', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Mini Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7321204', '38.2160259'),
-('node/5783486253', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.8203451', '38.312741'),
-('node/5909978406', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7312416', '38.2451867'),
-('node/7673935764', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7396687', '38.2504514'),
-('node/7673976786', NULL, NULL, NULL, NULL, 'Spar', 'Q610492', 'en:SPAR (retailer)', 'Spar', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7389771', '38.2486316'),
-('node/7673986831', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ΑΝΔΡΙΚΟΠΟΥΛΟΣ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7383224', '38.2481545'),
-('node/7674120315', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ΑΝΔΡΙΚΟΠΟΥΛΟΣ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7308044', '38.2429466'),
-('node/7677225097', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'MyMarket', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7265283', '38.2392836'),
-('node/7914886761', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7575349', '38.2653368'),
-('node/8214753473', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ena Cash And Carry', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7253472', '38.2346622'),
-('node/8214854586', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ΚΡΟΝΟΣ - (Σκαγιοπουλείου)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7294915', '38.2358002'),
-('node/8214887295', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Ανδρικόπουλος Super Market', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7306406', '38.2379176'),
-('node/8214887306', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3Α Αράπης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7328984', '38.2375068'),
-('node/8214910532', NULL, NULL, NULL, NULL, 'Γαλαξίας', 'Q5518063', 'el:Γαλαξίας (σούπερ μάρκετ)', 'Γαλαξίας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.733787', '38.2361127'),
-('node/8215010716', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Super Market Θεοδωρόπουλος', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7283123', '38.2360129'),
-('node/8215157448', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Super Market ΚΡΟΝΟΣ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7340723', '38.2390442'),
-('node/8753329904', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7396855', '38.2642274'),
-('node/8753329905', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7398813', '38.2658237'),
-('node/8777081651', NULL, NULL, NULL, NULL, 'Σκλαβενίτης', 'Q7536037', 'el:Σκλαβενίτης', 'Σκλαβενίτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7428703', '38.2601801'),
-('node/8777171555', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3A ARAPIS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7460078', '38.2586424'),
-('node/8805335004', NULL, NULL, NULL, NULL, 'Μασούτης', 'Q6783887', 'en:Masoutis', 'Μασούτης', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7355058', '38.2454669'),
-('node/8805467220', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ΑΒ Shop & Go', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7380288', '38.24957'),
-('node/8806495733', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3Α ΑΡΑΠΗΣ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '21.7455558', '38.2398789'),
-('node/9651304117', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Περίπτερο', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.7408745', '38.2554443'),
-('node/9785182275', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6232207', '38.1494223'),
-('node/9785182280', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6206284', '38.1477412'),
-('node/9785335420', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '21.6454791', '38.1563067'),
-('node/4318329390', 'Λευκωσία', NULL, NULL, NULL, NULL, NULL, NULL, 'Σάββας', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'convenience', NULL, '33.4215786', '35.0273087'),
-('node/237917140', 'Egkomi', NULL, NULL, NULL, NULL, NULL, NULL, 'Abarrah', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'supermarket', NULL, '33.3309617', '35.1676566');
+INSERT INTO `pois` (`id`, `name`, `shop`, `longitude`, `latitude`) VALUES
+('', NULL, NULL, 0, 0),
+('node/12351235123', NULL, NULL, 30.123321, 0),
+('node/1643373636', 'Σκλαβενίτης', 'supermarket', 21.7814957, 38.3013087),
+('node/1643373639', NULL, 'supermarket', 21.790383, 38.2949372),
+('node/1643713403', NULL, 'convenience', 21.7666723, 38.2852364),
+('node/1643713405', NULL, 'convenience', 21.7714546, 38.2911121),
+('node/1643713406', NULL, 'convenience', 21.7666079, 38.2913332),
+('node/1643818244', NULL, 'convenience', 21.7625472, 38.2779126),
+('node/1643818267', NULL, 'convenience', 21.7574031, 38.2751636),
+('node/1643818277', NULL, 'supermarket', 21.7629172, 38.2756942),
+('node/1643818281', 'Σκλαβενίτης', 'supermarket', 21.7489662, 38.2596476),
+('node/1643825320', NULL, 'convenience', 21.7883123, 38.2945036),
+('node/1643889596', NULL, 'supermarket', 21.7568738, 38.2126477),
+('node/1657132006', 'Ρουμελιώτης SUPER Market', 'supermarket', 21.7436127, 38.2613806),
+('node/1657132008', 'Σκλαβενίτης', 'supermarket', 21.741582, 38.2585236),
+('node/1657962066', NULL, 'convenience', 21.7854989, 38.2991382),
+('node/1695934267', NULL, 'convenience', 21.7712803, 38.2915409),
+('node/1763830009', 'My market', 'supermarket', 21.7473265, 38.2323892),
+('node/1763830474', 'ΑΒ Βασιλόπουλος', 'supermarket', 21.7257294, 38.2322376),
+('node/1770994538', 'Markoulas', 'supermarket', 21.7603629, 38.2644973),
+('node/1771512424', NULL, 'convenience', 21.7593252, 38.2657865),
+('node/1815896581', 'Lidl', 'supermarket', 21.8051332, 38.3067563),
+('node/1971240515', 'Ανδρικόπουλος', 'supermarket', 21.736371, 38.2399863),
+('node/1971240518', NULL, 'convenience', 21.7399001, 38.2377144),
+('node/1971247760', 'Σκλαβενίτης', 'supermarket', 21.7373409, 38.2364945),
+('node/1971249846', 'My Market', 'supermarket', 21.7342362, 38.2427052),
+('node/1997401665', NULL, 'convenience', 21.7689392, 38.2803811),
+('node/1997401682', NULL, 'convenience', 21.7646316, 38.2767389),
+('node/237917140', 'Abarrah', 'supermarket', 33.3309617, 35.1676566),
+('node/3144355008', 'My market', 'supermarket', 21.7396708, 38.2568618),
+('node/3354481184', 'Ανδρικόπουλος', 'supermarket', 21.7323293, 38.1951968),
+('node/354449389', 'Lidl', 'supermarket', 21.712654, 38.2080319),
+('node/360217468', 'The Mart', 'supermarket', 21.7806567, 38.28931),
+('node/360226900', 'Lidl', 'supermarket', 21.7434265, 38.2633511),
+('node/364381224', 'Σουπερμάρκετ Ανδρικόπουλος', 'supermarket', 21.7908028, 38.2952086),
+('node/364463568', 'Σκλαβενίτης', 'supermarket', 21.7642075, 38.2104365),
+('node/4101518891', 'ΑΒ ΒΑΣΙΛΟΠΟΥΛΟΣ', 'supermarket', 21.7418506, 38.2565589),
+('node/4318329390', 'Σάββας', 'convenience', 33.4215786, 35.0273087),
+('node/4356067891', NULL, 'supermarket', 21.7365286, 38.2450095),
+('node/4356183595', 'Σκλαβενίτης', 'supermarket', 21.733285, 38.2434859),
+('node/4357098895', NULL, 'convenience', 21.7339549, 38.2438242),
+('node/4357217589', NULL, 'supermarket', 21.7414219, 38.2524287),
+('node/4357425491', NULL, 'supermarket', 21.7423925, 38.2512732),
+('node/4357589496', 'Ανδρικόπουλος', 'supermarket', 21.7302559, 38.2427963),
+('node/4358244594', NULL, 'supermarket', 21.7337191, 38.2454121),
+('node/4372108797', 'Mini Market', 'convenience', 21.8364993, 38.2725804),
+('node/4484528391', 'Carna', 'convenience', 21.7667136, 38.2795377),
+('node/4752810729', 'Mini Market', 'convenience', 21.7770011, 38.3052409),
+('node/4931300543', 'Kronos', 'supermarket', 21.7296435, 38.2425794),
+('node/4953268497', 'Φίλιππας', 'convenience', 21.7504681, 38.2585639),
+('node/4969309651', NULL, 'supermarket', 21.7940989, 38.3015018),
+('node/5005384516', 'No supermarket', 'supermarket', 21.7363349, 38.2498065),
+('node/5005409493', 'Kiosk', 'convenience', 21.735128, 38.2490852),
+('node/5005409494', 'Kiosk', 'convenience', 21.7349115, 38.2493169),
+('node/5005409495', 'Kiosk', 'convenience', 21.7344427, 38.2489563),
+('node/5005476710', 'Kiosk', 'convenience', 21.7413066, 38.2569875),
+('node/5005476711', 'Kiosk', 'convenience', 21.7409531, 38.2561434),
+('node/5132918123', NULL, 'supermarket', 21.7400704, 38.2523678),
+('node/5164678230', 'Ανδρικόπουλος - Supermarket', 'supermarket', 21.7481501, 38.2691937),
+('node/5164741179', 'Σκλαβενίτης', 'supermarket', 21.7497014, 38.2690963),
+('node/5350727524', NULL, 'supermarket', 21.7251655, 38.233827),
+('node/5396345464', 'Mini Market', 'convenience', 21.8764222, 38.3277388),
+('node/5620198221', 'ΑΒ Βασιλόπουλος', 'supermarket', 21.7357783, 38.2170935),
+('node/5620208927', 'Mini Market', 'convenience', 21.7321204, 38.2160259),
+('node/5783486253', NULL, 'supermarket', 21.8203451, 38.312741),
+('node/5909978406', NULL, 'supermarket', 21.7312416, 38.2451867),
+('node/598279836', 'Papakos', 'convenience', 21.7622778, 38.23553),
+('node/633369803', NULL, 'convenience', 21.7540236, 38.2612908),
+('node/7673935764', '3A', 'supermarket', 21.7396687, 38.2504514),
+('node/7673976786', 'Spar', 'supermarket', 21.7389771, 38.2486316),
+('node/7673986831', 'ΑΝΔΡΙΚΟΠΟΥΛΟΣ', 'supermarket', 21.7383224, 38.2481545),
+('node/7674120315', 'ΑΝΔΡΙΚΟΠΟΥΛΟΣ', 'supermarket', 21.7308044, 38.2429466),
+('node/7677225097', 'MyMarket', 'supermarket', 21.7265283, 38.2392836),
+('node/7914886761', NULL, 'supermarket', 21.7575349, 38.2653368),
+('node/8214753473', 'Ena Cash And Carry', 'supermarket', 21.7253472, 38.2346622),
+('node/8214854586', 'ΚΡΟΝΟΣ - (Σκαγιοπουλείου)', 'supermarket', 21.7294915, 38.2358002),
+('node/8214887295', 'Ανδρικόπουλος Super Market', 'supermarket', 21.7306406, 38.2379176),
+('node/8214887306', '3Α Αράπης', 'supermarket', 21.7328984, 38.2375068),
+('node/8214910532', 'Γαλαξίας', 'supermarket', 21.733787, 38.2361127),
+('node/8215010716', 'Super Market Θεοδωρόπουλος', 'supermarket', 21.7283123, 38.2360129),
+('node/8215157448', 'Super Market ΚΡΟΝΟΣ', 'supermarket', 21.7340723, 38.2390442),
+('node/8753329904', NULL, 'supermarket', 21.7396855, 38.2642274),
+('node/8753329905', NULL, 'supermarket', 21.7398813, 38.2658237),
+('node/8777081651', 'Σκλαβενίτης', 'supermarket', 21.7428703, 38.2601801),
+('node/8777171555', '3A ARAPIS', 'supermarket', 21.7460078, 38.2586424),
+('node/8805335004', 'Μασούτης', 'supermarket', 21.7355058, 38.2454669),
+('node/8805467220', 'ΑΒ Shop & Go', 'supermarket', 21.7380288, 38.24957),
+('node/8806495733', '3Α ΑΡΑΠΗΣ', 'supermarket', 21.7455558, 38.2398789),
+('node/9651304117', 'Περίπτερο', 'convenience', 21.7408745, 38.2554443),
+('node/9785182275', NULL, 'convenience', 21.6232207, 38.1494223),
+('node/9785182280', NULL, 'convenience', 21.6206284, 38.1477412),
+('node/9785335420', NULL, 'convenience', 21.6454791, 38.1563067),
+('node/980515550', 'Lidl', 'supermarket', 21.740082, 38.2312926);
 
 -- --------------------------------------------------------
 
@@ -240,20 +289,24 @@ INSERT INTO `pois` (`id`, `city`, `house_number`, `postcode`, `street`, `brand`,
 -- Table structure for table `price_history`
 --
 
-CREATE TABLE `price_history` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
+DROP TABLE IF EXISTS `price_history`;
+CREATE TABLE IF NOT EXISTS `price_history` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `product_id` int DEFAULT NULL,
   `date` date NOT NULL,
-  `price` float NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `price` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `ph_product_id` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `price_history`
 --
 
 INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
-(1, 0, '2023-08-19', 2),
-(2, 0, '2023-08-20', 3);
+(1, 0, '2023-08-19', '2'),
+(2, 0, '2023-08-20', '3');
 
 -- --------------------------------------------------------
 
@@ -261,13 +314,17 @@ INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
 -- Table structure for table `products`
 --
 
-CREATE TABLE `products` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `category_id` varchar(36) DEFAULT NULL,
-  `subcategory_id` varchar(36) DEFAULT NULL,
-  `image_path` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `category_id` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `subcategory_id` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `image_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_category_id` (`category_id`),
+  KEY `products_subcategory_id` (`subcategory_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
@@ -1554,144 +1611,128 @@ INSERT INTO `products` (`id`, `name`, `category_id`, `subcategory_id`, `image_pa
 -- Table structure for table `subcategories`
 --
 
-CREATE TABLE `subcategories` (
-  `id` varchar(36) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `category_id` varchar(36) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `subcategories`;
+CREATE TABLE IF NOT EXISTS `subcategories` (
+  `id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `category_id` varchar(36) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `subcategories`
 --
 
 INSERT INTO `subcategories` (`id`, `name`, `category_id`) VALUES
-('991276688c8c4a91b5524b1115122ec1', 'Απορρυπαντικά', '8016e637b54241f8ad242ed1699bf2da'),
-('e0efaa1776714351a4c17a3a9d412602', 'Πάνες', '8016e637b54241f8ad242ed1699bf2da'),
-('fc71b59318b5410d8ed9da8b42904d77', 'Γάλα', '8016e637b54241f8ad242ed1699bf2da'),
-('ddb733df68324cfc8469c890b32e716d', 'Περιποιήση σώματος', '8016e637b54241f8ad242ed1699bf2da'),
-('3d0c29b055f8417eb1c679fbfdc37da0', 'Σαμπουάν - Αφρόλουτρα', '8016e637b54241f8ad242ed1699bf2da'),
-('724700777199431e9d42861b2ed63cd5', 'Γιαούρτια', '8016e637b54241f8ad242ed1699bf2da'),
-('92680b33561c4a7e94b7e7a96b5bb153', 'Μωρομάντηλα', '8016e637b54241f8ad242ed1699bf2da'),
-('7e86994327f64e3ca967c09b5803966a', 'Βρεφικές τροφές', '8016e637b54241f8ad242ed1699bf2da'),
-('3be81b50494d4b5495d5fea3081759a6', 'Είδη γενικού καθαρισμού', 'd41744460283406a86f8e4bd5010a66d'),
 ('034941f08ca34f7baaf5932427d7e635', 'Χαρτικά', 'd41744460283406a86f8e4bd5010a66d'),
-('21051788a9ff4d5d9869d526182b9a5f', 'Αποσμητικά Χώρου', 'd41744460283406a86f8e4bd5010a66d'),
-('8f98818a7a55419fb42ef1d673f0bb64', 'Εντομoκτόνα - Εντομοαπωθητικά', 'd41744460283406a86f8e4bd5010a66d'),
-('e60aca31a37a40db8a83ccf93bd116b1', 'Απορρυπαντικά', 'd41744460283406a86f8e4bd5010a66d'),
-('b5d54a3d8dd045fb88d5c31ea794dcc5', 'Είδη κουζίνας - Μπάνιου', 'd41744460283406a86f8e4bd5010a66d'),
-('329bdd842f9f41688a0aa017b74ffde4', 'Μπύρες', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('bc4d21162fbd4663b0e60aa9bd65115e', 'Εμφιαλωμένα νερά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('3d01f4ce48ad422b90b50c62b1f8e7f2', 'Κρασιά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('08f280dee57c4b679be0102a8ba1343b', 'Ποτά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('4f1993ca5bd244329abf1d59746315b8', 'Χυμοί', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('3010aca5cbdc401e8dfe1d39320a8d1a', 'Αναψυκτικά - Ενεργειακά Ποτά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
-('35410eeb676b4262b651997da9f42777', 'Αποσμητικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('af538008f3ab40989d67f971e407a85c', 'Βαμβάκια', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('09f2e090f72c4487bc44e5ba4fcea466', 'Βαφές μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('cf079c66251342b690040650104e160f', 'Κρέμες μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('a610ce2a98a94ee788ee5f94b4be82c2', 'Λοιπά προϊόντα', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('f4d8a256e3944c05a3e7b8904b863882', 'Υγρομάντηλα', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('2df01835007545a880dc43f69b5cae07', 'Ξυριστικά - Αποτριχωτικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('6db091264f494c86b9cf22a562593c82', 'Οδοντόβουρτσες', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('0bf072374a8e4c40b915e4972990a417', 'Πάνες ενηλίκων', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('5a2a0575959c40d6a46614ab99b2d9af', 'Περιποίηση προσώπου', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('5935ab588fa444f0a71cc424ad651d12', 'Προϊόντα μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('46b02b6b4f4c4d5d8a0efe21d0981027', 'Σαμπουάν - Αφρόλουτρα', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('de77af9321844b1f863803f338f4a0c2', 'Κρέμα ημέρας', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('c44b50bef9674aaeb06b578122bf4445', 'Κρέμα Σώματος', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('e2f81e96f70e45fb9552452e381529d3', 'Αντρική περιποίηση', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('1b59d5b58fb04816b8f6a74a4866580a', 'Επίδεσμοι', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('fefa136c714945a3b6bcdcb4ee9e8921', 'Κρέμες ενυδάτωσης', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('9c86a88f56064f8588d42eee167d1f8a', 'Κρεμοσάπουνα - Σαπούνι', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('7cfab59a5d9c4f0d855712290fc20c7f', 'Προφυλακτικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('2bce84e7df694ab1b81486aa2baf555d', 'Σερβιέτες', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('181add033f2d4d95b46844abf619dd30', 'Στοματικά διαλύματα', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('26e416b6efa745218f810c34678734b2', 'Στοματική υγιεινή', '8e8117f7d9d64cf1a931a351eb15bd69'),
-('c761cd8b18a246eb81fb21858ac10093', 'Αλεύρι - Σιμιγδάλι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('be04eae3ca484928a86984d73bf3cc3a', 'Αλλαντικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('6d2babbc7355444ca0d27633207e4743', 'Αυγά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a240e48245964b02ba73d1a86a2739be', 'Βούτυρο - Μαργαρίνη', 'ee0022e7b1b34eb2b834ea334cda52e7'),
 ('0364b4be226146699140e81a469d04a1', 'Γιαούρτια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a1a1c2c477b74504b58ad847f7e0c8e1', 'Είδη Ζαχαροπλαστικής', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('dca17e0bfb4e469c93c011f8dc8ab512', 'Γλυκά/Σοκολάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('509b949f61cc44f58c2f25093f7fc3eb', 'Επιδόρπια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('1eef696c0f874603a59aed909e1b4ce2', 'Έτοιμα γεύματα/Σούπες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('08f280dee57c4b679be0102a8ba1343b', 'Ποτά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('0936072fcb3947f3baf83e31bb5c1cab', 'Φρέσκα/Αρνί', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('09f2e090f72c4487bc44e5ba4fcea466', 'Βαφές μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('0bf072374a8e4c40b915e4972990a417', 'Πάνες ενηλίκων', '8e8117f7d9d64cf1a931a351eb15bd69'),
 ('0c347b96540a427e9823f321861ce58e', 'Ζυμαρικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('e63b2caa8dd84e6ea687168200859baa', 'Γλυκά/Κέικ', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('3f38edda7854447a837956d64a2530fa', 'Κατεψυγμένα/Πίτσες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('d1315c04b3d64aed93472e41d6e5a6f8', 'Κατεψυγμένα/Φύλλα - Βάσεις', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('b89cb8dd198748dd8c4e195e4ab2168e', 'Καφέδες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('df10062ca2a04789bd43d18217008b5f', 'Κονσέρβες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('463e30b829274933ab7eb8e4b349e2c5', 'Τυποποιημένα κρεατικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('4e4cf5616e0f43aaa985c1300dc7109e', 'Κρέμες γάλακτος', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('1e9187fb112749ff888b11fd64d79680', 'Λάδι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('50e8a35122854b2b9cf0e97356072f94', 'Όσπρια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('bc66b1d812374aa48d6878730497ede7', 'Παγωτά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('7cfe21f0f1944b379f0fead1c8702099', 'Καραμέλες - Τσίχλες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('5dca69b976c94eccbf1341ee4ee68b95', 'Ξύδι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('3935d6afbf50454595f1f2b99285ce8c', 'Κύβοι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('5aba290bf919489da5810c6122f0bc9b', 'Πελτές τομάτας', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('f6007309d91c4410adf000ffd5e8129e', 'Πουρές', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('2d711ee19d17429fa7f964d56fe611db', 'Ροφήματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('5d0be05c3b414311bcda335b036202f1', 'Ρύζι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('ea47b5f0016f4f0eb79e3a4b932f7577', 'Σνάκς/Αρτοσκευάσματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('f87bed0b4b8e44c3b532f2c03197aff9', 'Σνάκς/Γαριδάκια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('19c54e78d74d4b64afbb1fd124f01dfc', 'Σνάκς/Κρουασάν', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('ec9d10b5d68c4d8b8998d51bf6d67188', 'Σνάκς/Πατατάκια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('8851b315e2f0486180be07facbc3b21f', 'Σνάκς/Ποπ κορν', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('4c73d0eccd1e4dde8bb882e436a64ebb', 'Τυριά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('0c6e42d52765495dbbd06c189a4fc80f', 'Pet shop/Τροφή σκύλου', '662418cbd02e435280148dbb8892782a'),
 ('0e1982336d8e4bdc867f1620a2bce3be', 'Φούρνος/Τσουρέκια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('c928573dd7bc4b7894d450eadd7f5d18', 'Φούρνος/Ψωμί', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a02951b1c083449b9e7fab2fabd67198', 'Χυμός τομάτας', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('181add033f2d4d95b46844abf619dd30', 'Στοματικά διαλύματα', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('19c54e78d74d4b64afbb1fd124f01dfc', 'Σνάκς/Κρουασάν', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('1b59d5b58fb04816b8f6a74a4866580a', 'Επίδεσμοι', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('1e9187fb112749ff888b11fd64d79680', 'Λάδι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('1eb56e6ffa2a449296fb1acc7b714cc5', 'Κατεψυγμένα/Πίτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('1eef696c0f874603a59aed909e1b4ce2', 'Έτοιμα γεύματα/Σούπες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('21051788a9ff4d5d9869d526182b9a5f', 'Αποσμητικά Χώρου', 'd41744460283406a86f8e4bd5010a66d'),
+('26e416b6efa745218f810c34678734b2', 'Στοματική υγιεινή', '8e8117f7d9d64cf1a931a351eb15bd69'),
 ('2ad2e93c1c0c41b4b9769fe06c149393', 'Μπαχαρικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('df433029824c4b4194b6637db26f69eb', 'Σνάκς/Μπάρες - Ράβδοι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('2bce84e7df694ab1b81486aa2baf555d', 'Σερβιέτες', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('2d711ee19d17429fa7f964d56fe611db', 'Ροφήματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('2df01835007545a880dc43f69b5cae07', 'Ξυριστικά - Αποτριχωτικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('3010aca5cbdc401e8dfe1d39320a8d1a', 'Αναψυκτικά - Ενεργειακά Ποτά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('329bdd842f9f41688a0aa017b74ffde4', 'Μπύρες', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('35410eeb676b4262b651997da9f42777', 'Αποσμητικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('35cce434592f489a9ed37596951992b3', 'Σνάκς/Μπισκότα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('3935d6afbf50454595f1f2b99285ce8c', 'Κύβοι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('3be81b50494d4b5495d5fea3081759a6', 'Είδη γενικού καθαρισμού', 'd41744460283406a86f8e4bd5010a66d'),
+('3d01f4ce48ad422b90b50c62b1f8e7f2', 'Κρασιά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('3d0c29b055f8417eb1c679fbfdc37da0', 'Σαμπουάν - Αφρόλουτρα', '8016e637b54241f8ad242ed1699bf2da'),
+('3d22916b908b40b385bebe4b478cf107', 'Φρέσκα/Ψάρι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('3f38edda7854447a837956d64a2530fa', 'Κατεψυγμένα/Πίτσες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('463e30b829274933ab7eb8e4b349e2c5', 'Τυποποιημένα κρεατικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('46b02b6b4f4c4d5d8a0efe21d0981027', 'Σαμπουάν - Αφρόλουτρα', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('4c73d0eccd1e4dde8bb882e436a64ebb', 'Τυριά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('4e4cf5616e0f43aaa985c1300dc7109e', 'Κρέμες γάλακτος', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('4f1993ca5bd244329abf1d59746315b8', 'Χυμοί', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('4f205aaec31746b89f40f4d5d845b13e', 'Έτοιμα γεύματα/Σαλάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('509b949f61cc44f58c2f25093f7fc3eb', 'Επιδόρπια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('50e8a35122854b2b9cf0e97356072f94', 'Όσπρια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('5935ab588fa444f0a71cc424ad651d12', 'Προϊόντα μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('5a2a0575959c40d6a46614ab99b2d9af', 'Περιποίηση προσώπου', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('5aba290bf919489da5810c6122f0bc9b', 'Πελτές τομάτας', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('5c5e625b739b4f19a117198efae8df21', 'Κατεψυγμένα/Πατάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('5d0be05c3b414311bcda335b036202f1', 'Ρύζι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('5dca69b976c94eccbf1341ee4ee68b95', 'Ξύδι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('6d084e8eab4945cdb4563d7ff49f0dc3', 'Κατεψυγμένα/Λαχανικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('6d2babbc7355444ca0d27633207e4743', 'Αυγά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('6db091264f494c86b9cf22a562593c82', 'Οδοντόβουρτσες', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('724700777199431e9d42861b2ed63cd5', 'Γιαούρτια', '8016e637b54241f8ad242ed1699bf2da'),
+('79728a412a1749ac8315501eb77550f9', 'Μάσκες Προσώπου', '2d5f74de114747fd824ca8a6a9d687fa'),
+('7ca5dc60dd00483897249e0f8516ee91', 'Κατεψυγμένα/Ψάρια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('7cfab59a5d9c4f0d855712290fc20c7f', 'Προφυλακτικά', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('7cfe21f0f1944b379f0fead1c8702099', 'Καραμέλες - Τσίχλες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('7e86994327f64e3ca967c09b5803966a', 'Βρεφικές τροφές', '8016e637b54241f8ad242ed1699bf2da'),
+('8851b315e2f0486180be07facbc3b21f', 'Σνάκς/Ποπ κορν', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('8ef82da99b284c69884cc7f3479df1ac', 'Φρέσκα/Κοτόπουλο', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('8f1b83b1ab3e4ad1a62df8170d1a0a25', 'Αντισηπτικά', 'e4b4de2e31fc43b7b68a0fe4fbfad2e6'),
+('8f98818a7a55419fb42ef1d673f0bb64', 'Εντομoκτόνα - Εντομοαπωθητικά', 'd41744460283406a86f8e4bd5010a66d'),
+('916a76ac76b3462baf2db6dc508b296b', 'Δημητριακά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('926262c303fe402a8542a5d5cf3ac7eb', 'Pet shop/Τροφή γάτας', '662418cbd02e435280148dbb8892782a'),
+('92680b33561c4a7e94b7e7a96b5bb153', 'Μωρομάντηλα', '8016e637b54241f8ad242ed1699bf2da'),
+('991276688c8c4a91b5524b1115122ec1', 'Απορρυπαντικά', '8016e637b54241f8ad242ed1699bf2da'),
+('9b7795175cbc4a6d9ca37b8ee9bf5815', 'Κατεψυγμένα/Κρεατικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('9bc82778d6b44152b303698e8f72c429', 'Φρέσκα/Λαχανικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('9c86a88f56064f8588d42eee167d1f8a', 'Κρεμοσάπουνα - Σαπούνι', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('a02951b1c083449b9e7fab2fabd67198', 'Χυμός τομάτας', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('a1a1c2c477b74504b58ad847f7e0c8e1', 'Είδη Ζαχαροπλαστικής', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('a240e48245964b02ba73d1a86a2739be', 'Βούτυρο - Μαργαρίνη', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('a483dd538ecd4ce0bdbba36e99ab5eb1', 'Φούρνος/Φρυγανίες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('a610ce2a98a94ee788ee5f94b4be82c2', 'Λοιπά προϊόντα', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('a73f11a7f08b41c081ef287009387579', 'Φρέσκα/Χοιρινό', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('a885d8cd1057442c9092af37e79bf7a7', 'Ζάχαρη - Υποκατάστατα ζάχαρης', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('af538008f3ab40989d67f971e407a85c', 'Βαμβάκια', '8e8117f7d9d64cf1a931a351eb15bd69'),
 ('b1866f1365a54e2d84c28ad2ca7ab5af', 'Ειδική διατροφή', 'ee0022e7b1b34eb2b834ea334cda52e7'),
 ('b3992eb422c2495ca02dd19de9d16ad1', 'Γάλα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('e397ddcfb34a4640a42b8fa5e999b8c8', 'Γλυκά αλλείματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('916a76ac76b3462baf2db6dc508b296b', 'Δημητριακά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('4f205aaec31746b89f40f4d5d845b13e', 'Έτοιμα γεύματα/Σαλάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('5c5e625b739b4f19a117198efae8df21', 'Κατεψυγμένα/Πατάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('7ca5dc60dd00483897249e0f8516ee91', 'Κατεψυγμένα/Ψάρια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('6d084e8eab4945cdb4563d7ff49f0dc3', 'Κατεψυγμένα/Λαχανικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('1eb56e6ffa2a449296fb1acc7b714cc5', 'Κατεψυγμένα/Πίτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('ce4802b6c9f44776a6e572b3daf93ab1', 'Σάλτσες - Dressings', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('35cce434592f489a9ed37596951992b3', 'Σνάκς/Μπισκότα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a885d8cd1057442c9092af37e79bf7a7', 'Ζάχαρη - Υποκατάστατα ζάχαρης', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('b5d54a3d8dd045fb88d5c31ea794dcc5', 'Είδη κουζίνας - Μπάνιου', 'd41744460283406a86f8e4bd5010a66d'),
+('b89cb8dd198748dd8c4e195e4ab2168e', 'Καφέδες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('bc4d21162fbd4663b0e60aa9bd65115e', 'Εμφιαλωμένα νερά', 'a8ac6be68b53443bbd93b229e2f9cd34'),
+('bc66b1d812374aa48d6878730497ede7', 'Παγωτά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
 ('bcebd8cc2f554017864dbf1ce0069ac5', 'Φούρνος/Παξιμάδια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a483dd538ecd4ce0bdbba36e99ab5eb1', 'Φούρνος/Φρυγανίες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('9b7795175cbc4a6d9ca37b8ee9bf5815', 'Κατεψυγμένα/Κρεατικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('c487e038079e407fb1a356599c2aec3e', 'Φρέσκα/Αφρόψαρο', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('3d22916b908b40b385bebe4b478cf107', 'Φρέσκα/Ψάρι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('8ef82da99b284c69884cc7f3479df1ac', 'Φρέσκα/Κοτόπουλο', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('0936072fcb3947f3baf83e31bb5c1cab', 'Φρέσκα/Αρνί', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('d3385ff161f0423aa364017d4413fa77', 'Φρέσκα/Κατσίκι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('a73f11a7f08b41c081ef287009387579', 'Φρέσκα/Χοιρινό', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('be04eae3ca484928a86984d73bf3cc3a', 'Αλλαντικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
 ('c2ce05f4653c4f4fa8f39892bbb98960', 'Φρέσκα/Μοσχάρι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('9bc82778d6b44152b303698e8f72c429', 'Φρέσκα/Λαχανικά', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('c44b50bef9674aaeb06b578122bf4445', 'Κρέμα Σώματος', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('c487e038079e407fb1a356599c2aec3e', 'Φρέσκα/Αφρόψαρο', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('c761cd8b18a246eb81fb21858ac10093', 'Αλεύρι - Σιμιγδάλι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('c928573dd7bc4b7894d450eadd7f5d18', 'Φούρνος/Ψωμί', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('ce4802b6c9f44776a6e572b3daf93ab1', 'Σάλτσες - Dressings', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('cf079c66251342b690040650104e160f', 'Κρέμες μαλλιών', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('d1315c04b3d64aed93472e41d6e5a6f8', 'Κατεψυγμένα/Φύλλα - Βάσεις', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('d3385ff161f0423aa364017d4413fa77', 'Φρέσκα/Κατσίκι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('dca17e0bfb4e469c93c011f8dc8ab512', 'Γλυκά/Σοκολάτες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('ddb733df68324cfc8469c890b32e716d', 'Περιποιήση σώματος', '8016e637b54241f8ad242ed1699bf2da'),
+('de77af9321844b1f863803f338f4a0c2', 'Κρέμα ημέρας', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('df10062ca2a04789bd43d18217008b5f', 'Κονσέρβες', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('df433029824c4b4194b6637db26f69eb', 'Σνάκς/Μπάρες - Ράβδοι', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('e0efaa1776714351a4c17a3a9d412602', 'Πάνες', '8016e637b54241f8ad242ed1699bf2da'),
+('e2f81e96f70e45fb9552452e381529d3', 'Αντρική περιποίηση', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('e397ddcfb34a4640a42b8fa5e999b8c8', 'Γλυκά αλλείματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('e60aca31a37a40db8a83ccf93bd116b1', 'Απορρυπαντικά', 'd41744460283406a86f8e4bd5010a66d'),
+('e63b2caa8dd84e6ea687168200859baa', 'Γλυκά/Κέικ', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('ea47b5f0016f4f0eb79e3a4b932f7577', 'Σνάκς/Αρτοσκευάσματα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
 ('ea47cc6b2f6743169188da125e1f3761', 'Φρέσκα/Φρούτα', 'ee0022e7b1b34eb2b834ea334cda52e7'),
-('8f1b83b1ab3e4ad1a62df8170d1a0a25', 'Αντισηπτικά', 'e4b4de2e31fc43b7b68a0fe4fbfad2e6'),
-('79728a412a1749ac8315501eb77550f9', 'Μάσκες Προσώπου', '2d5f74de114747fd824ca8a6a9d687fa'),
-('926262c303fe402a8542a5d5cf3ac7eb', 'Pet shop/Τροφή γάτας', '662418cbd02e435280148dbb8892782a'),
-('0c6e42d52765495dbbd06c189a4fc80f', 'Pet shop/Τροφή σκύλου', '662418cbd02e435280148dbb8892782a');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tokens`
---
-
-CREATE TABLE `tokens` (
-  `id` int(11) NOT NULL,
-  `date_` date NOT NULL,
-  `tokens` int(11) NOT NULL DEFAULT 0
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tokens`
---
-
-INSERT INTO `tokens` (`id`, `date_`, `tokens`) VALUES
-(4, '2023-07-24', 10);
+('ec9d10b5d68c4d8b8998d51bf6d67188', 'Σνάκς/Πατατάκια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('f4d8a256e3944c05a3e7b8904b863882', 'Υγρομάντηλα', '8e8117f7d9d64cf1a931a351eb15bd69'),
+('f6007309d91c4410adf000ffd5e8129e', 'Πουρές', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('f87bed0b4b8e44c3b532f2c03197aff9', 'Σνάκς/Γαριδάκια', 'ee0022e7b1b34eb2b834ea334cda52e7'),
+('fc71b59318b5410d8ed9da8b42904d77', 'Γάλα', '8016e637b54241f8ad242ed1699bf2da'),
+('fefa136c714945a3b6bcdcb4ee9e8921', 'Κρέμες ενυδάτωσης', '8e8117f7d9d64cf1a931a351eb15bd69');
 
 -- --------------------------------------------------------
 
@@ -1699,27 +1740,33 @@ INSERT INTO `tokens` (`id`, `date_`, `tokens`) VALUES
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(200) NOT NULL,
-  `email` varchar(40) NOT NULL,
-  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
-  `score` int(11) NOT NULL DEFAULT 0,
-  `monthly_score` int(11) NOT NULL DEFAULT 0
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
+  `score` int NOT NULL DEFAULT '0',
+  `monthly_score` int NOT NULL DEFAULT '0',
+  `total_tokens` int NOT NULL DEFAULT '0',
+  `monthly_tokens` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`, `score`, `monthly_score`) VALUES
-(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1, 0, 0),
-(4, 'testhash', '$2y$10$mbl9tp2EedQ2FadasQDK8O7DuA34HSiTt5ZIwSpUNK6vQ9DD3uX9.', 'testing@gmail.com', 0, 454, 54);
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `is_admin`, `score`, `monthly_score`, `total_tokens`, `monthly_tokens`) VALUES
+(4, 'testhash', '$2y$10$mbl9tp2EedQ2FadasQDK8O7DuA34HSiTt5ZIwSpUNK6vQ9DD3uX9.', 'testing@gmail.com', 0, 454, 64, 0, 10),
+(11, 'admin1', '$2y$10$qmiT/WI1s.9IlVNwIonRtuDNTA8syoll4oKr5WUBec22frObsANzq', '', 1, 0, 0, 0, 0);
 
 --
 -- Triggers `users`
 --
+DROP TRIGGER IF EXISTS `prevent_negative_monthly_score`;
 DELIMITER $$
 CREATE TRIGGER `prevent_negative_monthly_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
     IF NEW.monthly_score < 0 THEN
@@ -1728,6 +1775,7 @@ CREATE TRIGGER `prevent_negative_monthly_score` BEFORE UPDATE ON `users` FOR EAC
 END
 $$
 DELIMITER ;
+DROP TRIGGER IF EXISTS `prevent_negative_score`;
 DELIMITER $$
 CREATE TRIGGER `prevent_negative_score` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
     IF NEW.score < 0 THEN
@@ -1738,100 +1786,57 @@ $$
 DELIMITER ;
 
 --
--- Indexes for dumped tables
+-- Constraints for dumped tables
 --
 
 --
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `like_history`
+-- Constraints for table `like_history`
 --
 ALTER TABLE `like_history`
-  ADD PRIMARY KEY (`like_id`);
+  ADD CONSTRAINT `offer_id` FOREIGN KEY (`offer_id`) REFERENCES `offers` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Indexes for table `offers`
+-- Constraints for table `offers`
 --
 ALTER TABLE `offers`
-  ADD PRIMARY KEY (`id`);
+  ADD CONSTRAINT `offers_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `supermarket_id` FOREIGN KEY (`supermarket_id`) REFERENCES `pois` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Indexes for table `pois`
---
-ALTER TABLE `pois`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `price_history`
+-- Constraints for table `price_history`
 --
 ALTER TABLE `price_history`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD CONSTRAINT `ph_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Indexes for table `products`
+-- Constraints for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
+  ADD CONSTRAINT `products_subcategory_id` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Indexes for table `subcategories`
+-- Constraints for table `subcategories`
 --
 ALTER TABLE `subcategories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tokens`
---
-ALTER TABLE `tokens`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `like_history`
---
-ALTER TABLE `like_history`
-  MODIFY `like_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `offers`
---
-ALTER TABLE `offers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-
---
--- AUTO_INCREMENT for table `price_history`
---
-ALTER TABLE `price_history`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  ADD CONSTRAINT `category_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 DELIMITER $$
 --
 -- Events
 --
+DROP EVENT IF EXISTS `monthly_token_distribution`$$
+CREATE DEFINER=`root`@`localhost` EVENT `monthly_token_distribution` ON SCHEDULE EVERY 1 MONTH STARTS '2023-08-11 21:27:18' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+  CALL generate_and_distribute_tokens();
+END$$
+
+DROP EVENT IF EXISTS `reset_monthly`$$
 CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly` ON SCHEDULE EVERY 1 MONTH STARTS '2023-08-11 21:27:18' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
  UPDATE `users` SET `score` = `score` + `monthly_score`;
  UPDATE `users` SET `monthly_score` = 0;
+
+ UPDATE `users` SET `total_tokens` = `total_tokens` + `monthly_tokens`;
+ UPDATE `users` SET `monthly_tokens` = 0;
 END$$
 
 DELIMITER ;

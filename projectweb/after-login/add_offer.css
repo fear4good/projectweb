@@ -70,6 +70,13 @@ h1{
   /* Adjust the width, height, and margin as needed */
 }
 
+.navbar-right .admin-settings-picture {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  /* Adjust the width, height, and margin as needed */
+}
+
 .centered {
   display: flex;
   justify-content: center;
@@ -81,13 +88,15 @@ h1{
   width: 30%; 
   padding: 40px;
 
-  background: #EAF4E5; 
+  background: #ebf4ff; 
   border-radius: 20px;
   box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
   display: flex;
   align-items: center; 
   gap: 10px; 
   color: #BD634E;
+
+  position: relative;
 }
 
 .column {
@@ -108,6 +117,8 @@ select {
   background: #FAFAFA; 
   color: black;
 }
+
+
 
 button {
   padding: 8px 10px;
@@ -135,3 +146,37 @@ button:active {
   color: #F44336;  
 }
 
+/* Style for the product suggestions container */
+#product-suggestions {
+  top: 100%;
+  left: 0;
+  width: 250px;
+  max-height: 200px;
+  overflow-y:scroll;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 1000; /* Ensure it appears above other elements */
+  /* Add any other necessary styles */
+  margin-bottom: 10px;
+}
+
+/* Style for each suggestion item */
+.product-suggestion {
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  /* Add any other necessary styles */
+}
+
+/* Style for suggestion item on hover */
+.product-suggestion:hover {
+  background-color: #f0f0f0;
+  /* Add any other necessary styles */
+}
+
+/* Style for the "No matching products found" message */
+.no-results-message {
+  padding: 8px;
+  color: #888;
+  /* Add any other necessary styles */
+}

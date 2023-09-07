@@ -122,7 +122,6 @@ $(document).ready(function()
             data = response; // Assign the retrieved data to the variable in the higher scope
             const categoryDropdown = $("#category-dropdown");
             const subcategoryDropdown = $("#subcategory-dropdown");
-            console.log(data);
             // Sort the data array alphabetically based on category_name
             data.sort((a, b) => a.category_name.localeCompare(b.category_name));
       

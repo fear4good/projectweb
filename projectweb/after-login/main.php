@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php 
+
+    session_start();
+?>
 
 <!DOCTYPE html>
 <head>
@@ -14,9 +17,9 @@
     <div class="navbar">
         <div class="navbar-left">
                 <a href="main.php">
-                    <img src="leaflet/images/return_icon.png" alt="Return to Main" class="return-icon">
+                    <img src="leaflet/images/return_icon.png" title="SuperMap" alt="Return to Main" class="return-icon">
                 </a>
-                <a>Καλωσορίσατε, <span id="welcome-username"></span></a>
+                <a>Welcome, <span id="welcome-username"></span></a>
         </div>
 
         <div class="navbar-center">
@@ -40,15 +43,16 @@
         </div>
 
         <div class="navbar-right">
-            <li id="admin-settings-li" style="display: none;"><a href="admin_settings.html">
-                <img src="leaflet/images/admin_settings.png" alt="Admin Settings Picture" class="admin-settings-picture">
+            <li id="admin-settings-li" style="display: none;">
+                <a href="admin_settings.html">
+                    <img src="leaflet/images/admin_settings.png" title="Admin Settings" alt="Admin Settings Picture" class="admin-settings-picture">
                 </a>
             </li>
             <a id="profile" href="profile.html">
-                <img src="leaflet/images/profile_picture.jpg" alt="Profile Picture" class="profile-picture">
+                <img src="leaflet/images/profile_picture.jpg" title="Profile" alt="Profile Picture" class="profile-picture">
             </a>
             <a id="logout" href="logout.php">
-                <img src="leaflet/images/logout_icon.png" alt="Logout" class="logout-icon">
+                <img src="leaflet/images/logout_icon.png" title="Logout" alt="Logout" class="logout-icon">
             </a>
         </div>
     </div>

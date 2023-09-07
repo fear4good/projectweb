@@ -11,15 +11,13 @@
                 pr.name AS prod_name, pr.image_path AS image_path, 
                 c.name AS category, 
                 sc.name AS subcategory,
-                u.username,
-                t.tokens
+                u.username
             FROM pois p
             LEFT JOIN offers o ON p.id = o.supermarket_id
             LEFT JOIN products pr ON o.product_id = pr.id
             LEFT JOIN subcategories sc ON pr.subcategory_id = sc.id
             LEFT JOIN categories c ON sc.category_id = c.id
-            LEFT JOIN users u ON o.user_id = u.id
-            LEFT JOIN tokens t ON t.id = u.id";
+            LEFT JOIN users u ON o.user_id = u.id";
 
     if ($category && $subcategory) {
         // Filter by both category and subcategory
@@ -41,8 +39,6 @@
                 'poi_id' => $row['poi_id'],
                 'poi_name' => $row['poi_name'],
                 'prod_name' => $row['prod_name'],
-                'user_prov' => $row['username'],
-                'tokens' => $row['tokens'],
                 'image_path' => $row['image_path'],
                 'lat' => $row['lat'],
                 'lng' => $row['lng'],
