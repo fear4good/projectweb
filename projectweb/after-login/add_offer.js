@@ -14,7 +14,6 @@ $(document).ready(function() {
       success: function(response) {
         data = response; // Assign the retrieved data to the variable in the higher scope
         const categoryDropdown = $("#category-dropdown");
-        const subcategoryDropdown = $("#subcategory-dropdown");
         // Sort the data array alphabetically based on category_name
         data.sort((a, b) => a.category_name.localeCompare(b.category_name));
   
@@ -87,7 +86,72 @@ $(document).ready(function() {
             }
         }
     }
-    
+  
+    // Initialize the product search input and suggestions
+  const productSearchInput = $("#product-search");
+  const productSuggestions = $("#product-suggestions");
+
+  productSearchInput.on("input", function() {
+    const searchTerm = $(this).val().toLowerCase();
+    const filteredProducts = [];
+
+    if (searchTerm.length >= 3) {
+      // Filter products based on the search term
+      data.forEach(function(category) {
+        category.subcategories.forEach(function(subcategory) {
+          subcategory.products.forEach(function(product) {
+            if (product.product_name.toLowerCase().includes(searchTerm)) {
+              filteredProducts.push(product);
+            }
+          });
+        });
+      });
+
+      // Display suggestions
+      displayProductSuggestions(filteredProducts);
+    } else {
+      // Clear suggestions when the search term is too short
+      productSuggestions.empty();
+    }
+  });
+
+  function displayProductSuggestions(products) {
+    productSuggestions.empty();
+
+    if (products.length > 0) {
+      products.forEach(function(product) {
+        const suggestionItem = $("<div>")
+          .addClass("product-suggestion")
+          .text(product.product_name)
+          .data("product-id", product.product_id)
+          .data("min-price", product.min_price);
+
+        suggestionItem.click(function() {
+          // Populate the selected product when a suggestion is clicked
+          const productId = $(this).data("product-id");
+          const minPrice = $(this).data("min-price");
+
+          productSearchInput.val(product.product_name);
+
+          // Populate the product dropdown
+          $("#product-dropdown")
+            .val(product.product_name)
+            .data("product-id", productId)
+            .data("min-price", minPrice);
+
+          $(".initial-price").val(minPrice);
+          selectedProductId = productId;
+          $("#submit-button").prop("disabled", false);
+          productSuggestions.empty(); // Clear suggestions
+        });
+
+        productSuggestions.append(suggestionItem);
+      });
+    } else {
+      const noResultsMessage = $("<div>").addClass("no-results-message").text("No matching products found.");
+      productSuggestions.append(noResultsMessage);
+    }
+  }
   
   
     // Enable the subcategory dropdown when a category is selected

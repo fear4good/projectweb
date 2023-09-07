@@ -183,7 +183,9 @@ $.ajax({
     dataType: "json",
     success: function(response) {
       const userTokensDiv = $("#user-tokens");
-      userTokensDiv.text(response.tokens); // Assuming response contains the user's tokens
+      userTokensDiv.text(response.total_tokens);
+      const userMTokensDiv = $("#user-Mtokens");
+      userMTokensDiv.text(response.monthly_tokens);
     },
     error: function(xhr, textStatus, errorThrown) {
       console.error("Error retrieving user tokens:", textStatus, errorThrown);

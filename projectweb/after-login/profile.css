@@ -92,6 +92,7 @@ h1{
   padding-left: 80px;
   padding-right: 80px;
   padding-top: 20px;
+  padding-bottom: 20px;
   background-color: #F2F2F0;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
@@ -107,7 +108,8 @@ h1{
 
 #user-score,
 #user-Mscore,
-#user-tokens{
+#user-tokens,
+#user-Mtokens{
   padding-left: 10px;
 }
 

@@ -92,7 +92,6 @@ function filterMarkers(name) {
       const keyToLabel = {
         poi_name: 'Market Name',
         prod_name: 'Product',
-        user_prov: 'Provider',
         discount: 'Discount',
         stock: 'Stock',
         category: 'Category',
@@ -187,7 +186,7 @@ function filterMarkers(name) {
     }
     
   }else{
-    console.log("User location marker not found."); // Log the error for debugging
+    location.reload();
   }
 }
 

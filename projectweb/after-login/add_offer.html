@@ -36,6 +36,7 @@
 
     <div class="dropdown-container">
       <div class="column">
+
       <select id="category-dropdown">
         <option value="">Select Category</option>
       </select>
@@ -47,6 +48,9 @@
         <option value="">Select Product</option>
       </select>
       
+      <input type="text" id="product-search" placeholder="Search for Product">
+      <div id="product-suggestions"></div>
+      
       <button id="clear-button">Clear</button>
     </div>
 
@@ -54,7 +58,7 @@
       <p>Starting Value</p>
       <input type="number" class="initial-price"  readonly>
       <p>Offer Value</p>
-      <input type="text" class="offer-price" placeholder="-">
+      <input type="text" class="offer-price" >
       <button id="submit-button" disabled>Submit</button>
         <div id="response-container"></div>
       <p></p>
