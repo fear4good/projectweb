@@ -93,6 +93,7 @@ function filterMarkers(name) {
         poi_name: 'Market Name',
         prod_name: 'Product',
         discount: 'Discount',
+        date: 'Date',
         stock: 'Stock',
         category: 'Category',
         subcategory: 'Subcategory',
@@ -186,7 +187,7 @@ function filterMarkers(name) {
     }
     
   }else{
-    location.reload();
+    console.error("Error finding position");
   }
 }
 
