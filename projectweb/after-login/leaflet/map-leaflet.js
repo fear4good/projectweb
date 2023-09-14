@@ -184,7 +184,7 @@ function filterMarkers(name) {
     
   }else{
     console.error("Error finding position");
-    location.reload();
+    document.location.reload;
   }
 }
 
