@@ -9,9 +9,6 @@ map.locate({ setView: true, maxZoom: 11 });
 
 function onLocationFound(e) {
     L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
-    if(e.latlng == null){
-      onLocationFound;
-    }
   }
   
 // Handle location error event
@@ -22,7 +19,6 @@ function onLocationError(e) {
 // Listen for location found and error events
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
-
 
 
 L.control.locate().addTo(map);
@@ -188,6 +184,7 @@ function filterMarkers(name) {
     
   }else{
     console.error("Error finding position");
+    location.reload();
   }
 }
 

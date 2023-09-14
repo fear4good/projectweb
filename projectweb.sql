@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 07, 2023 at 03:36 PM
+-- Generation Time: Sep 14, 2023 at 05:10 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.2.0
 
@@ -139,34 +139,36 @@ INSERT INTO `like_history` (`like_id`, `likes`, `dislikes`, `offer_id`, `user_id
 DROP TABLE IF EXISTS `offers`;
 CREATE TABLE IF NOT EXISTS `offers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `supermarket_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `product_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `discount` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `supermarket_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `product_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `discount` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
   `date` date NOT NULL,
   `likes` int NOT NULL DEFAULT '0',
   `dislikes` int NOT NULL DEFAULT '0',
   `stock` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int NOT NULL,
+  `expiry_date` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `supermarket_id` (`supermarket_id`),
   KEY `offers_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `offers`
 --
 
-INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, `likes`, `dislikes`, `stock`, `user_id`) VALUES
-(1, 'node/354449389', '0', '5', '2023-08-20', 8, 2, 10, 4),
-(2, 'node/237917140', '0', '5', '2023-08-18', 13, 2, 10, 4),
-(3, 'node/354449389', '0', '5', '2023-07-05', 7, 3, 10, 4),
-(4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10, 4),
-(5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10, 4),
-(6, 'node/354449389', '0', '5', '2024-02-24', 8, 2, 10, 4),
-(7, 'node/4318329390', '0', '5', '2023-07-24', 6, 2, 10, 4),
-(27, 'node/360226900', '7', '5', '2023-08-28', 4, 4, 1, 4),
-(28, 'node/980515550', '7', '10', '2023-08-28', 1, 1, 1, 4),
-(30, 'node/980515550', '0', '1.5', '2023-09-07', 0, 0, 1, 11);
+INSERT INTO `offers` (`id`, `supermarket_id`, `product_id`, `discount`, `date`, `likes`, `dislikes`, `stock`, `user_id`, `expiry_date`) VALUES
+(1, 'node/354449389', '0', '5', '2023-08-20', 8, 2, 10, 4, '0000-00-00'),
+(2, 'node/237917140', '0', '5', '2023-08-18', 13, 2, 10, 4, '0000-00-00'),
+(3, 'node/354449389', '0', '5', '2023-07-05', 7, 3, 10, 4, '0000-00-00'),
+(4, 'node/354449389', '0', '5', '2023-06-20', 6, 2, 10, 4, '0000-00-00'),
+(5, 'node/354449389', '0', '5', '2023-02-24', 6, 2, 10, 4, '0000-00-00'),
+(6, 'node/354449389', '0', '5', '2024-02-24', 8, 2, 10, 4, '0000-00-00'),
+(7, 'node/4318329390', '0', '5', '2023-07-24', 6, 2, 10, 4, '0000-00-00'),
+(27, 'node/360226900', '7', '5', '2023-08-28', 4, 4, 1, 4, '0000-00-00'),
+(28, 'node/980515550', '7', '10', '2023-08-28', 1, 1, 1, 4, '0000-00-00'),
+(30, 'node/980515550', '0', '1.5', '2023-09-07', 0, 0, 1, 11, '0000-00-00'),
+(34, 'node/360226900', '7', '2', '2023-09-14', 0, 0, 1, 4, '2023-09-21');
 
 -- --------------------------------------------------------
 
@@ -298,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `price_history` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `ph_product_id` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `price_history`
@@ -306,7 +308,8 @@ CREATE TABLE IF NOT EXISTS `price_history` (
 
 INSERT INTO `price_history` (`id`, `product_id`, `date`, `price`) VALUES
 (1, 0, '2023-08-19', '2'),
-(2, 0, '2023-08-20', '3');
+(2, 0, '2023-08-20', '3'),
+(3, 7, '2023-09-14', '3');
 
 -- --------------------------------------------------------
 
@@ -1457,7 +1460,7 @@ INSERT INTO `products` (`id`, `name`, `category_id`, `subcategory_id`, `image_pa
 (1194, 'Septona Σαμπουάν Και Αφρόλουτρο Βρεφικό Με Λεβαντα 500ml', '8016e637b54241f8ad242ed1699bf2da', '3d0c29b055f8417eb1c679fbfdc37da0', ''),
 (1195, 'Άλφα Μπύρα 500ml', 'a8ac6be68b53443bbd93b229e2f9cd34', '329bdd842f9f41688a0aa017b74ffde4', ''),
 (1196, 'Αρκάδι Σαπούνι Πλάκα Πρασ 4Χ150γρ', '8e8117f7d9d64cf1a931a351eb15bd69', '9c86a88f56064f8588d42eee167d1f8a', ''),
-(1197, 'Proderm Υγρό Απορ/κο 17μεζ 1250ml', '8016e637b54241f8ad242ed1699bf2da', '991276688c8c4a91b5524b1115122ec1', ''),
+(1197, 'Proderm Υγρό Απορ/κο 17μεζ 1250ml', '8016e637b54241f8ad242ed1699bf2da', '991276688c8c4a91b5524b1115122ec1', 'proderm_ygro_17_mezoures.jpeg'),
 (1199, 'Vileda Style Κουβάς', 'd41744460283406a86f8e4bd5010a66d', 'b5d54a3d8dd045fb88d5c31ea794dcc5', ''),
 (1200, 'Όλυμπος Τυρί Χωριάτικο Σε Άλμη 400γρ', 'ee0022e7b1b34eb2b834ea334cda52e7', '4c73d0eccd1e4dde8bb882e436a64ebb', ''),
 (1201, 'Καρπούζια Μίνι Εγχ', 'ee0022e7b1b34eb2b834ea334cda52e7', 'ea47cc6b2f6743169188da125e1f3761', ''),
@@ -1837,6 +1840,57 @@ CREATE DEFINER=`root`@`localhost` EVENT `reset_monthly` ON SCHEDULE EVERY 1 MONT
 
  UPDATE `users` SET `total_tokens` = `total_tokens` + `monthly_tokens`;
  UPDATE `users` SET `monthly_tokens` = 0;
+END$$
+
+DROP EVENT IF EXISTS `UpdateOfferExpiration`$$
+CREATE DEFINER=`root`@`localhost` EVENT `UpdateOfferExpiration` ON SCHEDULE EVERY 1 DAY STARTS '2023-09-14 19:55:39' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    -- Calculate the previous date
+    SET @previous_date = DATE_SUB(NOW(), INTERVAL 1 DAY);
+
+    -- Calculate the previous week's start and end date
+    SET @previous_week_start = DATE_SUB(NOW(), INTERVAL 1 WEEK);
+    SET @previous_week_end = DATE_SUB(NOW(), INTERVAL 1 DAY);
+
+    -- Rule 1: Check if there's an offer that is 20% less from the current avg price of the previous date
+    IF EXISTS (
+        SELECT 1
+        FROM offers AS o
+        WHERE o.date = @previous_date
+        HAVING MIN(o.price) <= 0.8 * AVG(o.price)
+    ) THEN
+        -- Update offers that meet Rule 1 to stay for another week
+        UPDATE offers AS o
+        SET o.expiry_date = DATE_ADD(NOW(), INTERVAL 1 WEEK)
+        WHERE o.date = @previous_date
+        AND o.price <= 0.8 * (
+            SELECT AVG(price)
+            FROM offers
+            WHERE DATE(date) = @previous_date
+        );
+    END IF;
+
+    -- Rule 2: Check if there's an offer that is 20% less of the current avg of the previous week
+    IF EXISTS (
+        SELECT 1
+        FROM offers AS o
+        WHERE o.date BETWEEN @previous_week_start AND @previous_week_end
+        HAVING MIN(o.price) <= 0.8 * AVG(o.price)
+    ) THEN
+        -- Update offers that meet Rule 2 to stay for another week
+        UPDATE offers AS o
+        SET o.expiry_date = DATE_ADD(NOW(), INTERVAL 1 WEEK)
+        WHERE o.date BETWEEN @previous_week_start AND @previous_week_end
+        AND o.price <= 0.8 * (
+            SELECT AVG(price)
+            FROM offers
+            WHERE DATE(date) BETWEEN @previous_week_start AND @previous_week_end
+        );
+    END IF;
+
+    -- Rule 3: Delete offers that don't meet Rule 1 or Rule 2
+    DELETE FROM offers
+    WHERE expiry_date <= NOW();
+
 END$$
 
 DELIMITER ;

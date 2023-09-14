@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $supermarketId = $_POST["supermarket_id"];
     $productId = $_POST["product_id"];
     $discount = $_POST["discount"];
-    $date = $_POST["date"];
+    $date = date("Y-m-d");
     $stock = $_POST["stock"];
     $userId = $_SESSION["id"];
 
@@ -69,8 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         // Insert the offer data into the database
-        $sql = "INSERT INTO offers (supermarket_id, product_id, discount, date, stock, user_id)
-                VALUES ('$supermarketId', '$productId', '$discount', '$date', '$stock', '$userId')";
+        $expiryDate = date('Y-m-d', strtotime($date . ' + 7 days'));
+
+        // Your SQL query with the expiry_date column
+        $sql = "INSERT INTO offers (supermarket_id, product_id, discount, date, stock, user_id, expiry_date)
+                VALUES ('$supermarketId', '$productId', '$discount', '$date', '$stock', '$userId', '$expiryDate')";
 
         if ($db->query($sql) === TRUE) {
             // Return the new offer discount along with the success message

@@ -203,7 +203,6 @@ $(document).ready(function() {
     // Implement the click event for the submit button to perform the database search
     $("#submit-button").click(function () {
         const offerPrice = $(".offer-price").val();
-        const currentDate = new Date().toISOString().slice(0, 10);
         const stock = 1;
     
         // Clear the previous message and classes
@@ -215,7 +214,6 @@ $(document).ready(function() {
           supermarket_id: supermarketId,
           product_id: selectedProductId,
           discount: offerPrice,
-          date: currentDate,
           stock: stock
         };
     
