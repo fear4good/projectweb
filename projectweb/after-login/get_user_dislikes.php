@@ -1,7 +1,6 @@
 <?php
 include '../connect.php';
 
-// Assuming you have a session or user ID to identify the user
 $userId = $_SESSION['id'];
 
 $sql = "SELECT * FROM like_history WHERE user_id = ? AND dislikes = 1";

@@ -1,5 +1,5 @@
 <?php
-include '../connect.php'; // Include the database connection file
+include '../connect.php';
 
 $response = array();
 
@@ -17,10 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $response['success'] = false;
         $response['message'] = "Password must contain one uppercase letter, one lowercase letter, and a symbol (@#\-_$%^&+=§!\?). ";
     } else {
-        // Assuming you have a session or user ID to identify the user
         $userId = $_SESSION['id'];
 
-        // Fetch the current password from the database
         $sql = "SELECT password FROM users WHERE id = ?";
         $stmt = $db->prepare($sql);
         $stmt->bind_param("i", $userId);
@@ -29,9 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->fetch();
         $stmt->close();
 
-        // Verify the current password
         if (password_verify($currentPassword, $hashedPassword)) {
-            // Hash and update the new password
             $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
             $updateSql = "UPDATE users SET password = ? WHERE id = ?";
@@ -56,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $db->close();
 
-// Send the JSON response
 header('Content-Type: application/json');
 echo json_encode($response);
 

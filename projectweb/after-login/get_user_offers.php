@@ -2,7 +2,6 @@
 
 include '../connect.php';
 
-// Assuming you have a session or user ID to identify the user
 $userId = $_SESSION['id'];
 
 $sql = "SELECT * FROM offers WHERE user_id = ?";

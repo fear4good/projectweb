@@ -26,7 +26,6 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $category_id = $row['category_id'];
 
-        // Check if the category is already added to the data array
         if (!isset($data[$category_id])) {
             $data[$category_id] = array(
                 'category_id' => $category_id,
@@ -36,7 +35,6 @@ if ($result->num_rows > 0) {
             $current_category = &$data[$category_id];
         }
 
-        // Check if the subcategory is already added to the current category in the data array
         $subcategory_id = $row['subcategory_id'];
         if (!isset($current_category['subcategories'][$subcategory_id])) {
             $current_category['subcategories'][$subcategory_id] = array(
@@ -47,18 +45,16 @@ if ($result->num_rows > 0) {
             $current_subcategory = &$current_category['subcategories'][$subcategory_id];
         }
 
-        // Add the product if it exists
         $product_id = $row['product_id'];
         if ($product_id !== null) {
             $current_subcategory['products'][] = array(
                 'product_id' => $product_id,
                 'product_name' => $row['product_name'],
-                'min_price' => $row['min_price'] // Include the min_price from the SQL query result
+                'min_price' => $row['min_price']
             );
         }
     }
 
-    // Convert the associative array to a simple indexed array and reindex the subcategories and products array
     $data = array_values($data);
 
     foreach ($data as &$category) {

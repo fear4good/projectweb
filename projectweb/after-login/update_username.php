@@ -1,6 +1,6 @@
 <?php
 
-include '../connect.php'; // Include the database connection file
+include '../connect.php';
 
 $response = array();
 
@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $response['success'] = false;
         $response['message'] = "Username is missing. ";
     }else{
-        // Assuming you have a session or user ID to identify the user
         $userId = $_SESSION['id'];
 
         $sql = "UPDATE users SET username = ? WHERE id = ?";

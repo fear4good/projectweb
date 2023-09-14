@@ -28,16 +28,13 @@ $(document).ready(function()
         var month = $('#month').val();
         if (year && month) 
         {
-        // If the year and month inputs are not empty, fetch the data
         $.ajax({
             url: 'fetch_offers_admin.php',
             method: 'GET',
             data: {year: year, month: month},
             success: function(data) {
-                // Parse the returned data as JSON
                 var offers = JSON.parse(data);
         
-                // Prepare the data for the chart
                 var daysInMonth = new Date(year, month, 0).getDate();
                 var labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
                 var dataset = Array.from({length: daysInMonth}, () => 0);
@@ -111,7 +108,7 @@ $(document).ready(function()
     
        
     //DISCOUNT
-    let data; // Declare the data variable in a higher scope to make it accessible to other functions
+    let data;
 
     // Function to populate categories and subcategories
     $.ajax({
@@ -119,10 +116,9 @@ $(document).ready(function()
         method: "GET",
         dataType: "json",
         success: function(response) {
-            data = response; // Assign the retrieved data to the variable in the higher scope
+            data = response;
             const categoryDropdown = $("#category-dropdown");
             const subcategoryDropdown = $("#subcategory-dropdown");
-            // Sort the data array alphabetically based on category_name
             data.sort((a, b) => a.category_name.localeCompare(b.category_name));
       
             data.forEach(function(category) {
@@ -130,7 +126,6 @@ $(document).ready(function()
               categoryDropdown.append(option);
             });
       
-            // Trigger the change event on category dropdown to populate subcategories initially if a category is pre-selected
             categoryDropdown.trigger("change");
             },
         error: function(error) {
@@ -138,20 +133,16 @@ $(document).ready(function()
         }
     });
       
-    // Function to populate subcategories based on the selected category
     function populateSubcategories(selectedCategory) {
         const subcategoryDropdown = $("#subcategory-dropdown");
         const productDropdown = $("#product-dropdown");
         subcategoryDropdown.empty().prop("disabled", true);
         productDropdown.empty().prop("disabled", true);
           
-        // Add the "Select" option for subcategories
         subcategoryDropdown.append($("<option>").text("Select Subcategory").val(""));
-          
-        // Find the selected category and populate its subcategories
+
         const selectedCategoryData = data.find(category => category.category_id === selectedCategory);
         if (selectedCategoryData && selectedCategoryData.subcategories.length > 0) {
-            // Sort the subcategories array alphabetically based on subcategory_name
             selectedCategoryData.subcategories.sort((a, b) => a.subcategory_name.localeCompare(b.subcategory_name));
           
             selectedCategoryData.subcategories.forEach(function(subcategory) {
@@ -159,16 +150,13 @@ $(document).ready(function()
                 subcategoryDropdown.append(subOption);
             });
         
-            // Enable the subcategory dropdown since there are available subcategories
             subcategoryDropdown.prop("disabled", false);
         }
     }
       
-    // Enable the subcategory dropdown when a category is selected
     $("#category-dropdown").change(function () {
         const selectedCategory = $(this).val();
       
-        // Populate subcategories based on the selected category
         populateSubcategories(selectedCategory);
         enableSubmitButton(); 
     });
@@ -180,17 +168,14 @@ $(document).ready(function()
         const isCategorySelected = selectedCategory !== "";
         const isSubcategorySelected = selectedSubcategory !== "";
     
-        // Enable the submit button only when both category, subcategory, 
             $("#show-button2").prop("disabled", !(isCategorySelected || isSubcategorySelected));
     }
           
     // Event handler for the Clear button
     $("#clear-button2").click(function () {
-        // Clear both category, subcategory, and product dropdown selections
         $("#category-dropdown").val("");
         $("#subcategory-dropdown").val("").prop("disabled", true);
       
-        // Disable the Submit button after clearing
         $("#show-button2").prop("disabled", true);
     });
 
@@ -242,7 +227,6 @@ $(document).ready(function()
                             ticks: {
                                 callback: function(value, index, values/*tick*/) {
                                 return value + '%';
-                                //return '$' + Chart.Ticks.formatters.numeric.apply(this, [value, index, values]);
                                 }
                                 
                             }

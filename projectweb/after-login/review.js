@@ -1,19 +1,15 @@
 $(document).ready(function() {
-  // Access the markerData object from the newly opened window
   var urlParams = new URLSearchParams(window.location.search);
   var marketidParam = urlParams.get('marketid');
   var supermarketId = JSON.parse(marketidParam);
 
-  // Function to create a single offer entry HTML element
   function createOfferEntry(offerData) {
     var offerId = offerData.id;
-    // Create the main offer ID element
     var offerEntry = $('<div class="offer-entry">');
     var offerIdElement = $('<div class="offer-id">' + offerId + '</div>');
 
-    // Create the details container for each offer
     var offerDetails = $('<div class="offer-details">');
-    // Array to store the properties in the desired order
+
     var propertyOrder = ['poi_name', 'product_name', 'discount', 'date', 'stock', 'category_name', 'subcategory_name','user_username', 'user_tokens'];
 
     var propertyDisplayNames = {
@@ -36,47 +32,33 @@ $(document).ready(function() {
       var detailElement;
       var propName = propertyDisplayNames[prop] || prop; // Use the display name if available, or the original key name
     
-      // Special handling for the "stock" property
       var propValue = prop === 'stock' ? displayStock(offerData[prop]) : offerData[prop];
 
-      // Only display other properties if they are not undefined or null
       detailElement = $('<div class="detail"><strong>' + propName + ':</strong> ' + propValue + '</div>');
       offerDetails.append(detailElement);
     });
     
-    // Create a container for likes and dislikes
     var likesDislikesContainer = $('<div class="likes-dislikes" style="display: none;">');
     if (offerData.stock == 0) {
       likesDislikesContainer.addClass('disabled');
     }
 
-    // Create the likes icon with data attribute for offer_id
     var thumbsUpIcon = $('<i class="fa fa-thumbs-up"></i>');
     thumbsUpIcon.attr('data-offer-id', offerId);
 
-    // Create a span element for displaying likes count
     var likesCountElement = $('<span class="likes">' + offerData.likes + '</span>');
-
-    // Append likes icon and count to the container
     likesDislikesContainer.append(thumbsUpIcon);
     likesDislikesContainer.append(likesCountElement);
 
-    // Create the dislikes icon with data attribute for offer_id
     var thumbsDownIcon = $('<i class="fa fa-thumbs-down"></i>');
     thumbsDownIcon.attr('data-offer-id', offerId);
 
-    // Create a span element for displaying dislikes count
     var dislikesCountElement = $('<span class="dislikes">' + offerData.dislikes + '</span>');
-
-    // Append dislikes icon and count to the container
     likesDislikesContainer.append(thumbsDownIcon);
     likesDislikesContainer.append(dislikesCountElement);
 
-    // Create the arrow icon for expanding/collapsing the offer details
     var arrowIcon = $('<i class="fa fa-chevron-right"></i>');
 
-
-    // Create an image element with the 'offer-image' class and hide it initially
     var imageElement = $('<img class="offer-image">');
     var imagePath = 'prod_images/' + offerData.product_image;
     imageElement.attr('src', imagePath);
@@ -100,43 +82,39 @@ $(document).ready(function() {
 
     offerEntry.append(leftContainer, centerContainer, rightContainer, expandContainer);
 
-    // Event listener for clicking the arrow icon to expand/collapse the offer details
+    // Event listener for clicking the arrow icon
     arrowIcon.on('click', function () {
-      expandContainer.toggle(); // Toggle the visibility of the offer details
-      likesDislikesContainer.toggle(); // Toggle the visibility of the likes and dislikes container
+      expandContainer.toggle(); // Toggle visibility
+      likesDislikesContainer.toggle(); 
       buttonContainer.toggle();
-      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction 
+      arrowIcon.toggleClass('fa-chevron-right fa-chevron-down');
     });
 
-    // Event listener for clicking the thumbs-up icon (likes)
+    // Event listener for like
     thumbsUpIcon.on('click', function () {
-      // Get the stock value
       var stockValue = offerData.stock;
 
-      // If stock is greater than zero, handle the like event
       if (stockValue > 0) {
-        // Send AJAX request to update the likes count on the server
         $.ajax({
-          url: 'upd_likes.php', // Replace with the actual server-side script for updating likes
-          method: 'POST', // Use POST or GET depending on your server-side script requirements
+          url: 'upd_likes.php',
+          method: 'POST',
           data: {
             offer_id: offerId,
-            action: 'like', // Indicate the action to perform (like or dislike)
+            action: 'like',
           },
           dataType: 'json',
           success: function (response) {
-            // Update the likes count on the frontend with the response from the server
             likesCountElement.text(response.likes);
             $.ajax({
-              url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
-              method: 'POST', // Use POST or GET depending on your server-side script requirements
+              url: 'save_like_history.php',
+              method: 'POST',
               data: {
                 offer_id: offerId,
                 likes: 1,
                 dislikes: 0,
               },
               dataType: 'json',
-              success: function (saveResponse) {
+              success: function () {
 
               },
               error: function (saveError) {
@@ -151,36 +129,31 @@ $(document).ready(function() {
       }
     });
 
-    // Event listener for clicking the thumbs-down icon (dislikes)
+    // Event listener for dislikes
     thumbsDownIcon.on('click', function () {
-      // Get the stock value
       var stockValue = offerData.stock;
 
-      // If stock is greater than zero, handle the dislike event
       if (stockValue > 0) {
-        // Send AJAX request to update the dislikes count on the server
         $.ajax({
-          url: 'upd_likes.php', // Replace with the actual server-side script for updating dislikes
-          method: 'POST', // Use POST or GET depending on your server-side script requirements
+          url: 'upd_likes.php',
+          method: 'POST',
           data: {
             offer_id: offerId,
-            action: 'dislike', // Indicate the action to perform (like or dislike)
+            action: 'dislike',
           },
           dataType: 'json',
           success: function (response) {
-            // Update the dislikes count on the frontend with the response from the server
             dislikesCountElement.text(response.dislikes);
             $.ajax({
-              url: 'save_like_history.php', // Replace with the actual server-side script for saving like history
-              method: 'POST', // Use POST or GET depending on your server-side script requirements
+              url: 'save_like_history.php',
+              method: 'POST',
               data: {
                 offer_id: offerId,
                 likes: 0,
                 dislikes: 1,
               },
               dataType: 'json',
-              success: function (saveResponse) {
-
+              success: function () {
               },
               error: function (saveError) {
                 console.error('Error saving like history:', saveError);
@@ -243,7 +216,6 @@ $(document).ready(function() {
     return offerEntry;
   }
 
-  // Get the container element to display the offer entries
   var offerContainer = $('#offer-container');
   $.ajax({
     url: "get_offer_marketid.php",
@@ -254,7 +226,6 @@ $(document).ready(function() {
     dataType: "json",
     success: function(response) {
       var Offerdata = response;
-      // Loop through the data and create and append offer entries
       Offerdata.forEach(function(offerData) {
         var offerEntry = createOfferEntry(offerData);
         offerContainer.append(offerEntry);

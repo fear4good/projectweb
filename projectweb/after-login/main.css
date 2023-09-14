@@ -1,4 +1,3 @@
-/* Reset some default styling */
 body, html, ul, li, h1, h2, h3, p {
     margin: 0;
     padding: 0;
@@ -6,7 +5,7 @@ body, html, ul, li, h1, h2, h3, p {
 
 body {
     font-family: Arial, sans-serif;
-    background-color:#ebf4ff; /* Change background color to light blue */
+    background-color:#ebf4ff;
 }
 
 a {
@@ -65,20 +64,18 @@ a {
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    /* Adjust the width, height, and margin as needed */
 }
 
 .navbar-right .admin-settings-picture {
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    /* Adjust the width, height, and margin as needed */
 }
 
 
 #map {
-    width: 80%; /* Adjust the map width */
-    height: 80vh; /* Adjust the map height */
+    width: 80%;
+    height: 80vh;
     margin: 20px auto;
     border: 2px solid #ddd;
     border-radius: 10px;
@@ -91,9 +88,9 @@ a {
 }
 
 .popup-content {
-    margin-bottom: 10px; /* Add some spacing between offers */
-    border-bottom: 1px solid #ccc; /* Add a horizontal line between offers */
-    padding-bottom: 10px; /* Add some padding at the bottom of each offer */
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
     width: 280px;
 }
 
@@ -106,7 +103,7 @@ a {
 }
 #search {
     padding: 5px;
-    width: 300px; /* Adjust the search input width */
+    width: 300px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-right: 10px;
@@ -114,13 +111,13 @@ a {
 }
 
 #search:focus {
-    border-color: #555; /* Change border color on focus */
+    border-color: #555;
 }
 
 #btn_search {
     background-color: #a09f9f;
     color: black;
-    border: 1px solid #333; /* Add border */
+    border: 1px solid #333;
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
@@ -128,8 +125,8 @@ a {
 }
 
 #btn_search:hover {
-    background-color: #555; /* Change background color on hover */
-    border-color: #555; /* Change border color on hover */
+    background-color: #555;
+    border-color: #555;
 }
 
 .dropdown-container {
@@ -150,14 +147,14 @@ a {
 
 #category-dropdown:focus,
 #subcategory-dropdown:focus {
-    border-color: #555; /* Change border color on focus */
+    border-color: #555;
 }
 
 #submit-button,
 #clear-button {
     background-color: #a09f9f;
     color: black;
-    border: 1px solid #333; /* Add border */
+    border: 1px solid #333;
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
@@ -167,11 +164,10 @@ a {
 
 #submit-button:hover,
 #clear-button:hover {
-    background-color: #555; /* Change background color on hover */
-    border-color: #555; /* Change border color on hover */
+    background-color: #555;
+    border-color: #555;
 }
 
-/* Hover styles for profile and logout buttons */
 #profile:hover,
 #logout:hover {
     text-decoration: underline;
