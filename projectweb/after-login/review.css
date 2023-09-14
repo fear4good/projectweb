@@ -160,3 +160,19 @@ h1{
   opacity: 0.5; /* Use your desired gray color here */
   cursor: not-allowed; /* Change the cursor to indicate the icons are not clickable */
 }
+
+.button-container{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+  
+}
+
+.button1{
+  margin-right: 10px;
+  background-color: rgb(0, 255, 0);
+}
+
+.button2{
+  background-color: rgb(251, 65, 65);
+}

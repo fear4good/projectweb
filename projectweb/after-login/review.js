@@ -81,6 +81,12 @@ $(document).ready(function() {
     var imagePath = 'prod_images/' + offerData.product_image;
     imageElement.attr('src', imagePath);
 
+    var buttonContainer = $('<div class="button-container" style="display: none;">');
+
+    var btnexistoffer = $('<button id="' + offerId + '"class="button1" >Offer Exists</button>');
+    var btnnotexistoffer = $('<button id="' + offerId + '"class="button2" >Offer Doesn\'t Exist</button>');
+    buttonContainer.append(btnexistoffer);
+    buttonContainer.append(btnnotexistoffer);
 
     var leftContainer = $('<div class = left-offer-container></div>');
     leftContainer.append(imageElement);
@@ -90,7 +96,7 @@ $(document).ready(function() {
     rightContainer.append(arrowIcon);
 
     var expandContainer = $('<div class = expand-offer-container></div>');
-    expandContainer.append(offerDetails, likesDislikesContainer)
+    expandContainer.append(offerDetails, likesDislikesContainer, buttonContainer);
 
     offerEntry.append(leftContainer, centerContainer, rightContainer, expandContainer);
 
@@ -98,6 +104,7 @@ $(document).ready(function() {
     arrowIcon.on('click', function () {
       expandContainer.toggle(); // Toggle the visibility of the offer details
       likesDislikesContainer.toggle(); // Toggle the visibility of the likes and dislikes container
+      buttonContainer.toggle();
       arrowIcon.toggleClass('fa-chevron-right fa-chevron-down'); // Toggle the arrow icon direction 
     });
 
@@ -186,6 +193,52 @@ $(document).ready(function() {
         });
       }
     });
+
+    btnexistoffer.on('click', function(){
+      
+      var id = this.id;
+      var type = 'add';
+      $.ajax({
+        url: "update_stock.php",
+        method: "POST",
+        data: {
+          type: type,
+          offerid: id
+        },
+        dataType: "json",
+        success: function() {
+          btnexistoffer.prop('disabled', true);
+        },
+        error: function(error) {
+          console.error('Error fetching offer data:', error);
+        }
+      });
+
+    });
+
+    btnnotexistoffer.on('click', function(){
+      
+      var id = this.id;
+      var type = 'remove';
+      $.ajax({
+        url: "update_stock.php",
+        method: "POST",
+        data: {
+          type: type,
+          offerid: id
+        },
+        dataType: "json",
+        success: function() {
+          btnnotexistoffer.prop('disabled', true);
+        },
+        error: function(error) {
+          console.error('Error fetching offer data:', error);
+        }
+      });
+
+    });
+
+
 
     return offerEntry;
   }

@@ -34,8 +34,8 @@ if(isset($_POST['btn_signup'])){
       $r_response['message'] .= "Password is missing. ";
   }else if(strlen($r_password)<8){
       $r_response['message'] .= "Password must be at least 8 characters. ";
-  }else if(!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,30}$/', $r_password)){
-      $r_response['message'] .= "Password must contain on Upper case, one Lower Case and a symbol(@#\-_$%^&+=§!\?). ";
+  }else if(!preg_match('/^(?=.*\d)(?=.*[A-Za-z])(?=.*[@#\-_$%^&+=§!\?])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,30}$/', $r_password)){
+      $r_response['message'] .= "Password must contain an Upper case, a Number and a symbol(@#\-_$%^&+=§!\?). ";
   }
   
   if(empty($r_cpassword)){
