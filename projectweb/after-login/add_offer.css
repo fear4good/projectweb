@@ -1,4 +1,3 @@
-/* Reset some default styling */
 body, html, ul, li, h1, h2, h3, p {
   margin: 0;
   padding: 0;
@@ -6,10 +5,10 @@ body, html, ul, li, h1, h2, h3, p {
 
 body {
   font-family: Arial, sans-serif;
-  background-color:#ebf4ff; /* Change background color to light blue */
-  background-image: url('leaflet/images/background.jpg'); /* Replace 'your-image.jpg' with the path to your image */
-  background-size: cover; /* This will cover the entire body with the background image */
-  background-repeat: no-repeat; /* Prevent the image from repeating */
+  background-color:#ebf4ff;
+  background-image: url('leaflet/images/background.jpg'); 
+  background-size: cover; 
+  background-repeat: no-repeat; 
 }
 
 
@@ -27,7 +26,7 @@ h1{
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  width: auto; /* Take the entire screen width */
+  width: auto;
   margin-bottom: 20px;
 }
 
@@ -40,16 +39,15 @@ h1{
   width: 70px;
   height: auto;
   margin-right: 10px;
-  /* Adjust the width, height, and margin as needed */
 }
 
 .navbar-center {
   flex-grow: 1;
-  text-align: center; /* Center text horizontally */
+  text-align: center;
 }
 
 .navbar-center h1 {
-  font-size: 24px; /* Adjust font size as needed */
+  font-size: 24px;
 }
 
 .navbar-right {
@@ -67,14 +65,12 @@ h1{
   width: 30px;
   height: 30px;
   margin-left: 10px;
-  /* Adjust the width, height, and margin as needed */
 }
 
 .navbar-right .admin-settings-picture {
   width: 30px;
   height: 30px;
   margin-left: 10px;
-  /* Adjust the width, height, and margin as needed */
 }
 
 .centered {
@@ -146,7 +142,6 @@ button:active {
   color: #F44336;  
 }
 
-/* Style for the product suggestions container */
 #product-suggestions {
   top: 100%;
   left: 0;
@@ -155,28 +150,21 @@ button:active {
   overflow-y:scroll;
   border: 1px solid #ccc;
   background-color: #fff;
-  z-index: 1000; /* Ensure it appears above other elements */
-  /* Add any other necessary styles */
+  z-index: 1000;
   margin-bottom: 10px;
 }
 
-/* Style for each suggestion item */
 .product-suggestion {
   padding: 8px;
   cursor: pointer;
   border: 1px solid #ccc;
-  /* Add any other necessary styles */
 }
 
-/* Style for suggestion item on hover */
 .product-suggestion:hover {
   background-color: #f0f0f0;
-  /* Add any other necessary styles */
 }
 
-/* Style for the "No matching products found" message */
 .no-results-message {
   padding: 8px;
   color: #888;
-  /* Add any other necessary styles */
 }

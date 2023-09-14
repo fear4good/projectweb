@@ -5,7 +5,6 @@ fetch('../pre-login/fetch_credentials.php')
   isAdmin = data.role === 'admin';
   const adminSettingsLi = document.getElementById('admin-settings-li');
 
-  // Show the "Admin Settings" link if the user is an admin
   if (isAdmin) {
     adminSettingsLi.style.display = 'block';
   }

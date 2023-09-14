@@ -35,7 +35,6 @@ if (isset($_POST['buttonImportProd'])) {
         $json = file_get_contents('jsonFiles/' . $_FILES['jsonFile']['name']);
         $data = json_decode($json, true);
 
-        // Insert categories into the 'categories' table
         foreach ($data['categories'] as $category) {
             $category_id = $category['id'];
         
@@ -52,8 +51,6 @@ if (isset($_POST['buttonImportProd'])) {
                 $stmt->execute();
                 $stmt->close();
         
-
-                // Insert subcategories into the 'subcategories' table
                 foreach ($category['subcategories'] as $subcategory) {
                     $subcategory_id = $subcategory['uuid'];
                 
@@ -76,7 +73,6 @@ if (isset($_POST['buttonImportProd'])) {
             }
         }
 
-        // Insert products into the 'products' table
         foreach ($data['products'] as $product) {
             $id = $product['id'];
         

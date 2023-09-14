@@ -3,7 +3,6 @@ include '../connect.php';
 
 $marketId = $_GET['marketid'];
 
-// Fetch offers information along with product, user, category, and subcategory information
 $sql = "SELECT 
             offers.*,
             products.name AS product_name, 
@@ -29,7 +28,6 @@ $result = $stmt->get_result();
 
 $combinedOffers = [];
 
-// Fetching all the combined information
 while ($row = $result->fetch_assoc()) {
     $combinedOffers[] = $row;
 }

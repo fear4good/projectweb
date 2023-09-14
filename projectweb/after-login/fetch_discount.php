@@ -5,7 +5,6 @@
     $category_id = $_GET['category'];
     $subcategory_id = $_GET['subcategory'];
 
-    // Logic to fetch products based on category (and subcategory if provided)
     if ($subcategory_id) {
         $products_query = "SELECT * FROM products WHERE category_id = ? AND subcategory_id = ?";
         $prod_prep = $db->prepare($products_query);
@@ -30,8 +29,8 @@
         $avgweek = $db->prepare($avg_price_last_week_query);
         $avgweek->bind_param("sss", $prod_result['id'], $start_last_week, $end_last_week);
         $avgweek->execute();
-        $result = $avgweek->get_result(); // Use get_result to fetch the result as an associative array
-        $row = $result->fetch_assoc();    // Fetch the row from the result
+        $result = $avgweek->get_result();
+        $row = $result->fetch_assoc();
         $avg_price_last_week = $row['avg_price'];
 
 
@@ -40,18 +39,17 @@
         $offerStmt->bind_param("s", $prod_result['id']);
         $offerStmt->execute();
         $offerResult = $offerStmt->get_result();
-        // Check if there are results from the offer query
+
         if ($offerRow = $offerResult->fetch_assoc()) {
             $offer_price = $offerRow['discount'];
-            // Calculate the discount only if an offer price is available
+
             if ($avg_price_last_week){
                 $discount = (($avg_price_last_week - $offer_price) / $avg_price_last_week) * 100;
             }else { 
                 $discount = 0; 
             }   
         } else {
-            // If no offer price is available, set discount to 0 or handle as needed
-            $discount = 0; // or some other default value
+            $discount = 0;
         }
 
         $discounts[] = $discount;  

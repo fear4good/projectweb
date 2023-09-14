@@ -1,11 +1,9 @@
 <?php
     include '../connect.php';
 
-    // Check if category and subcategory query parameters are provided
     $category = $_GET['category'] ?? null;
     $subcategory = $_GET['subcategory'] ?? null;
 
-    // Build the SQL query based on whether category and subcategory are provided
     $sql = "SELECT p.id AS poi_id, p.name AS poi_name, p.latitude AS lat, p.longitude AS lng, 
                 o.id AS offer_id, o.discount, o.date, o.likes, o.dislikes, o.stock,
                 pr.name AS prod_name, pr.image_path AS image_path, 
@@ -20,13 +18,10 @@
             LEFT JOIN users u ON o.user_id = u.id";
 
     if ($category && $subcategory) {
-        // Filter by both category and subcategory
         $sql .= " WHERE c.id = '$category' AND sc.id = '$subcategory' AND o.discount IS NOT NULL";
     } elseif ($category) {
-        // Filter only by category
         $sql .= " WHERE c.id = '$category' AND o.discount IS NOT NULL";
     } elseif ($subcategory) {
-        // Filter only by subcategory
         $sql .= " WHERE sc.id = '$subcategory' AND o.discount IS NOT NULL";
     }
 

@@ -1,5 +1,5 @@
 <?php
-include '../connect.php'; // Include the database connection file
+include '../connect.php';
 
 $response = array();
 
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt = $db->prepare($sql);
         $stmt->bind_param("si", $newEmail, $userId);
 
-        $response = array(); // Initialize an array for the response
+        $response = array();
 
         if ($stmt->execute()) {
             $response['success'] = true;
@@ -34,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $db->close();
 
-// Send the JSON response
 header('Content-Type: application/json');
 echo json_encode($response);
 
