@@ -139,9 +139,9 @@ INSERT INTO `like_history` (`like_id`, `likes`, `dislikes`, `offer_id`, `user_id
 DROP TABLE IF EXISTS `offers`;
 CREATE TABLE IF NOT EXISTS `offers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `supermarket_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `product_id` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
-  `discount` varchar(254) COLLATE utf8mb4_general_ci NOT NULL,
+  `supermarket_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `product_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `discount` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `date` date NOT NULL,
   `likes` int NOT NULL DEFAULT '0',
   `dislikes` int NOT NULL DEFAULT '0',
